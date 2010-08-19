@@ -1,0 +1,140 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+    http://maven.apache.org/maven-v4_0_0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>loci</groupId>
+    <artifactId>loci-base-pom</artifactId>
+    <version>1.01</version>
+  </parent>
+
+  <groupId>loci</groupId>
+  <artifactId>visbio</artifactId>
+  <packaging>jar</packaging>
+  <version>3.40-SNAPSHOT</version>
+  <name>VisBio</name>
+  <description>A multi-purpose biological analysis tool.</description>
+  <url>http://loci.wisc.edu/software/visbio</url>
+  <inceptionYear>2002</inceptionYear>
+
+  <licenses>
+    <license>
+      <name>GPL 2 or later</name>
+      <url>http://www.gnu.org/licenses/gpl-2.0.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+
+  <dependencies>
+    <!-- loci -->
+    <dependency>
+      <groupId>loci</groupId>
+      <artifactId>bio-formats</artifactId>
+      <version>5.0-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>loci</groupId>
+      <artifactId>loci-common</artifactId>
+      <version>5.0-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>loci</groupId>
+      <artifactId>ome-io</artifactId>
+      <version>5.0-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>loci</groupId>
+      <artifactId>ome-xml</artifactId>
+      <version>5.0-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>loci</groupId>
+      <artifactId>poi-loci</artifactId>
+      <version>5.0-SNAPSHOT</version>
+    </dependency>
+
+    <!-- 3rd party -->
+    <dependency>
+      <groupId>com.apple</groupId>
+      <artifactId>AppleJavaExtensions</artifactId>
+      <version>1.4</version>
+    </dependency>
+    <dependency>
+      <groupId>imagej</groupId>
+      <artifactId>ij</artifactId>
+      <version>1.43</version>
+    </dependency>
+    <dependency>
+      <groupId>visad</groupId>
+      <artifactId>visad-lite</artifactId>
+      <version>2.0.20070828</version>
+    </dependency>
+
+    <!-- central -->
+    <dependency>
+      <groupId>com.jgoodies</groupId>
+      <artifactId>forms</artifactId>
+      <version>1.2.1</version>
+    </dependency>
+    <dependency>
+      <groupId>com.jgoodies</groupId>
+      <artifactId>looks</artifactId>
+      <version>2.2.2</version>
+    </dependency>
+
+    <!-- test -->
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.8.1</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <configuration>
+          <archive>
+            <manifest>
+              <mainClass>loci.visbio.VisBio</mainClass>
+              <packageName>loci.visbio</packageName>
+            </manifest>
+          </archive>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
+  <developers>
+    <developer>
+      <id>curtis</id>
+      <name>Curtis Rueden</name>
+      <email>ctrueden@wisc.edu</email>
+      <url>http://loci.wisc.edu/people/curtis-rueden</url>
+      <organization>UW-Madison LOCI</organization>
+      <organizationUrl>http://loci.wisc.edu/</organizationUrl>
+      <roles>
+        <role>architect</role>
+        <role>developer</role>
+      </roles>
+      <timezone>-6</timezone>
+      <properties>
+        <picUrl>http://loci.wisc.edu/files/loci/images/people/curtis-2010.jpg</picUrl>
+      </properties>
+    </developer>
+  </developers>
+
+  <repositories>
+    <!-- NB: for loci-base-pom -->
+    <repository>
+      <id>loci.releases</id>
+      <url>http://loci.wisc.edu:8081/content/repositories/releases</url>
+    </repository>
+  </repositories>
+
+</project>
