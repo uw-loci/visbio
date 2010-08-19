@@ -127,6 +127,17 @@
         <picUrl>http://loci.wisc.edu/files/loci/images/people/curtis-2010.jpg</picUrl>
       </properties>
     </developer>
+    <developer>
+      <id>sorber</id>
+      <name>Abraham Sorber</name>
+      <url>http://loci.wisc.edu/people/abraham-sorber</url>
+      <organization>UW-Madison LOCI</organization>
+      <organizationUrl>http://loci.wisc.edu/</organizationUrl>
+      <roles>
+        <role>developer</role>
+      </roles>
+      <timezone>-6</timezone>
+    </developer>
   </developers>
 
   <repositories>
