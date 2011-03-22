@@ -213,15 +213,5 @@ public final class XMLUtil {
     return null;
   }
 
-  /** XSLT Stylesheet for Forward project */
-  public static String transformXML(String xml, String pathToStylesheet) {
-    Templates stylesheet = XMLTools.getStylesheet(pathToStylesheet, null);
-    try {
-      return XMLTools.transformXML(xml, stylesheet);
-    }
-    catch (IOException exc) {
-      return null;
-    }
-  }
 }
 
