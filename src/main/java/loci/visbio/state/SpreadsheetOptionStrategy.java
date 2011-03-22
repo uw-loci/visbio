@@ -27,8 +27,8 @@ package loci.visbio.state;
  * Strings related to the SpreadsheetLaunchOption option.
  *
  * <dl><dt><b>Source code:</b></dt>
- * <dd><a href="https://skyking.microscopy.wisc.edu/trac/java/browser/trunk/components/visbio/src/loci/visbio/state/SpreadsheetOptionStrategy.java">Trac</a>,
- * <a href="https://skyking.microscopy.wisc.edu/svn/java/trunk/components/visbio/src/loci/visbio/state/SpreadsheetOptionStrategy.java">SVN</a></dd></dl>
+ * <dd><a href="http://dev.loci.wisc.edu/trac/software/browser/trunk/projects/visbio/src/main/java/loci/visbio/state/SpreadsheetOptionStrategy.java">Trac</a>,
+ * <a href="http://dev.loci.wisc.edu/svn/software/trunk/projects/visbio/src/main/java/loci/visbio/state/SpreadsheetOptionStrategy.java">SVN</a></dd></dl>
  */
 public final class SpreadsheetOptionStrategy {
 
