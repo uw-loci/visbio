@@ -29,29 +29,29 @@
 
   <dependencies>
     <dependency>
-      <groupId>${bio-formats.groupId}</groupId>
+      <groupId>${scifio.groupId}</groupId>
       <artifactId>bio-formats</artifactId>
-      <version>${bio-formats.version}</version>
+      <version>${scifio.version}</version>
     </dependency>
     <dependency>
-      <groupId>${bio-formats.groupId}</groupId>
+      <groupId>${scifio.groupId}</groupId>
       <artifactId>loci-common</artifactId>
-      <version>${bio-formats.version}</version>
+      <version>${scifio.version}</version>
     </dependency>
     <dependency>
-      <groupId>${bio-formats.groupId}</groupId>
+      <groupId>${scifio.groupId}</groupId>
       <artifactId>ome-io</artifactId>
-      <version>${bio-formats.version}</version>
+      <version>${scifio.version}</version>
     </dependency>
     <dependency>
-      <groupId>${bio-formats.groupId}</groupId>
+      <groupId>${scifio.groupId}</groupId>
       <artifactId>ome-xml</artifactId>
-      <version>${bio-formats.version}</version>
+      <version>${scifio.version}</version>
     </dependency>
     <dependency>
-      <groupId>${bio-formats.groupId}</groupId>
+      <groupId>${scifio.groupId}</groupId>
       <artifactId>poi-loci</artifactId>
-      <version>${bio-formats.version}</version>
+      <version>${scifio.version}</version>
     </dependency>
     <dependency>
       <groupId>${imagej.groupId}</groupId>
