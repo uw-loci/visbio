@@ -9,6 +9,7 @@
     <groupId>loci</groupId>
     <artifactId>pom-loci</artifactId>
     <version>1.7</version>
+    <relativePath />
   </parent>
 
   <artifactId>visbio</artifactId>
