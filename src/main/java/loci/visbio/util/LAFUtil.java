@@ -53,7 +53,7 @@ public final class LAFUtil {
       // use JGoodies Plastic 3D as default if no Look & Feel is set
       try {
         UIManager.setLookAndFeel(
-          "com.jgoodies.plaf.plastic.Plastic3DLookAndFeel");
+          "com.jgoodies.looks.plastic.Plastic3DLookAndFeel");
       }
       catch (Exception exc) { exc.printStackTrace(); }
     }
