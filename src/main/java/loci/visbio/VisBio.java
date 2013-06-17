@@ -129,6 +129,7 @@ public final class VisBio extends Thread {
     throws ClassNotFoundException, IllegalAccessException,
     InstantiationException, InvocationTargetException, NoSuchMethodException
   {
+    System.setProperty("apple.laf.useScreenMenuBar", "true");
     Object o = launch(args);
     if (o == null) System.out.println("VisBio is already running.");
   }
