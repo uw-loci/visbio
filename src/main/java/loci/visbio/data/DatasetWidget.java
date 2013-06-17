@@ -24,6 +24,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 package loci.visbio.data;
 
 import java.awt.BorderLayout;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.Hashtable;
@@ -35,12 +36,15 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JTree;
 import javax.swing.table.DefaultTableModel;
+import javax.xml.parsers.ParserConfigurationException;
 
+import loci.common.xml.XMLTools;
 import loci.formats.gui.XMLCellRenderer;
+import loci.visbio.VisBioFrame;
 import loci.visbio.util.SwingUtil;
-import ome.xml.OMEXMLNode;
 
 import org.w3c.dom.Document;
+import org.xml.sax.SAXException;
 
 /**
  * DatasetWidget is a set of GUI controls for a Dataset transform.
@@ -105,9 +109,22 @@ public class DatasetWidget extends JPanel {
     // -- Second tab --
 
     // OME-XML tree
-    OMEXMLNode root = dataset.getOMEXMLRoot();
-    Document doc = root.getDOMElement().getOwnerDocument();
-    JTree xmlTree = XMLCellRenderer.makeJTree(doc);
+    Document doc = null;
+    try {
+      doc = XMLTools.parseDOM(dataset.getOMEXML());
+    }
+    catch (final ParserConfigurationException exc) {
+      if (VisBioFrame.DEBUG) exc.printStackTrace();
+    }
+    catch (final SAXException exc) {
+      if (VisBioFrame.DEBUG) exc.printStackTrace();
+    }
+    catch (final IOException exc) {
+      if (VisBioFrame.DEBUG) exc.printStackTrace();
+    }
+    JTree xmlTree;
+    if (doc == null) xmlTree = new JTree(new Object[] {"No OME-XML available"});
+    else xmlTree = XMLCellRenderer.makeJTree(doc);
     JScrollPane scrollTree = new JScrollPane(xmlTree);
     SwingUtil.configureScrollPane(scrollTree);
 

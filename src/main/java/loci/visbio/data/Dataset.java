@@ -58,7 +58,7 @@ import loci.visbio.state.SaveException;
 import loci.visbio.util.MathUtil;
 import loci.visbio.util.ObjectUtil;
 import loci.visbio.util.XMLUtil;
-import ome.xml.OMEXMLNode;
+import ome.xml.model.OME;
 
 import org.w3c.dom.Element;
 
@@ -160,9 +160,27 @@ public class Dataset extends ImageTransform {
   public Hashtable getMetadata() { return reader.getGlobalMetadata(); }
 
   /** Gets an OME-XML root for the dataset. */
-  public OMEXMLNode getOMEXMLRoot() {
+  public OME getOMEXMLRoot() {
     MetadataStore store = reader.getMetadataStore();
-    return (OMEXMLNode) store.getRoot();
+    return (OME) store.getRoot();
+  }
+
+  /** Gets an OME-XML string for the dataset. */
+  public String getOMEXML() {
+    final MetadataStore store = reader.getMetadataStore();
+    try {
+      final ServiceFactory serviceFactory = new ServiceFactory();
+      final OMEXMLService omexmlService =
+        serviceFactory.getInstance(OMEXMLService.class);
+      return omexmlService.getOMEXML(omexmlService.asRetrieve(store));
+    }
+    catch (final DependencyException exc) {
+      if (VisBioFrame.DEBUG) exc.printStackTrace();
+    }
+    catch (final ServiceException exc) {
+      if (VisBioFrame.DEBUG) exc.printStackTrace();
+    }
+    return null;
   }
 
   // -- ImageTransform API methods --
