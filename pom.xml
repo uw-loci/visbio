@@ -127,9 +127,6 @@
 				<role>developer</role>
 			</roles>
 			<timezone>-6</timezone>
-			<properties>
-				<picUrl>http://loci.wisc.edu/files/loci/images/people/curtis-2010.jpg</picUrl>
-			</properties>
 		</developer>
 		<developer>
 			<name>Abraham Sorber</name>
