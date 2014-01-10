@@ -116,7 +116,7 @@
 
 	<developers>
 		<developer>
-			<id>curtis</id>
+			<id>ctrueden</id>
 			<name>Curtis Rueden</name>
 			<email>ctrueden@wisc.edu</email>
 			<url>http://loci.wisc.edu/people/curtis-rueden</url>
@@ -132,7 +132,6 @@
 			</properties>
 		</developer>
 		<developer>
-			<id>sorber</id>
 			<name>Abraham Sorber</name>
 			<url>http://loci.wisc.edu/people/abraham-sorber</url>
 			<organization>UW-Madison LOCI</organization>
