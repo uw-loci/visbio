@@ -143,6 +143,13 @@
 		</developer>
 	</developers>
 
+	<scm>
+		<connection>scm:git:git://github.com/uw-loci/visbio</connection>
+		<developerConnection>scm:git:git@github.com:uw-loci/visbio</developerConnection>
+		<tag>HEAD</tag>
+		<url>https://github.com/uw-loci/visbio</url>
+	</scm>
+
 	<repositories>
 		<!-- NB: for project parent -->
 		<repository>
