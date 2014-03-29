@@ -8,7 +8,7 @@
 	<parent>
 		<groupId>loci</groupId>
 		<artifactId>pom-loci</artifactId>
-		<version>1.15</version>
+		<version>1.18</version>
 		<relativePath />
 	</parent>
 
@@ -19,6 +19,11 @@
 	<description>A multi-purpose biological analysis tool.</description>
 	<url>http://loci.wisc.edu/software/visbio</url>
 	<inceptionYear>2002</inceptionYear>
+
+	<properties>
+		<bio-formats.groupId>loci</bio-formats.groupId>
+		<bio-formats.version>4.4.10</bio-formats.version>
+	</properties>
 
 	<licenses>
 		<license>
