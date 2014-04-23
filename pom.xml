@@ -20,11 +20,6 @@
 	<url>http://loci.wisc.edu/software/visbio</url>
 	<inceptionYear>2002</inceptionYear>
 
-	<properties>
-		<bio-formats.groupId>loci</bio-formats.groupId>
-		<bio-formats.version>4.4.10</bio-formats.version>
-	</properties>
-
 	<licenses>
 		<license>
 			<name>GNU General Public License v2+</name>
@@ -44,15 +39,19 @@
 		</dependency>
 		<dependency>
 			<groupId>ome</groupId>
-			<artifactId>ome-io</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>ome</groupId>
 			<artifactId>ome-xml</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>ome</groupId>
-			<artifactId>poi-loci</artifactId>
+			<artifactId>ome-poi</artifactId>
+			<version>${bio-formats.version}</version>
+		</dependency>
+
+		<!-- FIXME: Need to depend on OMERO. But OMERO is not Mavenized. -->
+		<dependency>
+			<groupId>loci</groupId>
+			<artifactId>ome-io</artifactId>
+			<version>5.0.0-beta1</version>
 		</dependency>
 
 		<dependency>
@@ -78,7 +77,7 @@
 
 		<dependency>
 			<groupId>ome</groupId>
-			<artifactId>bio-formats-gpl</artifactId>
+			<artifactId>formats-gpl</artifactId>
 			<scope>runtime</scope>
 		</dependency>
 
