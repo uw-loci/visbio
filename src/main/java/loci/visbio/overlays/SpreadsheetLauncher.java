@@ -24,10 +24,10 @@
 
 package loci.visbio.overlays;
 
+import com.jgoodies.looks.LookUtils;
+
 import java.io.File;
 import java.io.IOException;
-
-import com.jgoodies.looks.LookUtils;
 
 /**
  * Launches an external spreadsheet application.

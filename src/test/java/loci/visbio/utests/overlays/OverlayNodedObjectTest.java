@@ -25,7 +25,9 @@
 package loci.visbio.utests.overlays;
 
 import junit.framework.TestCase;
-import loci.visbio.overlays.*;
+import loci.visbio.overlays.OverlayFreeform;
+import loci.visbio.overlays.OverlayTransform;
+import loci.visbio.overlays.OverlayUtil;
 
 /**
  * Test some critical methods of the OverlayNodedObject class.

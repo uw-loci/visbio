@@ -24,14 +24,14 @@
 
 package loci.visbio.util;
 
+import com.jgoodies.forms.builder.PanelBuilder;
+import com.jgoodies.forms.layout.CellConstraints;
+import com.jgoodies.forms.layout.FormLayout;
+
 import java.awt.Component;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-
-import com.jgoodies.forms.builder.PanelBuilder;
-import com.jgoodies.forms.layout.CellConstraints;
-import com.jgoodies.forms.layout.FormLayout;
 
 /**
  * FormsUtil contains useful JGoodies Forms functions.

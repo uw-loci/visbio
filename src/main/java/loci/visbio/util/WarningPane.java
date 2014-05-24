@@ -24,13 +24,13 @@
 
 package loci.visbio.util;
 
-import java.util.StringTokenizer;
-
-import javax.swing.JPanel;
-
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
+
+import java.util.StringTokenizer;
+
+import javax.swing.JPanel;
 
 /**
  * WarningPane provides a dialog box for displaying a warning to the user.

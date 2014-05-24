@@ -24,6 +24,10 @@
 
 package loci.visbio.view;
 
+import com.jgoodies.forms.builder.PanelBuilder;
+import com.jgoodies.forms.layout.CellConstraints;
+import com.jgoodies.forms.layout.FormLayout;
+
 import java.awt.Font;
 import java.rmi.RemoteException;
 import java.util.Arrays;
@@ -53,10 +57,6 @@ import visad.ScalarMap;
 import visad.TextControl;
 import visad.VisADException;
 import visad.java2d.DisplayImplJ2D;
-
-import com.jgoodies.forms.builder.PanelBuilder;
-import com.jgoodies.forms.layout.CellConstraints;
-import com.jgoodies.forms.layout.FormLayout;
 
 /**
  * Provides logic for linking data transforms to a display.

@@ -24,6 +24,10 @@
 
 package loci.visbio.data;
 
+import com.jgoodies.forms.builder.PanelBuilder;
+import com.jgoodies.forms.layout.CellConstraints;
+import com.jgoodies.forms.layout.FormLayout;
+
 import java.awt.BorderLayout;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
@@ -53,10 +57,6 @@ import loci.visbio.util.WizardPane;
 import visad.FlatField;
 import visad.ImageFlatField;
 import visad.util.DataUtility;
-
-import com.jgoodies.forms.builder.PanelBuilder;
-import com.jgoodies.forms.layout.CellConstraints;
-import com.jgoodies.forms.layout.FormLayout;
 
 /**
  * ExportPane provides a full-featured set of options for exporting a

@@ -24,6 +24,11 @@
 
 package loci.visbio.overlays;
 
+import com.jgoodies.forms.builder.PanelBuilder;
+import com.jgoodies.forms.factories.ButtonBarFactory;
+import com.jgoodies.forms.layout.CellConstraints;
+import com.jgoodies.forms.layout.FormLayout;
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -78,11 +83,6 @@ import loci.visbio.util.LAFUtil;
 import loci.visbio.util.ObjectUtil;
 import loci.visbio.util.SwingUtil;
 import visad.util.Util;
-
-import com.jgoodies.forms.builder.PanelBuilder;
-import com.jgoodies.forms.factories.ButtonBarFactory;
-import com.jgoodies.forms.layout.CellConstraints;
-import com.jgoodies.forms.layout.FormLayout;
 
 /**
  * OverlayWidget is a set of GUI controls for an overlay transform.

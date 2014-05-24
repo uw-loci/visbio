@@ -24,6 +24,10 @@
 
 package loci.visbio.state;
 
+import com.jgoodies.forms.builder.PanelBuilder;
+import com.jgoodies.forms.layout.CellConstraints;
+import com.jgoodies.forms.layout.FormLayout;
+
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -39,10 +43,6 @@ import loci.visbio.util.LAFUtil;
 import loci.visbio.util.XMLUtil;
 
 import org.w3c.dom.Element;
-
-import com.jgoodies.forms.builder.PanelBuilder;
-import com.jgoodies.forms.layout.CellConstraints;
-import com.jgoodies.forms.layout.FormLayout;
 
 /** Option to toggle whether spreadsheet automatically launches when overlays
  *  are exported.  Also allows user to specify path to spreadsheet application.

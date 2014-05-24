@@ -24,6 +24,8 @@
 
 package loci.visbio;
 
+import com.jgoodies.looks.LookUtils;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -41,8 +43,6 @@ import javax.swing.Timer;
 
 import loci.visbio.help.HelpManager;
 import visad.util.Util;
-
-import com.jgoodies.looks.LookUtils;
 
 /**
  * SystemManager is the manager encapsulating

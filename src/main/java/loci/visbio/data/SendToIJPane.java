@@ -24,6 +24,10 @@
 
 package loci.visbio.data;
 
+import com.jgoodies.forms.builder.PanelBuilder;
+import com.jgoodies.forms.layout.CellConstraints;
+import com.jgoodies.forms.layout.FormLayout;
+
 import java.awt.event.ActionEvent;
 
 import javax.swing.JOptionPane;
@@ -37,10 +41,6 @@ import loci.visbio.util.ImageJUtil;
 import loci.visbio.view.BioSlideWidget;
 import visad.FlatField;
 import visad.VisADException;
-
-import com.jgoodies.forms.builder.PanelBuilder;
-import com.jgoodies.forms.layout.CellConstraints;
-import com.jgoodies.forms.layout.FormLayout;
 
 /**
  * SendToIJPane provides options for exporting part of a

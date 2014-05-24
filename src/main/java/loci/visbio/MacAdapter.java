@@ -24,12 +24,12 @@
 
 package loci.visbio;
 
-import loci.visbio.help.HelpManager;
-import loci.visbio.state.OptionManager;
-
 import com.apple.eawt.Application;
 import com.apple.eawt.ApplicationAdapter;
 import com.apple.eawt.ApplicationEvent;
+
+import loci.visbio.help.HelpManager;
+import loci.visbio.state.OptionManager;
 
 /**
  * An adapter for handling the Mac OS X application menu items.

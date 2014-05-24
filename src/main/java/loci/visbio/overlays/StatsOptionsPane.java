@@ -24,6 +24,11 @@
 
 package loci.visbio.overlays;
 
+import com.jgoodies.forms.builder.ButtonBarBuilder;
+import com.jgoodies.forms.builder.PanelBuilder;
+import com.jgoodies.forms.layout.CellConstraints;
+import com.jgoodies.forms.layout.FormLayout;
+
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -36,11 +41,6 @@ import javax.swing.JTabbedPane;
 import loci.visbio.VisBioFrame;
 import loci.visbio.state.BioOption;
 import loci.visbio.state.OptionManager;
-
-import com.jgoodies.forms.builder.ButtonBarBuilder;
-import com.jgoodies.forms.builder.PanelBuilder;
-import com.jgoodies.forms.layout.CellConstraints;
-import com.jgoodies.forms.layout.FormLayout;
 
 /**
  * A tabbed pane full of checkboxes.

@@ -25,8 +25,9 @@
 package loci.visbio.utests.overlays;
 
 import java.awt.image.BufferedImage;
-import loci.visbio.data.ImageTransform;
+
 import loci.visbio.data.DataTransform;
+import loci.visbio.data.ImageTransform;
 
 /**
  * DummyImageTransform is a fake ImageTransform.

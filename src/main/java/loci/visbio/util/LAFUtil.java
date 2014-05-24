@@ -24,14 +24,14 @@
 
 package loci.visbio.util;
 
+import com.jgoodies.looks.LookUtils;
+import com.jgoodies.looks.Options;
+
 import java.awt.Dimension;
 import java.util.Vector;
 
 import javax.swing.LookAndFeel;
 import javax.swing.UIManager;
-
-import com.jgoodies.looks.LookUtils;
-import com.jgoodies.looks.Options;
 
 /**
  * LAFUtil contains useful functions relating to Look and Feel.

@@ -24,6 +24,8 @@
 
 package loci.visbio.util;
 
+import com.jgoodies.looks.LookUtils;
+
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Cursor;
@@ -59,8 +61,6 @@ import javax.swing.tree.TreePath;
 
 import loci.formats.ImageReader;
 import loci.formats.gui.GUITools;
-
-import com.jgoodies.looks.LookUtils;
 
 /**
  * SwingUtil contains useful Swing functions.

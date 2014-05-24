@@ -24,9 +24,11 @@
 
 package loci.visbio.utests.overlays;
 
-import java.util.*;
+import java.util.Vector;
+
 import loci.formats.FormatTools;
-import loci.visbio.data.*;
+import loci.visbio.data.DataTransform;
+import loci.visbio.data.TransformListener;
 import loci.visbio.overlays.OverlayTransform;
 import loci.visbio.state.Dynamic;
 

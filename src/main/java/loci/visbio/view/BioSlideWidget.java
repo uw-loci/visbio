@@ -24,6 +24,10 @@
 
 package loci.visbio.view;
 
+import com.jgoodies.forms.builder.PanelBuilder;
+import com.jgoodies.forms.layout.CellConstraints;
+import com.jgoodies.forms.layout.FormLayout;
+
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -40,10 +44,6 @@ import javax.swing.event.ChangeListener;
 import loci.visbio.data.DataTransform;
 import loci.visbio.util.BioArrowButton;
 import loci.visbio.util.ObjectUtil;
-
-import com.jgoodies.forms.builder.PanelBuilder;
-import com.jgoodies.forms.layout.CellConstraints;
-import com.jgoodies.forms.layout.FormLayout;
 
 /**
  * BioSlideWidget is a widget for exploring one dimension of a dataset.

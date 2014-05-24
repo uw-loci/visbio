@@ -48,7 +48,6 @@ import loci.formats.FileStitcher;
 import loci.formats.FormatException;
 import loci.formats.FormatTools;
 import loci.formats.IFormatReader;
-import loci.formats.MetadataTools;
 import loci.formats.gui.BufferedImageReader;
 import loci.formats.gui.GUITools;
 import loci.formats.meta.MetadataStore;

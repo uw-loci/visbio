@@ -24,6 +24,8 @@
 
 package loci.visbio.state;
 
+import com.jgoodies.looks.LookUtils;
+
 import java.awt.Component;
 import java.awt.event.KeyEvent;
 import java.io.File;
@@ -42,8 +44,6 @@ import loci.visbio.util.XMLUtil;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-
-import com.jgoodies.looks.LookUtils;
 
 /**
  * OptionManager is the manager encapsulating VisBio's options.

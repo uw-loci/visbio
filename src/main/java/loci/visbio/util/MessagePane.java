@@ -24,12 +24,12 @@
 
 package loci.visbio.util;
 
-import javax.swing.JCheckBox;
-import javax.swing.JPanel;
-
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
+
+import javax.swing.JCheckBox;
+import javax.swing.JPanel;
 
 /**
  * MessagePane provides a dialog box for displaying a dialog to the user with

@@ -24,6 +24,11 @@
 
 package loci.visbio.data;
 
+import com.jgoodies.forms.builder.PanelBuilder;
+import com.jgoodies.forms.factories.ButtonBarFactory;
+import com.jgoodies.forms.layout.CellConstraints;
+import com.jgoodies.forms.layout.FormLayout;
+
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -39,11 +44,6 @@ import javax.swing.event.ChangeListener;
 import loci.visbio.util.LAFUtil;
 import visad.RealType;
 import visad.browser.Convert;
-
-import com.jgoodies.forms.builder.PanelBuilder;
-import com.jgoodies.forms.factories.ButtonBarFactory;
-import com.jgoodies.forms.layout.CellConstraints;
-import com.jgoodies.forms.layout.FormLayout;
 
 /**
  * SpectralWidget is a set of GUI controls for a spectral mapping transform.

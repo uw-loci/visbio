@@ -24,6 +24,10 @@
 
 package loci.visbio.state;
 
+import com.jgoodies.forms.builder.PanelBuilder;
+import com.jgoodies.forms.layout.CellConstraints;
+import com.jgoodies.forms.layout.FormLayout;
+
 import java.awt.Component;
 
 import javax.swing.JPanel;
@@ -32,10 +36,6 @@ import javax.swing.JTextField;
 import loci.visbio.util.XMLUtil;
 
 import org.w3c.dom.Element;
-
-import com.jgoodies.forms.builder.PanelBuilder;
-import com.jgoodies.forms.layout.CellConstraints;
-import com.jgoodies.forms.layout.FormLayout;
 
 /**
  * StringOption is a user-supplied string option in the VisBio Options dialog.

@@ -24,6 +24,11 @@
 
 package loci.visbio;
 
+import com.jgoodies.forms.builder.PanelBuilder;
+import com.jgoodies.forms.layout.CellConstraints;
+import com.jgoodies.forms.layout.FormLayout;
+import com.jgoodies.looks.LookUtils;
+
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -44,11 +49,6 @@ import loci.visbio.util.DisplayUtil;
 import loci.visbio.util.LAFUtil;
 import loci.visbio.util.SwingUtil;
 import visad.util.Util;
-
-import com.jgoodies.forms.builder.PanelBuilder;
-import com.jgoodies.forms.layout.CellConstraints;
-import com.jgoodies.forms.layout.FormLayout;
-import com.jgoodies.looks.LookUtils;
 
 /**
  * SystemControls is the control panel for reporting system information.

@@ -24,6 +24,8 @@
 
 package loci.visbio.view;
 
+import com.jgoodies.looks.LookUtils;
+
 import java.awt.Component;
 import java.util.Vector;
 
@@ -43,8 +45,6 @@ import loci.visbio.state.StateManager;
 import loci.visbio.util.XMLUtil;
 
 import org.w3c.dom.Element;
-
-import com.jgoodies.looks.LookUtils;
 
 /**
  * DisplayManager is the manager encapsulating VisBio's 2D and 3D displays.

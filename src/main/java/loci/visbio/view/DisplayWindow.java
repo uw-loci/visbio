@@ -24,6 +24,8 @@
 
 package loci.visbio.view;
 
+import com.jgoodies.looks.LookUtils;
+
 import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.Dimension;
@@ -64,8 +66,6 @@ import visad.DisplayImpl;
 import visad.DisplayListener;
 import visad.GraphicsModeControl;
 import visad.VisADException;
-
-import com.jgoodies.looks.LookUtils;
 
 /**
  * DisplayWindow is a window containing a 2D or 3D

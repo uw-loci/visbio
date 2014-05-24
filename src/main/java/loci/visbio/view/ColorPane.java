@@ -24,6 +24,11 @@
 
 package loci.visbio.view;
 
+import com.jgoodies.forms.builder.PanelBuilder;
+import com.jgoodies.forms.factories.ButtonBarFactory;
+import com.jgoodies.forms.layout.CellConstraints;
+import com.jgoodies.forms.layout.FormLayout;
+
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ItemEvent;
@@ -73,11 +78,6 @@ import visad.VisADException;
 import visad.browser.Convert;
 import visad.java2d.DisplayImplJ2D;
 import visad.util.ColorMapWidget;
-
-import com.jgoodies.forms.builder.PanelBuilder;
-import com.jgoodies.forms.factories.ButtonBarFactory;
-import com.jgoodies.forms.layout.CellConstraints;
-import com.jgoodies.forms.layout.FormLayout;
 
 /**
  * ColorPane is a dialog pane for adjusting color settings.

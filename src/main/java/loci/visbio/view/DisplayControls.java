@@ -24,6 +24,11 @@
 
 package loci.visbio.view;
 
+import com.jgoodies.forms.builder.ButtonStackBuilder;
+import com.jgoodies.forms.builder.PanelBuilder;
+import com.jgoodies.forms.layout.CellConstraints;
+import com.jgoodies.forms.layout.FormLayout;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -42,11 +47,6 @@ import loci.visbio.WindowManager;
 import loci.visbio.util.DisplayUtil;
 import loci.visbio.util.LAFUtil;
 import loci.visbio.util.SwingUtil;
-
-import com.jgoodies.forms.builder.ButtonStackBuilder;
-import com.jgoodies.forms.builder.PanelBuilder;
-import com.jgoodies.forms.layout.CellConstraints;
-import com.jgoodies.forms.layout.FormLayout;
 
 /**
  * DisplayControls is the control panel for managing displays.

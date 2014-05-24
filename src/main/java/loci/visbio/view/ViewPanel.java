@@ -24,6 +24,10 @@
 
 package loci.visbio.view;
 
+import com.jgoodies.forms.builder.PanelBuilder;
+import com.jgoodies.forms.layout.CellConstraints;
+import com.jgoodies.forms.layout.FormLayout;
+
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -38,10 +42,6 @@ import javax.swing.event.DocumentListener;
 import loci.visbio.util.FormsUtil;
 import loci.visbio.util.LAFUtil;
 import loci.visbio.util.SwingUtil;
-
-import com.jgoodies.forms.builder.PanelBuilder;
-import com.jgoodies.forms.layout.CellConstraints;
-import com.jgoodies.forms.layout.FormLayout;
 
 /**
  * Provides GUI controls for a display view handler.
