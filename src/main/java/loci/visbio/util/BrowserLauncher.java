@@ -84,6 +84,7 @@ import java.lang.reflect.Method;
  * @author Eric Albert ejalbert at cs.stanford.edu
  * @version 1.4b1 (Released June 20, 2001)
  */
+@SuppressWarnings("all")
 public final class BrowserLauncher {
 
 	/**
