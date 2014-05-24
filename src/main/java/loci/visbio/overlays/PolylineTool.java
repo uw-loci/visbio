@@ -532,7 +532,7 @@ public class PolylineTool extends OverlayTool {
 		}
 
 		if (nearestPline == -1) return null;
-		else return new int[] { nearestPline, nearestNode };
+		return new int[] { nearestPline, nearestNode };
 	}
 
 	// -- Helper methods for debugging --

@@ -375,16 +375,14 @@ public final class OverlayIO {
 					"missing node lists for one or more Freeforms");
 				return null;
 			}
-			else {
-				// store last freeform read
-				final OverlayNodedObject ono =
-					(OverlayNodedObject) loadedNodedObjects
-						.elementAt(numNodedObjectsRestored++);
-				final float[][] temp = new float[2][numNodes];
-				for (int i = 0; i < 2; i++)
-					System.arraycopy(nodes[i], 0, temp[i], 0, numNodes);
-				ono.setNodes(temp);
-			}
+			// store last freeform read
+			final OverlayNodedObject ono =
+				(OverlayNodedObject) loadedNodedObjects
+					.elementAt(numNodedObjectsRestored++);
+			final float[][] temp = new float[2][numNodes];
+			for (int i = 0; i < 2; i++)
+				System.arraycopy(nodes[i], 0, temp[i], 0, numNodes);
+			ono.setNodes(temp);
 		}
 
 		trans.setTextDrawn(true);

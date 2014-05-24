@@ -301,7 +301,7 @@ public final class ObjectUtil {
 		final int[] a = s == null ? null : stringToIntArray(s);
 		if (a == null || a.length < 3) return null;
 		if (a.length == 3) return new Color(a[0], a[1], a[2]);
-		else return new Color(a[0], a[1], a[2], a[3]);
+		return new Color(a[0], a[1], a[2], a[3]);
 	}
 
 	// -- Array-to-string conversions --

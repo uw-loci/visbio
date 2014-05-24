@@ -328,16 +328,14 @@ public final class DataUtil {
 		final GriddedSet set = (GriddedSet) volume.getDomainSet();
 		final int[] len = set.getLengths();
 		if (len[0] == res && len[1] == res && len[2] == res) return volume;
-		else {
-			final float[] lo = set.getLow();
-			final float[] hi = set.getHi();
-			final Linear3DSet nset =
-				new Linear3DSet(set.getType(), lo[0], hi[0], res, lo[1], hi[1], res,
-					lo[2], hi[2], res, set.getCoordinateSystem(), set.getSetUnits(), set
-						.getSetErrors());
-			return (FlatField) volume.resample(nset, Data.WEIGHTED_AVERAGE,
-				Data.NO_ERRORS);
-		}
+		final float[] lo = set.getLow();
+		final float[] hi = set.getHi();
+		final Linear3DSet nset =
+			new Linear3DSet(set.getType(), lo[0], hi[0], res, lo[1], hi[1], res,
+				lo[2], hi[2], res, set.getCoordinateSystem(), set.getSetUnits(), set
+					.getSetErrors());
+		return (FlatField) volume.resample(nset, Data.WEIGHTED_AVERAGE,
+			Data.NO_ERRORS);
 	}
 
 	/**

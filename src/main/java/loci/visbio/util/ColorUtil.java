@@ -566,10 +566,9 @@ public final class ColorUtil {
 			}
 			return new float[][] { table[0], table[1], table[2], alpha };
 		}
-		else { // table.length == 4
-			if (doAlpha) return table;
-			return new float[][] { table[0], table[1], table[2] };
-		}
+		// table.length == 4
+		if (doAlpha) return table;
+		return new float[][] { table[0], table[1], table[2] };
 	}
 
 	/**

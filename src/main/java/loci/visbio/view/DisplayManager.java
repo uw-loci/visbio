@@ -168,7 +168,7 @@ public class DisplayManager extends LogicManager {
 		final ResolutionToggleOption opt =
 			(ResolutionToggleOption) om.getOption(STACK_LIMIT);
 		if (opt.getValue()) return new int[] { opt.getValueX(), opt.getValueY() };
-		else return new int[] { Integer.MAX_VALUE, Integer.MAX_VALUE };
+		return new int[] { Integer.MAX_VALUE, Integer.MAX_VALUE };
 	}
 
 	/** Gets whether to use nicest transparency mode from VisBio options. */

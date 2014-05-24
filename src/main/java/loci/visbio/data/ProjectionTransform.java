@@ -282,17 +282,15 @@ public class ProjectionTransform extends ImageTransform {
 		final ThumbnailHandler th = parent.getThumbHandler();
 		if (th != null) cache = th.getCache();
 		if (cache == null) return "intensity_projection.visbio";
+		String s = cache.getCacheFile().getAbsolutePath();
+		final int dot = s.lastIndexOf(".");
+		String suffix;
+		if (dot < 0) suffix = "";
 		else {
-			String s = cache.getCacheFile().getAbsolutePath();
-			final int dot = s.lastIndexOf(".");
-			String suffix;
-			if (dot < 0) suffix = "";
-			else {
-				suffix = s.substring(dot);
-				s = s.substring(0, dot);
-			}
-			return s + "_projection" + suffix;
+			suffix = s.substring(dot);
+			s = s.substring(0, dot);
 		}
+		return s + "_projection" + suffix;
 	}
 
 	/**

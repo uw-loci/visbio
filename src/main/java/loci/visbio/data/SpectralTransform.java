@@ -362,17 +362,15 @@ public class SpectralTransform extends ImageTransform implements
 		final ThumbnailHandler th = parent.getThumbHandler();
 		if (th != null) cache = th.getCache();
 		if (cache == null) return "spectral_mapping.visbio";
+		String s = cache.getCacheFile().getAbsolutePath();
+		final int dot = s.lastIndexOf(".");
+		String suffix;
+		if (dot < 0) suffix = "";
 		else {
-			String s = cache.getCacheFile().getAbsolutePath();
-			final int dot = s.lastIndexOf(".");
-			String suffix;
-			if (dot < 0) suffix = "";
-			else {
-				suffix = s.substring(dot);
-				s = s.substring(0, dot);
-			}
-			return s + "_mapping" + suffix;
+			suffix = s.substring(dot);
+			s = s.substring(0, dot);
 		}
+		return s + "_mapping" + suffix;
 	}
 
 	/** Appends the given array to the specified string buffer. */

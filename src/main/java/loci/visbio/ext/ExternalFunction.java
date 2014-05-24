@@ -298,17 +298,15 @@ public abstract class ExternalFunction extends ImageTransform {
 		final ThumbnailHandler th = parent.getThumbHandler();
 		if (th != null) cache = th.getCache();
 		if (cache == null) return "external_function.visbio";
+		String s = cache.getCacheFile().getAbsolutePath();
+		final int dot = s.lastIndexOf(".");
+		String suffix;
+		if (dot < 0) suffix = "";
 		else {
-			String s = cache.getCacheFile().getAbsolutePath();
-			final int dot = s.lastIndexOf(".");
-			String suffix;
-			if (dot < 0) suffix = "";
-			else {
-				suffix = s.substring(dot);
-				s = s.substring(0, dot);
-			}
-			return s + "_function" + suffix;
+			suffix = s.substring(dot);
+			s = s.substring(0, dot);
 		}
+		return s + "_function" + suffix;
 	}
 
 }

@@ -157,7 +157,7 @@ public class OverlayText extends OverlayObject {
 		if (name.equals(COORDS)) {
 			return "(" + x1 + ", " + y1 + ")";
 		}
-		else return "No such statistic for this overlay type";
+		return "No such statistic for this overlay type";
 	}
 
 	/** Retrieves useful statistics about this overlay. */

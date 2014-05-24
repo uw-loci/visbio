@@ -177,7 +177,7 @@ public abstract class OverlayNodedObject extends OverlayObject {
 	public boolean hasData() {
 		synchronized (nodesSync) {
 			if (isDrawing()) return (numNodes > 0);
-			else return (numNodes > 1);
+			return (numNodes > 1);
 		}
 		// NOTE: Not exactly consistent with the other overlay objects.
 		// You want to see 1-node objects while drawing, but
