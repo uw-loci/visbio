@@ -35,6 +35,20 @@
 		</dependency>
 		<dependency>
 			<groupId>ome</groupId>
+			<artifactId>formats-api</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>ome</groupId>
+			<artifactId>formats-bsd</artifactId>
+			<exclusions>
+				<exclusion>
+					<groupId>com.jgoodies</groupId>
+					<artifactId>jgoodies-forms</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>ome</groupId>
 			<artifactId>formats-common</artifactId>
 		</dependency>
 		<dependency>
@@ -45,13 +59,6 @@
 			<groupId>ome</groupId>
 			<artifactId>ome-poi</artifactId>
 			<version>${bio-formats.version}</version>
-		</dependency>
-
-		<!-- FIXME: Need to depend on OMERO. But OMERO is not Mavenized. -->
-		<dependency>
-			<groupId>loci</groupId>
-			<artifactId>ome-io</artifactId>
-			<version>5.0.0-beta1</version>
 		</dependency>
 
 		<dependency>

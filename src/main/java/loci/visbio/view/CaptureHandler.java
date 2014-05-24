@@ -266,7 +266,7 @@ public class CaptureHandler implements Saveable {
             String name = doMovie ? filename : (pre + count + post);
             try {
               writer.setId(name);
-              writer.savePlane(image, !doMovie);
+              writer.savePlane(count - 1, image);
             }
             catch (IOException exc) { exc.printStackTrace(); }
             catch (FormatException exc) { exc.printStackTrace(); }
@@ -281,7 +281,8 @@ public class CaptureHandler implements Saveable {
         String name = doMovie ? filename : (pre + count + post);
         try {
           writer.setId(name);
-          writer.savePlane(0, image);
+          writer.savePlane(count - 1, image);
+          writer.close();
         }
         catch (IOException exc) { exc.printStackTrace(); }
         catch (FormatException exc) { exc.printStackTrace(); }

@@ -24,6 +24,8 @@
 
 package loci.visbio;
 
+import com.jgoodies.looks.LookUtils;
+
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.io.BufferedReader;
@@ -43,11 +45,8 @@ import javax.swing.JOptionPane;
 
 import loci.common.ReflectedUniverse;
 import loci.visbio.data.DataManager;
-import loci.visbio.data.DataTransform;
 import loci.visbio.ext.ExtManager;
 import loci.visbio.help.HelpManager;
-import loci.visbio.ome.OMEImage;
-import loci.visbio.ome.OMEManager;
 import loci.visbio.overlays.OverlayManager;
 import loci.visbio.state.OptionManager;
 import loci.visbio.state.StateManager;
@@ -60,8 +59,6 @@ import loci.visbio.util.SwingUtil;
 import loci.visbio.view.DisplayManager;
 import visad.util.GUIFrame;
 import visad.util.Util;
-
-import com.jgoodies.looks.LookUtils;
 
 /**
  * VisBioFrame is the main GUI frame for VisBio.
@@ -158,7 +155,6 @@ public class VisBioFrame extends GUIFrame implements Runnable, SpawnListener {
         new PanelManager(this),
         new DataManager(this),
         new ExtManager(this),
-        new OMEManager(this),
         new DisplayManager(this),
         new OverlayManager(this),
         new TaskManager(this),
@@ -318,31 +314,6 @@ public class VisBioFrame extends GUIFrame implements Runnable, SpawnListener {
       System.out.println("Processing argument: " + key + " = " + value);
     }
     key = key.toLowerCase();
-    if (key.equals("ome-image")) {
-      // value syntax: key:sessionKey@server:imageId
-      //   or:         user:username@server:imageId
-      //   or:         username@server:imageId
-      int index = value.lastIndexOf("@");
-      if (index < 0) return;
-      String prefix = value.substring(0, index);
-      String username = null, sessionKey = null;
-      if (prefix.startsWith("key:")) sessionKey = prefix.substring(4);
-      else if (prefix.startsWith("user:")) username = prefix.substring(5);
-      else username = prefix; // assume prefix is a username
-      value = value.substring(index + 1);
-      index = value.indexOf(":");
-      String server = value.substring(0, index);
-      int imageId = -1;
-      try { imageId = Integer.parseInt(value.substring(index + 1)); }
-      catch (NumberFormatException exc) { }
-      if (imageId < 0) return;
-
-      // construct OME image object
-      DataManager dm = (DataManager) getManager(DataManager.class);
-      DataTransform data =
-        OMEImage.makeTransform(dm, server, sessionKey, username, imageId);
-      if (data != null) dm.addData(data);
-    }
   }
 
   /**

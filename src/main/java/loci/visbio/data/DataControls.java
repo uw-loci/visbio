@@ -24,6 +24,11 @@
 
 package loci.visbio.data;
 
+import com.jgoodies.forms.builder.ButtonStackBuilder;
+import com.jgoodies.forms.builder.PanelBuilder;
+import com.jgoodies.forms.layout.CellConstraints;
+import com.jgoodies.forms.layout.FormLayout;
+
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -54,7 +59,6 @@ import loci.visbio.ControlPanel;
 import loci.visbio.LogicManager;
 import loci.visbio.VisBioFrame;
 import loci.visbio.WindowManager;
-import loci.visbio.ome.OMEManager;
 import loci.visbio.overlays.OverlayTransform;
 import loci.visbio.util.DialogPane;
 import loci.visbio.util.DisplayUtil;
@@ -62,11 +66,6 @@ import loci.visbio.util.LAFUtil;
 import loci.visbio.util.SwingUtil;
 import loci.visbio.view.DisplayManager;
 import loci.visbio.view.DisplayWindow;
-
-import com.jgoodies.forms.builder.ButtonStackBuilder;
-import com.jgoodies.forms.builder.PanelBuilder;
-import com.jgoodies.forms.layout.CellConstraints;
-import com.jgoodies.forms.layout.FormLayout;
 
 /**
  * DataControls is the control panel for managing data.
@@ -547,11 +546,6 @@ public class DataControls extends ControlPanel
     else if (cmd.equals("new3D")) doNewDisplay(true);
     else if (cmd.equals("saveToDisk")) dm.exportData();
     else if (cmd.equals("sendToIJ")) dm.sendDataToImageJ();
-    else if (cmd.equals("uploadToOME")) {
-      OMEManager om = (OMEManager) lm.getVisBio().getManager(OMEManager.class);
-      if (om == null) return;
-      om.upload(this);
-    }
     else {
       // command represents a class to instantiate via reflection
       DataTransform data = null;
