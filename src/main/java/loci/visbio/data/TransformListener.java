@@ -29,7 +29,7 @@ package loci.visbio.data;
  */
 public interface TransformListener {
 
-  /** Called when a data transform's parameters are updated. */
-  void transformChanged(TransformEvent e);
+	/** Called when a data transform's parameters are updated. */
+	void transformChanged(TransformEvent e);
 
 }

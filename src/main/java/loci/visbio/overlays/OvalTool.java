@@ -32,47 +32,50 @@ import visad.DisplayEvent;
  */
 public class OvalTool extends OverlayTool {
 
-  // -- Fields --
+	// -- Fields --
 
-  /** Oval currently being drawn. */
-  protected OverlayOval oval;
+	/** Oval currently being drawn. */
+	protected OverlayOval oval;
 
-  // -- Constructor --
+	// -- Constructor --
 
-  /** Constructs an oval overlay creation tool. */
-  public OvalTool(OverlayTransform overlay) {
-    super(overlay, "Oval", "Oval", "oval.png");
-  }
+	/** Constructs an oval overlay creation tool. */
+	public OvalTool(final OverlayTransform overlay) {
+		super(overlay, "Oval", "Oval", "oval.png");
+	}
 
-  // -- OverlayTool API methods --
+	// -- OverlayTool API methods --
 
-  /** Instructs this tool to respond to a mouse press. */
-  public void mouseDown(DisplayEvent e, int px, int py,
-    float dx, float dy, int[] pos, int mods)
-  {
-    deselectAll();
-    oval = new OverlayOval(overlay, dx, dy, dx, dy);
-    overlay.addObject(oval, pos);
-  }
+	/** Instructs this tool to respond to a mouse press. */
+	@Override
+	public void mouseDown(final DisplayEvent e, final int px, final int py,
+		final float dx, final float dy, final int[] pos, final int mods)
+	{
+		deselectAll();
+		oval = new OverlayOval(overlay, dx, dy, dx, dy);
+		overlay.addObject(oval, pos);
+	}
 
-  /** Instructs this tool to respond to a mouse release. */
-  public void mouseUp(DisplayEvent e, int px, int py,
-    float dx, float dy, int[] pos, int mods)
-  {
-    if (oval == null) return;
-    oval.setDrawing(false);
-    if (!oval.hasData()) overlay.removeObject(oval);
-    oval = null;
-    overlay.notifyListeners(new TransformEvent(overlay));
-  }
+	/** Instructs this tool to respond to a mouse release. */
+	@Override
+	public void mouseUp(final DisplayEvent e, final int px, final int py,
+		final float dx, final float dy, final int[] pos, final int mods)
+	{
+		if (oval == null) return;
+		oval.setDrawing(false);
+		if (!oval.hasData()) overlay.removeObject(oval);
+		oval = null;
+		overlay.notifyListeners(new TransformEvent(overlay));
+	}
 
-  /** Instructs this tool to respond to a mouse drag. */
-  public void mouseDrag(DisplayEvent e, int px, int py,
-    float dx, float dy, int[] pos, int mods)
-  {
-    if (oval == null) return;
-    oval.setCoords2(dx, dy);
-    overlay.notifyListeners(new TransformEvent(overlay));
-  }
+	/** Instructs this tool to respond to a mouse drag. */
+	@Override
+	public void mouseDrag(final DisplayEvent e, final int px, final int py,
+		final float dx, final float dy, final int[] pos, final int mods)
+	{
+		if (oval == null) return;
+		oval.setCoords2(dx, dy);
+		overlay.notifyListeners(new TransformEvent(overlay));
+	}
 
 }

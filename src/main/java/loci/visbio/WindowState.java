@@ -33,74 +33,91 @@ import loci.visbio.util.SwingUtil;
  */
 public class WindowState {
 
-  // -- Fields --
+	// -- Fields --
 
-  /** Title of the window. */
-  protected String name;
+	/** Title of the window. */
+	protected String name;
 
-  /** Visibility of the window. */
-  protected boolean visible;
+	/** Visibility of the window. */
+	protected boolean visible;
 
-  /** Position of the window. */
-  protected int x, y;
+	/** Position of the window. */
+	protected int x, y;
 
-  /** Dimensions of the window. */
-  protected int width, height;
+	/** Dimensions of the window. */
+	protected int width, height;
 
-  // -- Constructor --
+	// -- Constructor --
 
-  /** Creates a new window state object. */
-  public WindowState(String name, boolean visible,
-    int x, int y, int width, int height)
-  {
-    this.name = name;
-    this.visible = visible;
-    this.x = x;
-    this.y = y;
-    this.width = width;
-    this.height = height;
-  }
+	/** Creates a new window state object. */
+	public WindowState(final String name, final boolean visible, final int x,
+		final int y, final int width, final int height)
+	{
+		this.name = name;
+		this.visible = visible;
+		this.x = x;
+		this.y = y;
+		this.width = width;
+		this.height = height;
+	}
 
-  // -- WindowInfo API methods --
+	// -- WindowInfo API methods --
 
-  /** Applies this state to the given window. */
-  public void applyTo(Window w) {
-    SwingUtil.setWindowTitle(w, name);
-    if (hasPosition()) w.setLocation(x, y);
-    if (hasSize()) w.setSize(width, height);
-    w.setVisible(visible);
-  }
+	/** Applies this state to the given window. */
+	public void applyTo(final Window w) {
+		SwingUtil.setWindowTitle(w, name);
+		if (hasPosition()) w.setLocation(x, y);
+		if (hasSize()) w.setSize(width, height);
+		w.setVisible(visible);
+	}
 
-  /** Whether the window has a specified position. */
-  public boolean hasPosition() { return x >= 0 && y >= 0; }
+	/** Whether the window has a specified position. */
+	public boolean hasPosition() {
+		return x >= 0 && y >= 0;
+	}
 
-  /** Whether the window has a specified size. */
-  public boolean hasSize() { return width > 0 && height > 0; }
+	/** Whether the window has a specified size. */
+	public boolean hasSize() {
+		return width > 0 && height > 0;
+	}
 
-  /** Gets window name. */
-  public String getName() { return name; }
+	/** Gets window name. */
+	public String getName() {
+		return name;
+	}
 
-  /** Gets window visibility. */
-  public boolean getVisible() { return visible; }
+	/** Gets window visibility. */
+	public boolean getVisible() {
+		return visible;
+	}
 
-  /** Gets window X coordinate. */
-  public int getX() { return x; }
+	/** Gets window X coordinate. */
+	public int getX() {
+		return x;
+	}
 
-  /** Gets window Y coordinate. */
-  public int getY() { return y; }
+	/** Gets window Y coordinate. */
+	public int getY() {
+		return y;
+	}
 
-  /** Gets window width. */
-  public int getWidth() { return width; }
+	/** Gets window width. */
+	public int getWidth() {
+		return width;
+	}
 
-  /** Gets window height. */
-  public int getHeight() { return height; }
+	/** Gets window height. */
+	public int getHeight() {
+		return height;
+	}
 
-  // -- Object API methods --
+	// -- Object API methods --
 
-  /** Gets a string representation of this window state. */
-  public String toString() {
-    return name + ": visible=" + visible +
-      ", x=" + x + ", y=" + y + ", width=" + width + ", height=" + height;
-  }
+	/** Gets a string representation of this window state. */
+	@Override
+	public String toString() {
+		return name + ": visible=" + visible + ", x=" + x + ", y=" + y +
+			", width=" + width + ", height=" + height;
+	}
 
 }

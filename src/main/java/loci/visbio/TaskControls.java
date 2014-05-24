@@ -37,46 +37,50 @@ import loci.visbio.util.SwingUtil;
  */
 public class TaskControls extends ControlPanel {
 
-  // -- GUI components --
+	// -- GUI components --
 
-  /** Pane containing task widgets. */
-  private JPanel pane;
+	/** Pane containing task widgets. */
+	private final JPanel pane;
 
-  /** Scroll pane wrapping pane. */
-  private JScrollPane scroll;
+	/** Scroll pane wrapping pane. */
+	private final JScrollPane scroll;
 
-  // -- Constructor --
+	// -- Constructor --
 
-  /** Constructs a tool panel for controlling tasks. */
-  public TaskControls(LogicManager logic) {
-    super(logic, "Tasks", "Controls for managing tasks");
+	/** Constructs a tool panel for controlling tasks. */
+	public TaskControls(final LogicManager logic) {
+		super(logic, "Tasks", "Controls for managing tasks");
 
-    // pane containing list of tasks
-    pane = new JPanel();
-    pane.setLayout(new BoxLayout(pane, BoxLayout.Y_AXIS));
-    pane.setBorder(new EmptyBorder(5, 5, 5, 5));
-    pane.add(Box.createVerticalGlue());
+		// pane containing list of tasks
+		pane = new JPanel();
+		pane.setLayout(new BoxLayout(pane, BoxLayout.Y_AXIS));
+		pane.setBorder(new EmptyBorder(5, 5, 5, 5));
+		pane.add(Box.createVerticalGlue());
 
-    // scroll pane
-    scroll = new JScrollPane(pane);
-    SwingUtil.configureScrollPane(scroll);
+		// scroll pane
+		scroll = new JScrollPane(pane);
+		SwingUtil.configureScrollPane(scroll);
 
-    add(scroll);
-  }
+		add(scroll);
+	}
 
-  // -- TaskControls API methods --
+	// -- TaskControls API methods --
 
-  /** Adds a task to the tasks pane. */
-  public void addTask(BioTask task) { pane.add(task, 0); }
+	/** Adds a task to the tasks pane. */
+	public void addTask(final BioTask task) {
+		pane.add(task, 0);
+	}
 
-  /** Removes a task from the tasks pane. */
-  public void removeTask(BioTask task) {
-    pane.remove(task);
-    scroll.validate();
-    scroll.repaint();
-  }
+	/** Removes a task from the tasks pane. */
+	public void removeTask(final BioTask task) {
+		pane.remove(task);
+		scroll.validate();
+		scroll.repaint();
+	}
 
-  /** Gets the preferred width of tasks. */
-  public int getPreferredTaskWidth() { return scroll.getSize().width; }
+	/** Gets the preferred width of tasks. */
+	public int getPreferredTaskWidth() {
+		return scroll.getSize().width;
+	}
 
 }

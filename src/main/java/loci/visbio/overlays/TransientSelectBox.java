@@ -42,184 +42,208 @@ import visad.VisADException;
 import visad.util.CursorUtil;
 
 /**
- * TransientSelectBox represents the square that appears in a VisBio display
- * as a user drags the mouse to select overlays.
+ * TransientSelectBox represents the square that appears in a VisBio display as
+ * a user drags the mouse to select overlays.
  */
 public class TransientSelectBox {
 
-  // -- Constants --
+	// -- Constants --
 
-  /** Sets the transparency of the interior of the select box */
-  private static final float ALPHA_VALUE = 0.3f;
+	/** Sets the transparency of the interior of the select box */
+	private static final float ALPHA_VALUE = 0.3f;
 
-  // -- Fields --
+	// -- Fields --
 
-  /** Color of box */
-  private Color color;
+	/** Color of box */
+	private final Color color;
 
-  /** Boundaries of box */
-  private int x1, x2, y1, y2;
+	/** Boundaries of box */
+	private final int x1;
 
-  /** Parent Transform */
-  // not sure if this is useful at all
-  private OverlayTransform overlay;
+	private int x2;
 
-  /** Associated display */
-  private DisplayImpl display;
+	private final int y1;
 
-  // -- Constructor --
+	private int y2;
 
-  /** Constructs a selection box.
-   */
-  public TransientSelectBox(OverlayTransform overlay, DisplayImpl display,
-    int downX, int downY)
-  {
-    this.overlay = overlay;
-    this.display = display;
-    x1 = downX;
-    x2 = downX;
-    y1 = downY;
-    y2 = downY;
-    // initially box has zero area.
-    color = Color.green;
-  }
+	/** Parent Transform */
+	// not sure if this is useful at all
+	private final OverlayTransform overlay;
 
-  // -- TransientSelectBox API Methods --
+	/** Associated display */
+	private final DisplayImpl display;
 
-  /** Sets coordinates of draggable box corner. */
-  public void setCorner(int x, int y) {
-    x2 = x;
-    y2 = y;
-  }
+	// -- Constructor --
 
-  /** Returns the display on which this TSB exists. */
-  public DisplayImpl getActiveDisplay() { return display; }
+	/**
+	 * Constructs a selection box.
+	 */
+	public TransientSelectBox(final OverlayTransform overlay,
+		final DisplayImpl display, final int downX, final int downY)
+	{
+		this.overlay = overlay;
+		this.display = display;
+		x1 = downX;
+		x2 = downX;
+		y1 = downY;
+		y2 = downY;
+		// initially box has zero area.
+		color = Color.green;
+	}
 
-  /** Returns a VisAD data object representing this box.
-   *  The data object is compound, comprising 2 parts:
-   *  1) a solid GriddedSet of manifold dimension 1, the outline
-   *  2) a semi-transparent GriddedSet of manifold dimension 2, the interior
-   */
-  public DataImpl getData() {
-    if (x1 == x2 || y1 == y2) return null;  // don't construct a data object
-    // for a zero-area box
+	// -- TransientSelectBox API Methods --
 
-    RealTupleType domain = overlay.getDomainType();
-    TupleType range = overlay.getRangeType();
+	/** Sets coordinates of draggable box corner. */
+	public void setCorner(final int x, final int y) {
+		x2 = x;
+		y2 = y;
+	}
 
-    /*
-     * 1------2
-     * |      |
-     * |      |
-     * 4------3
-     */
-    double[] d1 = CursorUtil.pixelToDomain(getActiveDisplay(), x1, y1);
-    double[] d2 = CursorUtil.pixelToDomain(getActiveDisplay(), x2, y1);
-    double[] d3 = CursorUtil.pixelToDomain(getActiveDisplay(), x2, y2);
-    double[] d4 = CursorUtil.pixelToDomain(getActiveDisplay(), x1, y2);
+	/** Returns the display on which this TSB exists. */
+	public DisplayImpl getActiveDisplay() {
+		return display;
+	}
 
-    float[] f1 = {(float) d1[0], (float) d1[1]};
-    float[] f2 = {(float) d2[0], (float) d2[1]};
-    float[] f3 = {(float) d3[0], (float) d3[1]};
-    float[] f4 = {(float) d4[0], (float) d4[1]};
+	/**
+	 * Returns a VisAD data object representing this box. The data object is
+	 * compound, comprising 2 parts: 1) a solid GriddedSet of manifold dimension
+	 * 1, the outline 2) a semi-transparent GriddedSet of manifold dimension 2,
+	 * the interior
+	 */
+	public DataImpl getData() {
+		if (x1 == x2 || y1 == y2) return null; // don't construct a data object
+		// for a zero-area box
 
-    float[][] shadeSamples = null;
-    float[][] outlineSamples = null;
-    GriddedSet shadeSet = null;
-    GriddedSet outlineSet = null;
+		final RealTupleType domain = overlay.getDomainType();
+		final TupleType range = overlay.getRangeType();
 
-    try {
-      shadeSamples = new float[][] {
-        {f1[0], f2[0], f4[0], f3[0]},
-        {f1[1], f2[1], f4[1], f3[1]}
-      };
+		/*
+		 * 1------2
+		 * |      |
+		 * |      |
+		 * 4------3
+		 */
+		final double[] d1 = CursorUtil.pixelToDomain(getActiveDisplay(), x1, y1);
+		final double[] d2 = CursorUtil.pixelToDomain(getActiveDisplay(), x2, y1);
+		final double[] d3 = CursorUtil.pixelToDomain(getActiveDisplay(), x2, y2);
+		final double[] d4 = CursorUtil.pixelToDomain(getActiveDisplay(), x1, y2);
 
-      outlineSamples = new float[][] {
-        {f1[0], f2[0], f3[0], f4[0], f1[0]},
-        {f1[1], f2[1], f3[1], f4[1], f1[1]}
-      };
+		final float[] f1 = { (float) d1[0], (float) d1[1] };
+		final float[] f2 = { (float) d2[0], (float) d2[1] };
+		final float[] f3 = { (float) d3[0], (float) d3[1] };
+		final float[] f4 = { (float) d4[0], (float) d4[1] };
 
-      shadeSet = new Gridded2DSet(domain,
-          shadeSamples, 2, 2, null, null, null, false);
+		float[][] shadeSamples = null;
+		float[][] outlineSamples = null;
+		GriddedSet shadeSet = null;
+		GriddedSet outlineSet = null;
 
-      outlineSet = new Gridded2DSet(domain, outlineSamples,
-          outlineSamples[0].length, null, null, null, false);
-    }
-    catch (SetException set) { set.printStackTrace(); }
-    catch (VisADException exc) { exc.printStackTrace(); }
+		try {
+			shadeSamples =
+				new float[][] { { f1[0], f2[0], f4[0], f3[0] },
+					{ f1[1], f2[1], f4[1], f3[1] } };
 
-    float r = color.getRed() / 255f;
-    float g = color.getGreen() / 255f;
-    float b = color.getBlue() / 255f;
-    float[][] shadeRangeSamples = new float[4][shadeSamples[0].length];
-    Arrays.fill(shadeRangeSamples[0], r);
-    Arrays.fill(shadeRangeSamples[1], g);
-    Arrays.fill(shadeRangeSamples[2], b);
-    Arrays.fill(shadeRangeSamples[3], ALPHA_VALUE);
+			outlineSamples =
+				new float[][] { { f1[0], f2[0], f3[0], f4[0], f1[0] },
+					{ f1[1], f2[1], f3[1], f4[1], f1[1] } };
 
-    float[][] outlineRangeSamples = new float[4][outlineSamples[0].length];
-    Arrays.fill(outlineRangeSamples[0], r);
-    Arrays.fill(outlineRangeSamples[1], g);
-    Arrays.fill(outlineRangeSamples[2], b);
-    Arrays.fill(outlineRangeSamples[3], 1.0f);
+			shadeSet =
+				new Gridded2DSet(domain, shadeSamples, 2, 2, null, null, null, false);
 
-    FlatField inField = null;
-    FlatField outField = null;
-    DataImpl[] wholeTeam = null;
-    Tuple ret = null;
-    try {
-      FunctionType fieldType = new FunctionType(domain, range);
-      // interior field
-      inField = new FlatField(fieldType, shadeSet);
-      inField.setSamples(shadeRangeSamples);
+			outlineSet =
+				new Gridded2DSet(domain, outlineSamples, outlineSamples[0].length,
+					null, null, null, false);
+		}
+		catch (final SetException set) {
+			set.printStackTrace();
+		}
+		catch (final VisADException exc) {
+			exc.printStackTrace();
+		}
 
-      // outline field
-      outField = new FlatField(fieldType, outlineSet);
-      outField.setSamples(outlineRangeSamples);
+		final float r = color.getRed() / 255f;
+		final float g = color.getGreen() / 255f;
+		final float b = color.getBlue() / 255f;
+		final float[][] shadeRangeSamples = new float[4][shadeSamples[0].length];
+		Arrays.fill(shadeRangeSamples[0], r);
+		Arrays.fill(shadeRangeSamples[1], g);
+		Arrays.fill(shadeRangeSamples[2], b);
+		Arrays.fill(shadeRangeSamples[3], ALPHA_VALUE);
 
-      // go Mallards
-      wholeTeam = new DataImpl[] {inField, outField};
-      ret = new Tuple(wholeTeam, false);
-    }
-    catch (VisADException exc) { exc.printStackTrace(); }
-    catch (RemoteException exc) { exc.printStackTrace(); }
-    return ret;
-  }
+		final float[][] outlineRangeSamples =
+			new float[4][outlineSamples[0].length];
+		Arrays.fill(outlineRangeSamples[0], r);
+		Arrays.fill(outlineRangeSamples[1], g);
+		Arrays.fill(outlineRangeSamples[2], b);
+		Arrays.fill(outlineRangeSamples[3], 1.0f);
 
-  /**
-   * Gets domain coordinates of box corners
-   * Corners are returned as a double[4][2].
-   */
-  public double[][] getCornersDomain() {
-    /*
-     * 0----1
-     * |    |
-     * |    |
-     * 3----2
-     */
+		FlatField inField = null;
+		FlatField outField = null;
+		DataImpl[] wholeTeam = null;
+		Tuple ret = null;
+		try {
+			final FunctionType fieldType = new FunctionType(domain, range);
+			// interior field
+			inField = new FlatField(fieldType, shadeSet);
+			inField.setSamples(shadeRangeSamples);
 
-    double[] p0 = CursorUtil.pixelToDomain(getActiveDisplay(), x1, y1);
-    double[] p1 = CursorUtil.pixelToDomain(getActiveDisplay(), x2, y1);
-    double[] p2 = CursorUtil.pixelToDomain(getActiveDisplay(), x2, y2);
-    double[] p3 = CursorUtil.pixelToDomain(getActiveDisplay(), x1, y2);
+			// outline field
+			outField = new FlatField(fieldType, outlineSet);
+			outField.setSamples(outlineRangeSamples);
 
-    double[][] ret = {{p0[0], p0[1]},
-                      {p1[0], p1[1]},
-                      {p2[0], p2[1]},
-                      {p3[0], p3[1]}};
+			// go Mallards
+			wholeTeam = new DataImpl[] { inField, outField };
+			ret = new Tuple(wholeTeam, false);
+		}
+		catch (final VisADException exc) {
+			exc.printStackTrace();
+		}
+		catch (final RemoteException exc) {
+			exc.printStackTrace();
+		}
+		return ret;
+	}
 
-    return ret;
-  }
+	/**
+	 * Gets domain coordinates of box corners Corners are returned as a
+	 * double[4][2].
+	 */
+	public double[][] getCornersDomain() {
+		/*
+		 * 0----1
+		 * |    |
+		 * |    |
+		 * 3----2
+		 */
 
-  /** Gets X coordinate of the first endpoint. */
-  public int getX1() { return x1; }
+		final double[] p0 = CursorUtil.pixelToDomain(getActiveDisplay(), x1, y1);
+		final double[] p1 = CursorUtil.pixelToDomain(getActiveDisplay(), x2, y1);
+		final double[] p2 = CursorUtil.pixelToDomain(getActiveDisplay(), x2, y2);
+		final double[] p3 = CursorUtil.pixelToDomain(getActiveDisplay(), x1, y2);
 
-  /** Gets X coordinate of the second endpoint. */
-  public int getX2() { return x2; }
+		final double[][] ret =
+			{ { p0[0], p0[1] }, { p1[0], p1[1] }, { p2[0], p2[1] }, { p3[0], p3[1] } };
 
-  /** Gets Y coordinate of the first endpoint. */
-  public int getY1() { return y1; }
+		return ret;
+	}
 
-  /** Gets Y coordinate of the second endpoint. */
-  public int getY2() { return y2; }
+	/** Gets X coordinate of the first endpoint. */
+	public int getX1() {
+		return x1;
+	}
+
+	/** Gets X coordinate of the second endpoint. */
+	public int getX2() {
+		return x2;
+	}
+
+	/** Gets Y coordinate of the first endpoint. */
+	public int getY1() {
+		return y1;
+	}
+
+	/** Gets Y coordinate of the second endpoint. */
+	public int getY2() {
+		return y2;
+	}
 }

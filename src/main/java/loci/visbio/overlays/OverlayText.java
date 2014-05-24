@@ -42,119 +42,148 @@ import visad.VisADException;
  * OverlayText is a text string overlay.
  */
 public class OverlayText extends OverlayObject {
-  // -- Static Fields --
 
-  /** The names of the statistics this object reports. */
-  protected static final String COORDS = "Coordinates";
-  protected static final String[] STAT_TYPES = {COORDS};
+	// -- Static Fields --
 
-  // -- Constructors --
+	/** The names of the statistics this object reports. */
+	protected static final String COORDS = "Coordinates";
+	protected static final String[] STAT_TYPES = { COORDS };
 
-  /** Constructs an uninitialized text string overlay. */
-  public OverlayText(OverlayTransform overlay) { super(overlay); }
+	// -- Constructors --
 
-  /** Constructs a text string overlay. */
-  public OverlayText(OverlayTransform overlay, float x, float y, String text) {
-    super(overlay);
-    x1 = x;
-    y1 = y;
-    x2 = x;
-    y2 = y;
-    this.text = text;
-    computeTextBounds();
-    // System.out.println("New text object created with text [" + text + "]");
-    // System.out.println("text bounds: [" + x1 + "," + y1 + "] [" + x2 + "," +
-    //    y2 + "]");
-  }
+	/** Constructs an uninitialized text string overlay. */
+	public OverlayText(final OverlayTransform overlay) {
+		super(overlay);
+	}
 
-  // -- Static methods --
+	/** Constructs a text string overlay. */
+	public OverlayText(final OverlayTransform overlay, final float x,
+		final float y, final String text)
+	{
+		super(overlay);
+		x1 = x;
+		y1 = y;
+		x2 = x;
+		y2 = y;
+		this.text = text;
+		computeTextBounds();
+		// System.out.println("New text object created with text [" + text + "]");
+		// System.out.println("text bounds: [" + x1 + "," + y1 + "] [" + x2 + "," +
+		// y2 + "]");
+	}
 
-  /** Returns the names of the statistics this object reports. */
-  public static String[] getStatTypes() { return STAT_TYPES; }
+	// -- Static methods --
 
-  // -- OverlayText API methods --
+	/** Returns the names of the statistics this object reports. */
+	public static String[] getStatTypes() {
+		return STAT_TYPES;
+	}
 
-  public void computeTextBounds() {
-    // Computing the grid for text overlays is difficult because the size of
-    // the overlay depends on the font metrics, which are obtained from an AWT
-    // component (in this case, window.getDisplay().getComponent() for a
-    // display window), but data transforms have no knowledge of which display
-    // windows are currently displaying them.
+	// -- OverlayText API methods --
 
-    // HACK - for now, use this harebrained scheme to estimate the bounds
-    int sx = overlay.getScalingValueX();
-    int sy = overlay.getScalingValueY();
-    float mw = sx / 318f, mh = sy / 640f; // obtained through experimentation
-    FontMetrics fm = overlay.getFontMetrics();
-    x2 = x1 + mw * fm.stringWidth(text);
-    y2 = y1 + mh * fm.getHeight();
-  }
+	public void computeTextBounds() {
+		// Computing the grid for text overlays is difficult because the size of
+		// the overlay depends on the font metrics, which are obtained from an AWT
+		// component (in this case, window.getDisplay().getComponent() for a
+		// display window), but data transforms have no knowledge of which display
+		// windows are currently displaying them.
 
-  // -- OverlayObject API methods --
+		// HACK - for now, use this harebrained scheme to estimate the bounds
+		final int sx = overlay.getScalingValueX();
+		final int sy = overlay.getScalingValueY();
+		final float mw = sx / 318f, mh = sy / 640f; // obtained through
+																								// experimentation
+		final FontMetrics fm = overlay.getFontMetrics();
+		x2 = x1 + mw * fm.stringWidth(text);
+		y2 = y1 + mh * fm.getHeight();
+	}
 
-  /** Returns whether this object is drawable, i.e., is of nonzero
-   *  size, area, length, etc.
-   */
-  public boolean hasData() { return true; }
+	// -- OverlayObject API methods --
 
-  /** Gets VisAD data object representing this overlay. */
-  public DataImpl getData() {
-    if (!hasData()) return null;
+	/**
+	 * Returns whether this object is drawable, i.e., is of nonzero size, area,
+	 * length, etc.
+	 */
+	@Override
+	public boolean hasData() {
+		return true;
+	}
 
-    RealTupleType domain = overlay.getDomainType();
-    TupleType range = overlay.getTextRangeType();
+	/** Gets VisAD data object representing this overlay. */
+	@Override
+	public DataImpl getData() {
+		if (!hasData()) return null;
 
-    Color col = selected ? GLOW_COLOR : color;
-    float r = col.getRed() / 255f;
-    float g = col.getGreen() / 255f;
-    float b = col.getBlue() / 255f;
+		final RealTupleType domain = overlay.getDomainType();
+		final TupleType range = overlay.getTextRangeType();
 
-    FieldImpl field = null;
-    try {
-      FunctionType fieldType = new FunctionType(domain, range);
-      Set fieldSet = new SingletonSet(
-        new RealTuple(domain, new double[] {x1, y1}));
-      field = new FieldImpl(fieldType, fieldSet);
-      field.setSample(0, overlay.getTextRangeValue(text, r, g, b, 1), false);
-    }
-    catch (VisADException exc) { exc.printStackTrace(); }
-    catch (RemoteException exc) { exc.printStackTrace(); }
-    return field;
-  }
+		final Color col = selected ? GLOW_COLOR : color;
+		final float r = col.getRed() / 255f;
+		final float g = col.getGreen() / 255f;
+		final float b = col.getBlue() / 255f;
 
-  /** Computes the shortest distance from this object to the given point. */
-  public double getDistance(double x, double y) {
-    double xdist = 0;
-    if (x < x1 && x < x2) xdist = Math.min(x1, x2) - x;
-    else if (x > x1 && x > x2) xdist = x - Math.max(x1, x2);
-    double ydist = 0;
-    if (y < y1 && y < y2) ydist = Math.min(y1, y2) - y;
-    else if (y > y1 && y > y2) ydist = y - Math.max(y1, y2);
-    return Math.sqrt(xdist * xdist + ydist * ydist);
-  }
+		FieldImpl field = null;
+		try {
+			final FunctionType fieldType = new FunctionType(domain, range);
+			final Set fieldSet =
+				new SingletonSet(new RealTuple(domain, new double[] { x1, y1 }));
+			field = new FieldImpl(fieldType, fieldSet);
+			field.setSample(0, overlay.getTextRangeValue(text, r, g, b, 1), false);
+		}
+		catch (final VisADException exc) {
+			exc.printStackTrace();
+		}
+		catch (final RemoteException exc) {
+			exc.printStackTrace();
+		}
+		return field;
+	}
 
-  /** Returns a specific statistic of this object. */
-  public String getStat(String name) {
-    if (name.equals(COORDS)) {
-      return "(" + x1 + ", " + y1 + ")";
-    }
-    else return "No such statistic for this overlay type";
-  }
+	/** Computes the shortest distance from this object to the given point. */
+	@Override
+	public double getDistance(final double x, final double y) {
+		double xdist = 0;
+		if (x < x1 && x < x2) xdist = Math.min(x1, x2) - x;
+		else if (x > x1 && x > x2) xdist = x - Math.max(x1, x2);
+		double ydist = 0;
+		if (y < y1 && y < y2) ydist = Math.min(y1, y2) - y;
+		else if (y > y1 && y > y2) ydist = y - Math.max(y1, y2);
+		return Math.sqrt(xdist * xdist + ydist * ydist);
+	}
 
-  /** Retrieves useful statistics about this overlay. */
-  public String getStatistics() {
-    return "Text " + COORDS + " = (" + x1 + ", " + y1 + ")";
-  }
+	/** Returns a specific statistic of this object. */
+	@Override
+	public String getStat(final String name) {
+		if (name.equals(COORDS)) {
+			return "(" + x1 + ", " + y1 + ")";
+		}
+		else return "No such statistic for this overlay type";
+	}
 
-  /** True iff this overlay has an endpoint coordinate pair. */
-  public boolean hasEndpoint() { return true; }
+	/** Retrieves useful statistics about this overlay. */
+	@Override
+	public String getStatistics() {
+		return "Text " + COORDS + " = (" + x1 + ", " + y1 + ")";
+	}
 
-  /** True iff this overlay object returns text to render. */
-  public boolean hasText() { return true; }
+	/** True iff this overlay has an endpoint coordinate pair. */
+	@Override
+	public boolean hasEndpoint() {
+		return true;
+	}
 
-  // -- Object API methods --
+	/** True iff this overlay object returns text to render. */
+	@Override
+	public boolean hasText() {
+		return true;
+	}
 
-  /** Gets a short string representation of this overlay text. */
-  public String toString() { return "Text"; }
+	// -- Object API methods --
+
+	/** Gets a short string representation of this overlay text. */
+	@Override
+	public String toString() {
+		return "Text";
+	}
 
 }

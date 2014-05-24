@@ -36,64 +36,70 @@ import loci.visbio.state.OptionManager;
  */
 public class MacAdapter extends ApplicationAdapter {
 
-  // NB: This class will only compile on Macintosh systems. However, since
-  // no other classes depend on it directly (i.e., they reference it via
-  // reflection), the rest of VisBio should still compile on non-Macintoshes.
+	// NB: This class will only compile on Macintosh systems. However, since
+	// no other classes depend on it directly (i.e., they reference it via
+	// reflection), the rest of VisBio should still compile on non-Macintoshes.
 
-  // Alternately, the code can be compiled on other platforms with the
-  // "AppleJavaExtensions" stub jar available from:
-  //    http://developer.apple.com/samplecode/AppleJavaExtensions/
-  // The jar is present in the jar subdirectory of the Subversion distribution.
+	// Alternately, the code can be compiled on other platforms with the
+	// "AppleJavaExtensions" stub jar available from:
+	// http://developer.apple.com/samplecode/AppleJavaExtensions/
+	// The jar is present in the jar subdirectory of the Subversion distribution.
 
-  // -- Fields --
+	// -- Fields --
 
-  /** Linked VisBio frame. */
-  private VisBioFrame bio;
+	/** Linked VisBio frame. */
+	private final VisBioFrame bio;
 
-  // -- Constructor --
+	// -- Constructor --
 
-  /** Constructs a Mac OS X adapter. */
-  public MacAdapter(VisBioFrame bio) { this.bio = bio; }
+	/** Constructs a Mac OS X adapter. */
+	public MacAdapter(final VisBioFrame bio) {
+		this.bio = bio;
+	}
 
-  // -- MacAdapter API methods --
+	// -- MacAdapter API methods --
 
-  /** Associates the VisBio frame with a Mac OS X adapter. */
-  public static void link(VisBioFrame bio) {
-    Application app = new Application();
-    app.setEnabledPreferencesMenu(true);
-    app.addApplicationListener(new MacAdapter(bio));
-  }
+	/** Associates the VisBio frame with a Mac OS X adapter. */
+	public static void link(final VisBioFrame bio) {
+		final Application app = new Application();
+		app.setEnabledPreferencesMenu(true);
+		app.addApplicationListener(new MacAdapter(bio));
+	}
 
-  // -- ApplicationAdapter API methods --
+	// -- ApplicationAdapter API methods --
 
-  /** Handles the About menu item. */
-  public void handleAbout(ApplicationEvent evt) {
-    HelpManager hm = (HelpManager) bio.getManager(HelpManager.class);
-    if (hm == null) evt.setHandled(false);
-    else {
-      evt.setHandled(true);
-      hm.helpAbout();
-    }
-  }
+	/** Handles the About menu item. */
+	@Override
+	public void handleAbout(final ApplicationEvent evt) {
+		final HelpManager hm = (HelpManager) bio.getManager(HelpManager.class);
+		if (hm == null) evt.setHandled(false);
+		else {
+			evt.setHandled(true);
+			hm.helpAbout();
+		}
+	}
 
-  /** Handles the Preferences menu item. */
-  public void handlePreferences(ApplicationEvent evt) {
-    OptionManager om = (OptionManager) bio.getManager(OptionManager.class);
-    if (om == null) evt.setHandled(false);
-    else {
-      evt.setHandled(true);
-      om.fileOptions();
-    }
-  }
+	/** Handles the Preferences menu item. */
+	@Override
+	public void handlePreferences(final ApplicationEvent evt) {
+		final OptionManager om =
+			(OptionManager) bio.getManager(OptionManager.class);
+		if (om == null) evt.setHandled(false);
+		else {
+			evt.setHandled(true);
+			om.fileOptions();
+		}
+	}
 
-  /** Handles the Quit menu item. */
-  public void handleQuit(ApplicationEvent evt) {
-    ExitManager em = (ExitManager) bio.getManager(ExitManager.class);
-    if (em == null) evt.setHandled(true);
-    else {
-      evt.setHandled(false);
-      em.fileExit();
-    }
-  }
+	/** Handles the Quit menu item. */
+	@Override
+	public void handleQuit(final ApplicationEvent evt) {
+		final ExitManager em = (ExitManager) bio.getManager(ExitManager.class);
+		if (em == null) evt.setHandled(true);
+		else {
+			evt.setHandled(false);
+			em.fileExit();
+		}
+	}
 
 }

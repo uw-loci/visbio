@@ -38,55 +38,56 @@ import loci.visbio.util.FormsUtil;
 import loci.visbio.util.LAFUtil;
 
 /**
- * CollapseWidget is a set of GUI controls
- * for a dimensional collapse transform.
+ * CollapseWidget is a set of GUI controls for a dimensional collapse transform.
  */
 public class CollapseWidget extends JPanel implements ActionListener {
 
-  // -- Fields --
+	// -- Fields --
 
-  /** Associated dimensional collapse transform. */
-  protected CollapseTransform collapse;
+	/** Associated dimensional collapse transform. */
+	protected CollapseTransform collapse;
 
-  /** Dropdown combo box listing available dimensions for collapse. */
-  protected BioComboBox axes;
+	/** Dropdown combo box listing available dimensions for collapse. */
+	protected BioComboBox axes;
 
-  // -- Constructor --
+	// -- Constructor --
 
-  /** Creates a new dimensional collapse widget. */
-  public CollapseWidget(CollapseTransform collapse) {
-    super();
-    this.collapse = collapse;
+	/** Creates a new dimensional collapse widget. */
+	public CollapseWidget(final CollapseTransform collapse) {
+		super();
+		this.collapse = collapse;
 
-    DataTransform parent = collapse.getParent();
-    String[] types = parent.getDimTypes();
+		final DataTransform parent = collapse.getParent();
+		final String[] types = parent.getDimTypes();
 
-    // create combo box for selecting which axis to collapse
-    String[] names = new String[types.length];
-    for (int i=0; i<names.length; i++) names[i] = (i + 1) + ": " + types[i];
-    axes = new BioComboBox(names);
+		// create combo box for selecting which axis to collapse
+		final String[] names = new String[types.length];
+		for (int i = 0; i < names.length; i++)
+			names[i] = (i + 1) + ": " + types[i];
+		axes = new BioComboBox(names);
 
-    // apply button
-    JButton apply = new JButton("Apply");
-    if (!LAFUtil.isMacLookAndFeel()) apply.setMnemonic('a');
-    apply.addActionListener(this);
+		// apply button
+		final JButton apply = new JButton("Apply");
+		if (!LAFUtil.isMacLookAndFeel()) apply.setMnemonic('a');
+		apply.addActionListener(this);
 
-    // lay out components
-    JPanel row1 = FormsUtil.makeRow(
-      new Object[] {"&Dimension to collapse", axes},
-      new boolean[] {false, true});
-    JPanel row2 = ButtonBarFactory.buildCenteredBar(apply);
+		// lay out components
+		final JPanel row1 =
+			FormsUtil.makeRow(new Object[] { "&Dimension to collapse", axes },
+				new boolean[] { false, true });
+		final JPanel row2 = ButtonBarFactory.buildCenteredBar(apply);
 
-    setLayout(new BorderLayout());
-    add(FormsUtil.makeColumn(row1, row2));
-  }
+		setLayout(new BorderLayout());
+		add(FormsUtil.makeColumn(row1, row2));
+	}
 
-  // -- ActionListener API methods --
+	// -- ActionListener API methods --
 
-  /** Applies changes to this dimensional collapse transform's parameters. */
-  public void actionPerformed(ActionEvent e) {
-    int index = axes.getSelectedIndex();
-    collapse.setParameters(index);
-  }
+	/** Applies changes to this dimensional collapse transform's parameters. */
+	@Override
+	public void actionPerformed(final ActionEvent e) {
+		final int index = axes.getSelectedIndex();
+		collapse.setParameters(index);
+	}
 
 }

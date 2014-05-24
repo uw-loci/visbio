@@ -52,193 +52,208 @@ import loci.visbio.util.SwingUtil;
 /**
  * HelpWindow details basic VisBio program usage.
  */
-public class HelpWindow extends JFrame
-  implements HyperlinkListener, TreeSelectionListener
+public class HelpWindow extends JFrame implements HyperlinkListener,
+	TreeSelectionListener
 {
 
-  // -- Constants --
+	// -- Constants --
 
-  /** Default width of help window in pixels. */
-  private static final int DEFAULT_WIDTH = 950;
+	/** Default width of help window in pixels. */
+	private static final int DEFAULT_WIDTH = 950;
 
-  /** Default height of help window in pixels. */
-  private static final int DEFAULT_HEIGHT = 700;
+	/** Default height of help window in pixels. */
+	private static final int DEFAULT_HEIGHT = 700;
 
-  /** Minimum width of tree pane. */
-  private static final int MIN_TREE_WIDTH = 300;
+	/** Minimum width of tree pane. */
+	private static final int MIN_TREE_WIDTH = 300;
 
-  // -- Fields --
+	// -- Fields --
 
-  /** Help topic tree root node. */
-  private HelpTopic root;
+	/** Help topic tree root node. */
+	private final HelpTopic root;
 
-  /** Tree of help topics. */
-  private JTree topics;
+	/** Tree of help topics. */
+	private final JTree topics;
 
-  /** Pane containing the current help topic. */
-  private JEditorPane pane;
+	/** Pane containing the current help topic. */
+	private final JEditorPane pane;
 
-  // -- Constructor --
+	// -- Constructor --
 
-  /** Creates a VisBio help window. */
-  public HelpWindow() {
-    super("VisBio Help");
+	/** Creates a VisBio help window. */
+	public HelpWindow() {
+		super("VisBio Help");
 
-    // create components
-    root = new HelpTopic("VisBio Help Topics", null);
-    topics = new JTree(root);
-    topics.setRootVisible(false);
-    topics.setShowsRootHandles(true);
-    topics.getSelectionModel().setSelectionMode(
-       TreeSelectionModel.SINGLE_TREE_SELECTION);
-    topics.addTreeSelectionListener(this);
-    pane = new JEditorPane("text/html", "");
-    pane.addHyperlinkListener(this);
-    pane.setEditable(false);
+		// create components
+		root = new HelpTopic("VisBio Help Topics", null);
+		topics = new JTree(root);
+		topics.setRootVisible(false);
+		topics.setShowsRootHandles(true);
+		topics.getSelectionModel().setSelectionMode(
+			TreeSelectionModel.SINGLE_TREE_SELECTION);
+		topics.addTreeSelectionListener(this);
+		pane = new JEditorPane("text/html", "");
+		pane.addHyperlinkListener(this);
+		pane.setEditable(false);
 
-    // lay out components
-    JScrollPane topicsScroll = new JScrollPane(topics);
-    topicsScroll.setMinimumSize(new Dimension(MIN_TREE_WIDTH, 0));
-    SwingUtil.configureScrollPane(topicsScroll);
-    JScrollPane paneScroll = new JScrollPane(pane);
-    SwingUtil.configureScrollPane(paneScroll);
-    JSplitPane split = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
-       topicsScroll, paneScroll);
-    Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-    int width = screenSize.width - 25, height = screenSize.height - 50;
-    if (width > DEFAULT_WIDTH) width = DEFAULT_WIDTH;
-    if (height > DEFAULT_HEIGHT) height = DEFAULT_HEIGHT;
-    split.setPreferredSize(new Dimension(width, height));
-    setContentPane(split);
-  }
+		// lay out components
+		final JScrollPane topicsScroll = new JScrollPane(topics);
+		topicsScroll.setMinimumSize(new Dimension(MIN_TREE_WIDTH, 0));
+		SwingUtil.configureScrollPane(topicsScroll);
+		final JScrollPane paneScroll = new JScrollPane(pane);
+		SwingUtil.configureScrollPane(paneScroll);
+		final JSplitPane split =
+			new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, topicsScroll, paneScroll);
+		final Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+		int width = screenSize.width - 25, height = screenSize.height - 50;
+		if (width > DEFAULT_WIDTH) width = DEFAULT_WIDTH;
+		if (height > DEFAULT_HEIGHT) height = DEFAULT_HEIGHT;
+		split.setPreferredSize(new Dimension(width, height));
+		setContentPane(split);
+	}
 
-  // -- HelpWindow API methods --
+	// -- HelpWindow API methods --
 
-  /** Adds the given topic to the list, from the given source file. */
-  public void addTopic(String topic, String source) {
-    addTopic(root, topic, source);
-  }
+	/** Adds the given topic to the list, from the given source file. */
+	public void addTopic(final String topic, final String source) {
+		addTopic(root, topic, source);
+	}
 
-  // -- JFrame API methods --
+	// -- JFrame API methods --
 
-  /** Expands tree fully before packing help window. */
-  public void pack() {
-    // HACK - Expanding nodes as they are added to the tree results in bizarre
-    // behavior (nodes permanently missing from the tree). Better to expand
-    // everything after the tree has been completely built.
-    Enumeration e = root.breadthFirstEnumeration();
-    topics.expandPath(new TreePath(root.getPath()));
-    while (e.hasMoreElements()) {
-      HelpTopic node = (HelpTopic) e.nextElement();
-      if (node.isLeaf()) continue;
-      topics.expandPath(new TreePath(node.getPath()));
-    }
-    // select first child node
-    HelpTopic firstChild = (HelpTopic) root.getChildAt(0);
-    topics.setSelectionPath(new TreePath(firstChild.getPath()));
-    super.pack();
-  }
+	/** Expands tree fully before packing help window. */
+	@Override
+	public void pack() {
+		// HACK - Expanding nodes as they are added to the tree results in bizarre
+		// behavior (nodes permanently missing from the tree). Better to expand
+		// everything after the tree has been completely built.
+		final Enumeration e = root.breadthFirstEnumeration();
+		topics.expandPath(new TreePath(root.getPath()));
+		while (e.hasMoreElements()) {
+			final HelpTopic node = (HelpTopic) e.nextElement();
+			if (node.isLeaf()) continue;
+			topics.expandPath(new TreePath(node.getPath()));
+		}
+		// select first child node
+		final HelpTopic firstChild = (HelpTopic) root.getChildAt(0);
+		topics.setSelectionPath(new TreePath(firstChild.getPath()));
+		super.pack();
+	}
 
-  // -- HyperlinkListener API methods --
+	// -- HyperlinkListener API methods --
 
-  /** Handles hyperlinks. */
-  public void hyperlinkUpdate(HyperlinkEvent e) {
-    if (e.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
-      if (e instanceof HTMLFrameHyperlinkEvent) {
-        HTMLFrameHyperlinkEvent evt = (HTMLFrameHyperlinkEvent) e;
-        HTMLDocument doc = (HTMLDocument) pane.getDocument();
-        doc.processHTMLFrameHyperlinkEvent(evt);
-      }
-      else {
-        String source = e.getURL().toString();
-        HelpTopic node = findTopic(source);
-        if (node != null) {
-          TreePath path = new TreePath(node.getPath());
-          topics.setSelectionPath(path);
-          topics.scrollPathToVisible(path);
-        }
-        else {
-          // launch external browser to handle the link
-          try { BrowserLauncher.openURL(source); }
-          catch (IOException exc) { exc.printStackTrace(); }
-        }
-      }
-    }
-  }
+	/** Handles hyperlinks. */
+	@Override
+	public void hyperlinkUpdate(final HyperlinkEvent e) {
+		if (e.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
+			if (e instanceof HTMLFrameHyperlinkEvent) {
+				final HTMLFrameHyperlinkEvent evt = (HTMLFrameHyperlinkEvent) e;
+				final HTMLDocument doc = (HTMLDocument) pane.getDocument();
+				doc.processHTMLFrameHyperlinkEvent(evt);
+			}
+			else {
+				final String source = e.getURL().toString();
+				final HelpTopic node = findTopic(source);
+				if (node != null) {
+					final TreePath path = new TreePath(node.getPath());
+					topics.setSelectionPath(path);
+					topics.scrollPathToVisible(path);
+				}
+				else {
+					// launch external browser to handle the link
+					try {
+						BrowserLauncher.openURL(source);
+					}
+					catch (final IOException exc) {
+						exc.printStackTrace();
+					}
+				}
+			}
+		}
+	}
 
-  // -- TreeSelectionListener API methods --
+	// -- TreeSelectionListener API methods --
 
-  /** Updates help topic based on user selection. */
-  public void valueChanged(TreeSelectionEvent e) {
-    TreePath path = e.getNewLeadSelectionPath();
-    HelpTopic node = path == null ? null :
-      (HelpTopic) path.getLastPathComponent();
-    final String source = node == null ? null : node.getSource();
-    if (source == null) {
-      pane.setText(node == null ? "" : node.getName());
-      return;
-    }
-    pane.setText("<h2>" + node.getName() + "</h2>");
-    SwingUtilities.invokeLater(new Runnable() {
-      public void run() {
-        try { pane.setPage(getClass().getResource(source)); }
-        catch (IOException exc) {
-          StringWriter sw = new StringWriter();
-          exc.printStackTrace(new PrintWriter(sw));
-          pane.setText(source + "<pre>" + sw.toString() + "</pre>");
-        }
-        // HACK - JEditorPane.setPage(URL) throws a RuntimeException
-        // ("Must insert new content into body element-")
-        // when editor pane is successively updated too rapidly.
-        // This 50ms delay seems sufficient to prevent the exception.
-        try { Thread.sleep(50); }
-        catch (InterruptedException exc) { }
-      }
-    });
-  }
+	/** Updates help topic based on user selection. */
+	@Override
+	public void valueChanged(final TreeSelectionEvent e) {
+		final TreePath path = e.getNewLeadSelectionPath();
+		final HelpTopic node =
+			path == null ? null : (HelpTopic) path.getLastPathComponent();
+		final String source = node == null ? null : node.getSource();
+		if (source == null) {
+			pane.setText(node == null ? "" : node.getName());
+			return;
+		}
+		pane.setText("<h2>" + node.getName() + "</h2>");
+		SwingUtilities.invokeLater(new Runnable() {
 
-  // -- Helper methods --
+			@Override
+			public void run() {
+				try {
+					pane.setPage(getClass().getResource(source));
+				}
+				catch (final IOException exc) {
+					final StringWriter sw = new StringWriter();
+					exc.printStackTrace(new PrintWriter(sw));
+					pane.setText(source + "<pre>" + sw.toString() + "</pre>");
+				}
+				// HACK - JEditorPane.setPage(URL) throws a RuntimeException
+				// ("Must insert new content into body element-")
+				// when editor pane is successively updated too rapidly.
+				// This 50ms delay seems sufficient to prevent the exception.
+				try {
+					Thread.sleep(50);
+				}
+				catch (final InterruptedException exc) {}
+			}
+		});
+	}
 
-  /** Recursively adds the given topic to the tree at the given position. */
-  private void addTopic(HelpTopic parent, String topic, String source) {
-    //topics.expandPath(new TreePath(parent.getPath()));
-    int slash = topic.indexOf("/");
-    if (slash < 0) parent.add(new HelpTopic(topic, source));
-    else {
-      String pre = topic.substring(0, slash);
-      String post = topic.substring(slash + 1);
-      HelpTopic child = null;
-      Enumeration e = parent.children();
-      while (e.hasMoreElements()) {
-        HelpTopic node = (HelpTopic) e.nextElement();
-        if (node.getName().equals(pre)) {
-          child = node;
-          break;
-        }
-      }
-      if (child == null) {
-        child = new HelpTopic(pre, null);
-        parent.add(child);
-      }
-      addTopic(child, post, source);
-    }
-  }
+	// -- Helper methods --
 
-  /** Locates the first node with the given source. */
-  private HelpTopic findTopic(String source) {
-    if (source.startsWith("http:")) return null;
-    Enumeration e = root.breadthFirstEnumeration();
-    while (e.hasMoreElements()) {
-      HelpTopic node = (HelpTopic) e.nextElement();
-      String nodeSource = node.getSource();
-      if (nodeSource == null) continue;
-      // HACK - since URL strings have multiple possible structures, this
-      // search just compares the end of the search string. If a link points to
-      // an external URL that happens to end with the same string as one of the
-      // help topics, this method will erroneously flag that topic anyway.
-      if (source.endsWith(nodeSource)) return node;
-    }
-    return null;
-  }
+	/** Recursively adds the given topic to the tree at the given position. */
+	private void addTopic(final HelpTopic parent, final String topic,
+		final String source)
+	{
+		// topics.expandPath(new TreePath(parent.getPath()));
+		final int slash = topic.indexOf("/");
+		if (slash < 0) parent.add(new HelpTopic(topic, source));
+		else {
+			final String pre = topic.substring(0, slash);
+			final String post = topic.substring(slash + 1);
+			HelpTopic child = null;
+			final Enumeration e = parent.children();
+			while (e.hasMoreElements()) {
+				final HelpTopic node = (HelpTopic) e.nextElement();
+				if (node.getName().equals(pre)) {
+					child = node;
+					break;
+				}
+			}
+			if (child == null) {
+				child = new HelpTopic(pre, null);
+				parent.add(child);
+			}
+			addTopic(child, post, source);
+		}
+	}
+
+	/** Locates the first node with the given source. */
+	private HelpTopic findTopic(final String source) {
+		if (source.startsWith("http:")) return null;
+		final Enumeration e = root.breadthFirstEnumeration();
+		while (e.hasMoreElements()) {
+			final HelpTopic node = (HelpTopic) e.nextElement();
+			final String nodeSource = node.getSource();
+			if (nodeSource == null) continue;
+			// HACK - since URL strings have multiple possible structures, this
+			// search just compares the end of the search string. If a link points to
+			// an external URL that happens to end with the same string as one of the
+			// help topics, this method will erroneously flag that topic anyway.
+			if (source.endsWith(nodeSource)) return node;
+		}
+		return null;
+	}
 
 }

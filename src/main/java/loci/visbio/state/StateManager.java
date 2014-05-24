@@ -51,410 +51,445 @@ import org.w3c.dom.Element;
  */
 public class StateManager extends LogicManager {
 
-  // -- Constants --
+	// -- Constants --
 
-  /** Extension for VisBio state files. */
-  protected static final String STATE_EXTENSION = "xml";
+	/** Extension for VisBio state files. */
+	protected static final String STATE_EXTENSION = "xml";
 
-  // -- Fields --
+	// -- Fields --
 
-  /** File chooser for state saves. */
-  protected JFileChooser stateBox;
+	/** File chooser for state saves. */
+	protected JFileChooser stateBox;
 
-  /** The Undo menu item from the Edit menu. */
-  protected JMenuItem editUndo;
+	/** The Undo menu item from the Edit menu. */
+	protected JMenuItem editUndo;
 
-  /** The Redo menu item from the Edit menu. */
-  protected JMenuItem editRedo;
+	/** The Redo menu item from the Edit menu. */
+	protected JMenuItem editRedo;
 
-  /** Temporary file for storing temporary state information. */
-  private File stateFile;
+	/** Temporary file for storing temporary state information. */
+	private final File stateFile;
 
-  /** Stack of old states for multiple undo. */
-  private Stack undoStates;
+	/** Stack of old states for multiple undo. */
+	private Stack undoStates;
 
-  /** Current program state. */
-  private ProgramState currentState;
+	/** Current program state. */
+	private ProgramState currentState;
 
-  /** Stack of new states for multiple redo. */
-  private Stack redoStates;
+	/** Stack of new states for multiple redo. */
+	private Stack redoStates;
 
-  /** Initial program state. */
-  private ProgramState initialState;
+	/** Initial program state. */
+	private ProgramState initialState;
 
-  /** Is state currently being restored? */
-  private boolean restoring;
+	/** Is state currently being restored? */
+	private boolean restoring;
 
-  /** Has the user saved the most recent state? */
-  private boolean saved = true;
+	/** Has the user saved the most recent state? */
+	private boolean saved = true;
 
-  // -- Constructors --
+	// -- Constructors --
 
-  /** Constructs a VisBio state management object. */
-  public StateManager(VisBioFrame bio) { this(bio, "visbio.tmp"); }
+	/** Constructs a VisBio state management object. */
+	public StateManager(final VisBioFrame bio) {
+		this(bio, "visbio.tmp");
+	}
 
-  /** Constructs a VisBio state management object. */
-  public StateManager(VisBioFrame bio, String stateFile) {
-    super(bio);
-    this.stateFile = new File(stateFile);
-  }
+	/** Constructs a VisBio state management object. */
+	public StateManager(final VisBioFrame bio, final String stateFile) {
+		super(bio);
+		this.stateFile = new File(stateFile);
+	}
 
-  // -- StateManager API methods --
+	// -- StateManager API methods --
 
-  /** Sets whether state is currently being restored. */
-  public void setRestoring(boolean restoring) { this.restoring = restoring; }
+	/** Sets whether state is currently being restored. */
+	public void setRestoring(final boolean restoring) {
+		this.restoring = restoring;
+	}
 
-  /** Gets whether state is currently being restored. */
-  public boolean isRestoring() { return restoring; }
+	/** Gets whether state is currently being restored. */
+	public boolean isRestoring() {
+		return restoring;
+	}
 
-  /** Saves the current state to the given state file. */
-  public void saveState(File file) {
-    Document doc = saveState();
-    XMLUtil.writeXML(file, doc);
-  }
+	/** Saves the current state to the given state file. */
+	public void saveState(final File file) {
+		final Document doc = saveState();
+		XMLUtil.writeXML(file, doc);
+	}
 
-  /** Restores the current state from the given state file. */
-  public void restoreState(File file) {
-    try {
-      Document doc = XMLUtil.parseXML(file);
-      restoreState(doc.getDocumentElement());
-      bio.generateEvent(this, "restore state", true);
-    }
-    catch (SaveException exc) { exc.printStackTrace(); }
-  }
+	/** Restores the current state from the given state file. */
+	public void restoreState(final File file) {
+		try {
+			final Document doc = XMLUtil.parseXML(file);
+			restoreState(doc.getDocumentElement());
+			bio.generateEvent(this, "restore state", true);
+		}
+		catch (final SaveException exc) {
+			exc.printStackTrace();
+		}
+	}
 
-  /**
-   * Saves an initial VisBio state, then checks to see if VisBio crashed last
-   * time, and if so, asks the user whether to restore the previous state.
-   */
-  public void checkCrash() {
-    boolean crashed = stateFile.exists();
-    if (crashed) {
-      int ans = JOptionPane.showConfirmDialog(bio,
-        "It appears that VisBio crashed last time. " +
-        "Attempt to restore the previous state?", "VisBio",
-        JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
-      if (ans != JOptionPane.YES_OPTION) crashed = false;
-    }
-    saveState("", true, crashed); // compute currentState variable
-    initialState = currentState;
-    if (crashed) restoreState(stateFile);
-  }
+	/**
+	 * Saves an initial VisBio state, then checks to see if VisBio crashed last
+	 * time, and if so, asks the user whether to restore the previous state.
+	 */
+	public void checkCrash() {
+		boolean crashed = stateFile.exists();
+		if (crashed) {
+			final int ans =
+				JOptionPane.showConfirmDialog(bio,
+					"It appears that VisBio crashed last time. "
+						+ "Attempt to restore the previous state?", "VisBio",
+					JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+			if (ans != JOptionPane.YES_OPTION) crashed = false;
+		}
+		saveState("", true, crashed); // compute currentState variable
+		initialState = currentState;
+		if (crashed) restoreState(stateFile);
+	}
 
-  /**
-   * Checks whether the program state has been saved,
-   * and if not, prompts the user to save.
-   */
-  public boolean checkSave() {
-    if (true) return true; // CTR TEMP - disable save check for now
-    if (saved) return true;
-    int ans = JOptionPane.showConfirmDialog(bio,
-      "Program state has been changed. Save before exiting?", "VisBio",
-      JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
-    if (ans == JOptionPane.CANCEL_OPTION) return false;
-    if (ans == JOptionPane.YES_OPTION) fileSave();
-    return true;
-  }
+	/**
+	 * Checks whether the program state has been saved, and if not, prompts the
+	 * user to save.
+	 */
+	public boolean checkSave() {
+		if (true) return true; // CTR TEMP - disable save check for now
+		if (saved) return true;
+		final int ans =
+			JOptionPane.showConfirmDialog(bio,
+				"Program state has been changed. Save before exiting?", "VisBio",
+				JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
+		if (ans == JOptionPane.CANCEL_OPTION) return false;
+		if (ans == JOptionPane.YES_OPTION) fileSave();
+		return true;
+	}
 
-  /** Deletes VisBio state temp file. */
-  public void destroy() {
-    if (stateFile.exists()) {
-      if (!stateFile.delete()) {
-        System.err.println("Warning: unable to delete " + stateFile.getName());
-      }
-    }
-  }
+	/** Deletes VisBio state temp file. */
+	public void destroy() {
+		if (stateFile.exists()) {
+			if (!stateFile.delete()) {
+				System.err.println("Warning: unable to delete " + stateFile.getName());
+			}
+		}
+	}
 
-  // -- Menu commands --
+	// -- Menu commands --
 
-  /** Restores the current state from a text file specified by the user. */
-  public void fileRestore() {
-    int rval = stateBox.showOpenDialog(bio);
-    if (rval == JFileChooser.APPROVE_OPTION) {
-      final WindowManager wm = (WindowManager)
-        bio.getManager(WindowManager.class);
-      wm.setWaitCursor(true);
-      new Thread(new Runnable() {
-        public void run() {
-          restoreState(stateBox.getSelectedFile());
-          SwingUtilities.invokeLater(new Runnable() {
-            public void run() { wm.setWaitCursor(false); }
-          });
-        }
-      }).start();
-    }
-  }
+	/** Restores the current state from a text file specified by the user. */
+	public void fileRestore() {
+		final int rval = stateBox.showOpenDialog(bio);
+		if (rval == JFileChooser.APPROVE_OPTION) {
+			final WindowManager wm =
+				(WindowManager) bio.getManager(WindowManager.class);
+			wm.setWaitCursor(true);
+			new Thread(new Runnable() {
 
-  /** Saves the current state to a text file specified by the user. */
-  public void fileSave() {
-    int rval = stateBox.showSaveDialog(bio);
-    if (rval == JFileChooser.APPROVE_OPTION) {
-      WindowManager wm = (WindowManager) bio.getManager(WindowManager.class);
-      wm.setWaitCursor(true);
-      File file = stateBox.getSelectedFile();
-      if (file.getName().indexOf(".") < 0) {
-        file = new File(file.getAbsolutePath() + "." + STATE_EXTENSION);
-      }
-      saveState(file);
-      wm.setWaitCursor(false);
-      saved = true;
-    }
-  }
+				@Override
+				public void run() {
+					restoreState(stateBox.getSelectedFile());
+					SwingUtilities.invokeLater(new Runnable() {
 
-  /** Undoes the last action taken. */
-  public void editUndo() {
-    if (undoStates.isEmpty()) return;
-    redoStates.push(currentState);
-    currentState = (ProgramState) undoStates.pop();
-    restoreState(currentState);
-    updateMenuItems();
-  }
+						@Override
+						public void run() {
+							wm.setWaitCursor(false);
+						}
+					});
+				}
+			}).start();
+		}
+	}
 
-  /** Redoes the last action undone. */
-  public void editRedo() {
-    if (redoStates.isEmpty()) return;
-    undoStates.push(currentState);
-    currentState = (ProgramState) redoStates.pop();
-    restoreState(currentState);
-    updateMenuItems();
-  }
+	/** Saves the current state to a text file specified by the user. */
+	public void fileSave() {
+		final int rval = stateBox.showSaveDialog(bio);
+		if (rval == JFileChooser.APPROVE_OPTION) {
+			final WindowManager wm =
+				(WindowManager) bio.getManager(WindowManager.class);
+			wm.setWaitCursor(true);
+			File file = stateBox.getSelectedFile();
+			if (file.getName().indexOf(".") < 0) {
+				file = new File(file.getAbsolutePath() + "." + STATE_EXTENSION);
+			}
+			saveState(file);
+			wm.setWaitCursor(false);
+			saved = true;
+		}
+	}
 
-  /** Resets the program to its initial state. */
-  public void editReset() {
-    int ans = JOptionPane.showConfirmDialog(bio,
-      "Are you sure you want to reset VisBio to its initial state?", "VisBio",
-      JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
-    if (ans != JOptionPane.YES_OPTION) return;
-    restoreState(initialState);
-    bio.generateEvent(this, "reset state", true);
-  }
+	/** Undoes the last action taken. */
+	public void editUndo() {
+		if (undoStates.isEmpty()) return;
+		redoStates.push(currentState);
+		currentState = (ProgramState) undoStates.pop();
+		restoreState(currentState);
+		updateMenuItems();
+	}
 
-  // -- Saveable API methods --
+	/** Redoes the last action undone. */
+	public void editRedo() {
+		if (redoStates.isEmpty()) return;
+		undoStates.push(currentState);
+		currentState = (ProgramState) redoStates.pop();
+		restoreState(currentState);
+		updateMenuItems();
+	}
 
-  /** Writes the current state to the given DOM element ("VisBio"). */
-  public void saveState(Element el) throws SaveException {
-    LogicManager[] lm = bio.getManagers();
-    for (int i=0; i<lm.length; i++) {
-      if (lm[i] == this) continue; // bad recursion, no cookie
-      lm[i].saveState(el);
-    }
-  }
+	/** Resets the program to its initial state. */
+	public void editReset() {
+		final int ans =
+			JOptionPane.showConfirmDialog(bio,
+				"Are you sure you want to reset VisBio to its initial state?",
+				"VisBio", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+		if (ans != JOptionPane.YES_OPTION) return;
+		restoreState(initialState);
+		bio.generateEvent(this, "reset state", true);
+	}
 
-  /** Restores the current state from the given DOM element ("VisBio"). */
-  public void restoreState(Element el) throws SaveException {
-    restoring = true;
-    try {
-      LogicManager[] lm = bio.getManagers();
-      for (int i=0; i<lm.length; i++) {
-        if (lm[i] == this) continue; // bad recursion, no cookie
-        lm[i].restoreState(el);
-      }
-    }
-    finally { restoring = false; }
-  }
+	// -- Saveable API methods --
 
-  // -- LogicManager API methods --
+	/** Writes the current state to the given DOM element ("VisBio"). */
+	@Override
+	public void saveState(final Element el) throws SaveException {
+		final LogicManager[] lm = bio.getManagers();
+		for (int i = 0; i < lm.length; i++) {
+			if (lm[i] == this) continue; // bad recursion, no cookie
+			lm[i].saveState(el);
+		}
+	}
 
-  /** Called to notify the logic manager of a VisBio event. */
-  public void doEvent(VisBioEvent evt) {
-    int eventType = evt.getEventType();
-    if (eventType == VisBioEvent.LOGIC_ADDED) {
-      Object src = evt.getSource();
-      if (src == this) doGUI();
-      else if (src instanceof ExitManager) {
-        // HACK - make state logic menu items appears in the proper location
+	/** Restores the current state from the given DOM element ("VisBio"). */
+	@Override
+	public void restoreState(final Element el) throws SaveException {
+		restoring = true;
+		try {
+			final LogicManager[] lm = bio.getManagers();
+			for (int i = 0; i < lm.length; i++) {
+				if (lm[i] == this) continue; // bad recursion, no cookie
+				lm[i].restoreState(el);
+			}
+		}
+		finally {
+			restoring = false;
+		}
+	}
 
-        /* CTR TODO fix state logic
-        // file menu
-        bio.addMenuSeparator("File");
-        bio.addMenuItem("File", "Restore state...",
-          "loci.visbio.state.StateManager.fileRestore", 'r');
-        bio.addMenuItem("File", "Save state...",
-          "loci.visbio.state.StateManager.fileSave", 's');
-        */
-      }
-    }
-    else if (eventType == VisBioEvent.STATE_CHANGED) {
-      Object src = evt.getSource();
-      if (src instanceof ExitManager) {
-        String msg = evt.getMessage();
-        if (msg.equals("shutdown request")) {
-          if (!checkSave()) ((ExitManager) src).cancelShutdown();
-        }
-        else if (msg.equals("shutdown")) destroy();
-      }
-      else if (evt.isUndoable() && !restoring) {
-        saved = false;
-        saveState(evt.getMessage(), false, false);
-      }
-    }
-  }
+	// -- LogicManager API methods --
 
-  /** Gets the number of tasks required to initialize this logic manager. */
-  public int getTasks() { return 3; }
+	/** Called to notify the logic manager of a VisBio event. */
+	@Override
+	public void doEvent(final VisBioEvent evt) {
+		final int eventType = evt.getEventType();
+		if (eventType == VisBioEvent.LOGIC_ADDED) {
+			final Object src = evt.getSource();
+			if (src == this) doGUI();
+			else if (src instanceof ExitManager) {
+				// HACK - make state logic menu items appears in the proper location
 
-  // -- Helper methods --
+				/* CTR TODO fix state logic
+				// file menu
+				bio.addMenuSeparator("File");
+				bio.addMenuItem("File", "Restore state...",
+				  "loci.visbio.state.StateManager.fileRestore", 'r');
+				bio.addMenuItem("File", "Save state...",
+				  "loci.visbio.state.StateManager.fileSave", 's');
+				*/
+			}
+		}
+		else if (eventType == VisBioEvent.STATE_CHANGED) {
+			final Object src = evt.getSource();
+			if (src instanceof ExitManager) {
+				final String msg = evt.getMessage();
+				if (msg.equals("shutdown request")) {
+					if (!checkSave()) ((ExitManager) src).cancelShutdown();
+				}
+				else if (msg.equals("shutdown")) destroy();
+			}
+			else if (evt.isUndoable() && !restoring) {
+				saved = false;
+				saveState(evt.getMessage(), false, false);
+			}
+		}
+	}
 
-  /** Adds state-related GUI components to VisBio. */
-  private void doGUI() {
-    // save state file chooser
-    bio.setSplashStatus("Initializing state logic");
-    stateBox = new JFileChooser();
-    stateBox.addChoosableFileFilter(new ExtensionFileFilter(
-      STATE_EXTENSION, "VisBio state files"));
+	/** Gets the number of tasks required to initialize this logic manager. */
+	@Override
+	public int getTasks() {
+		return 3;
+	}
 
-    // edit menu
-    bio.setSplashStatus(null);
-    /* CTR TODO fix state logic
-    editUndo = bio.addMenuItem("Edit", "Undo",
-      "loci.visbio.state.StateManager.editUndo", 'u');
-    bio.setMenuShortcut("Edit", "Undo", KeyEvent.VK_Z);
-    editRedo = bio.addMenuItem("Edit", "Redo",
-      "loci.visbio.state.StateManager.editRedo", 'r');
-    bio.setMenuShortcut("Edit", "Redo", KeyEvent.VK_Y);
-    JMenuItem editReset = bio.addMenuItem("Edit", "Reset",
-      "loci.visbio.state.StateManager.editReset", 't');
-    bio.setMenuShortcut("Edit", "Reset", KeyEvent.VK_R);
-    */
+	// -- Helper methods --
 
-    // undo logic variables
-    bio.setSplashStatus(null);
-    undoStates = new Stack();
-    redoStates = new Stack();
-  }
+	/** Adds state-related GUI components to VisBio. */
+	private void doGUI() {
+		// save state file chooser
+		bio.setSplashStatus("Initializing state logic");
+		stateBox = new JFileChooser();
+		stateBox.addChoosableFileFilter(new ExtensionFileFilter(STATE_EXTENSION,
+			"VisBio state files"));
 
-  /** Restores the state from the given program state object. */
-  private void restoreState(ProgramState ps) {
-    try { restoreState(ps.state.getDocumentElement()); }
-    catch (SaveException exc) { exc.printStackTrace(); }
-  }
+		// edit menu
+		bio.setSplashStatus(null);
+		/* CTR TODO fix state logic
+		editUndo = bio.addMenuItem("Edit", "Undo",
+		  "loci.visbio.state.StateManager.editUndo", 'u');
+		bio.setMenuShortcut("Edit", "Undo", KeyEvent.VK_Z);
+		editRedo = bio.addMenuItem("Edit", "Redo",
+		  "loci.visbio.state.StateManager.editRedo", 'r');
+		bio.setMenuShortcut("Edit", "Redo", KeyEvent.VK_Y);
+		JMenuItem editReset = bio.addMenuItem("Edit", "Reset",
+		  "loci.visbio.state.StateManager.editReset", 't');
+		bio.setMenuShortcut("Edit", "Reset", KeyEvent.VK_R);
+		*/
 
-  /**
-   * Saves the state to a new DOM object.
-   *
-   * @return The DOM object containing the saved state.
-   */
-  private Document saveState() {
-    Document doc = XMLUtil.createDocument("VisBio");
-    try { saveState(doc.getDocumentElement()); }
-    catch (SaveException exc) { exc.printStackTrace(); }
-    return doc;
-  }
+		// undo logic variables
+		bio.setSplashStatus(null);
+		undoStates = new Stack();
+		redoStates = new Stack();
+	}
 
-  /** Saves the state to the undo stack and the VisBio state temp file. */
-  private void saveState(String msg, boolean init, boolean crashed) {
-    // capture save state results to a DOM
-    Document doc = saveState();
+	/** Restores the state from the given program state object. */
+	private void restoreState(final ProgramState ps) {
+		try {
+			restoreState(ps.state.getDocumentElement());
+		}
+		catch (final SaveException exc) {
+			exc.printStackTrace();
+		}
+	}
 
-    if (!crashed) {
-      // write captured results to the state file
-      XMLUtil.writeXML(stateFile, doc);
-    }
+	/**
+	 * Saves the state to a new DOM object.
+	 * 
+	 * @return The DOM object containing the saved state.
+	 */
+	private Document saveState() {
+		final Document doc = XMLUtil.createDocument("VisBio");
+		try {
+			saveState(doc.getDocumentElement());
+		}
+		catch (final SaveException exc) {
+			exc.printStackTrace();
+		}
+		return doc;
+	}
 
-    if (!init) {
-      // update multiple undo stacks
-      undoStates.push(currentState);
-      redoStates.removeAllElements();
-    }
-    currentState = new ProgramState(msg, doc);
-    updateMenuItems();
-  }
+	/** Saves the state to the undo stack and the VisBio state temp file. */
+	private void saveState(final String msg, final boolean init,
+		final boolean crashed)
+	{
+		// capture save state results to a DOM
+		final Document doc = saveState();
 
-  /** Updates the Edit menu's Undo and Redo menu items. */
-  private void updateMenuItems() {
-    /* CTR TODO fix state logic
-    if (undoStates.isEmpty()) {
-      editUndo.setText("Undo");
-      editUndo.setEnabled(false);
-    }
-    else {
-      editUndo.setText("Undo " + currentState.msg);
-      editUndo.setEnabled(true);
-    }
-    if (redoStates.isEmpty()) {
-      editRedo.setText("Redo");
-      editRedo.setEnabled(false);
-    }
-    else {
-      editRedo.setText("Redo " + ((ProgramState) redoStates.peek()).msg);
-      editRedo.setEnabled(true);
-    }
-    */
-  }
+		if (!crashed) {
+			// write captured results to the state file
+			XMLUtil.writeXML(stateFile, doc);
+		}
 
-  // -- Utility methods --
+		if (!init) {
+			// update multiple undo stacks
+			undoStates.push(currentState);
+			redoStates.removeAllElements();
+		}
+		currentState = new ProgramState(msg, doc);
+		updateMenuItems();
+	}
 
-  /**
-   * Merges states between two lists of dynamic objects.
-   * The procedure is as follows:
-   * <ol>
-   * <li>Compare read object list with existing object list
-   * <li>Find all matches between the two lists
-   * <li>Reuse as many leftover existing objects as possible,
-   *     initializing them to match compatible read objects
-   * <li>If there are still leftover existing objects, discard them
-   * <li>If there are still leftover read objects, initialize them
-   * </ol>
-   *
-   * See the {@link loci.visbio.state.Dynamic} documentation
-   * for more information.
-   */
-  public static void mergeStates(Vector oldList, Vector newList) {
-    int osize = oldList.size();
-    int nsize = newList.size();
-    int[] oldIndex = new int[osize];
-    int[] newIndex = new int[nsize];
-    Arrays.fill(oldIndex, -1);
-    Arrays.fill(newIndex, -1);
+	/** Updates the Edit menu's Undo and Redo menu items. */
+	private void updateMenuItems() {
+		/* CTR TODO fix state logic
+		if (undoStates.isEmpty()) {
+		  editUndo.setText("Undo");
+		  editUndo.setEnabled(false);
+		}
+		else {
+		  editUndo.setText("Undo " + currentState.msg);
+		  editUndo.setEnabled(true);
+		}
+		if (redoStates.isEmpty()) {
+		  editRedo.setText("Redo");
+		  editRedo.setEnabled(false);
+		}
+		else {
+		  editRedo.setText("Redo " + ((ProgramState) redoStates.peek()).msg);
+		  editRedo.setEnabled(true);
+		}
+		*/
+	}
 
-    // find all matches between the two lists
-    for (int n=0; n<nsize; n++) {
-      Dynamic newDyn = (Dynamic) newList.elementAt(n);
-      for (int o=0; o<osize; o++) {
-        if (oldIndex[o] >= 0) continue;
-        Dynamic oldDyn = (Dynamic) oldList.elementAt(o);
-        if (newDyn.matches(oldDyn)) {
-          oldIndex[o] = n;
-          newIndex[n] = o;
-          // discard new object in favor of matching old one
-          newDyn.discard();
-          newList.setElementAt(oldDyn, n);
-          break;
-        }
-      }
-    }
+	// -- Utility methods --
 
-    // initialize states between overlapping leftover objects
-    for (int o=0; o<osize; o++) {
-      if (oldIndex[o] >= 0) continue;
-      Dynamic oldDyn = (Dynamic) oldList.elementAt(o);
-      for (int n=0; n<nsize; n++) {
-        if (newIndex[n] >= 0) continue;
-        Dynamic newDyn = (Dynamic) newList.elementAt(n);
-        if (!oldDyn.isCompatible(newDyn)) continue;
-        oldDyn.initState(newDyn);
-        oldIndex[o] = n;
-        newIndex[n] = o;
-        // discard new object in favor of reinitialized old one
-        newDyn.discard();
-        newList.setElementAt(oldDyn, n);
-        break;
-      }
-    }
+	/**
+	 * Merges states between two lists of dynamic objects. The procedure is as
+	 * follows:
+	 * <ol>
+	 * <li>Compare read object list with existing object list
+	 * <li>Find all matches between the two lists
+	 * <li>Reuse as many leftover existing objects as possible, initializing them
+	 * to match compatible read objects
+	 * <li>If there are still leftover existing objects, discard them
+	 * <li>If there are still leftover read objects, initialize them
+	 * </ol>
+	 * See the {@link loci.visbio.state.Dynamic} documentation for more
+	 * information.
+	 */
+	public static void mergeStates(final Vector oldList, final Vector newList) {
+		final int osize = oldList.size();
+		final int nsize = newList.size();
+		final int[] oldIndex = new int[osize];
+		final int[] newIndex = new int[nsize];
+		Arrays.fill(oldIndex, -1);
+		Arrays.fill(newIndex, -1);
 
-    // discard remaining old objects
-    for (int o=0; o<osize; o++) {
-      if (oldIndex[o] >= 0) continue;
-      Dynamic oldDyn = (Dynamic) oldList.elementAt(o);
-      oldDyn.discard();
-    }
+		// find all matches between the two lists
+		for (int n = 0; n < nsize; n++) {
+			final Dynamic newDyn = (Dynamic) newList.elementAt(n);
+			for (int o = 0; o < osize; o++) {
+				if (oldIndex[o] >= 0) continue;
+				final Dynamic oldDyn = (Dynamic) oldList.elementAt(o);
+				if (newDyn.matches(oldDyn)) {
+					oldIndex[o] = n;
+					newIndex[n] = o;
+					// discard new object in favor of matching old one
+					newDyn.discard();
+					newList.setElementAt(oldDyn, n);
+					break;
+				}
+			}
+		}
 
-    // initialize remaining new objects
-    for (int n=0; n<nsize; n++) {
-      if (newIndex[n] >= 0) continue;
-      Dynamic newDyn = (Dynamic) newList.elementAt(n);
-      newDyn.initState(null);
-    }
-  }
+		// initialize states between overlapping leftover objects
+		for (int o = 0; o < osize; o++) {
+			if (oldIndex[o] >= 0) continue;
+			final Dynamic oldDyn = (Dynamic) oldList.elementAt(o);
+			for (int n = 0; n < nsize; n++) {
+				if (newIndex[n] >= 0) continue;
+				final Dynamic newDyn = (Dynamic) newList.elementAt(n);
+				if (!oldDyn.isCompatible(newDyn)) continue;
+				oldDyn.initState(newDyn);
+				oldIndex[o] = n;
+				newIndex[n] = o;
+				// discard new object in favor of reinitialized old one
+				newDyn.discard();
+				newList.setElementAt(oldDyn, n);
+				break;
+			}
+		}
+
+		// discard remaining old objects
+		for (int o = 0; o < osize; o++) {
+			if (oldIndex[o] >= 0) continue;
+			final Dynamic oldDyn = (Dynamic) oldList.elementAt(o);
+			oldDyn.discard();
+		}
+
+		// initialize remaining new objects
+		for (int n = 0; n < nsize; n++) {
+			if (newIndex[n] >= 0) continue;
+			final Dynamic newDyn = (Dynamic) newList.elementAt(n);
+			newDyn.initState(null);
+		}
+	}
 
 }

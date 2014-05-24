@@ -39,72 +39,77 @@ import loci.visbio.util.DialogPane;
  */
 public class OptionPane extends DialogPane {
 
-  // -- Constants --
+	// -- Constants --
 
-  /** Flag indicating options should be divided into separate tabs. */
-  protected static final boolean USE_TABS = true;
+	/** Flag indicating options should be divided into separate tabs. */
+	protected static final boolean USE_TABS = true;
 
-  // -- Fields --
+	// -- Fields --
 
-  /** Options manager. */
-  protected OptionManager om;
+	/** Options manager. */
+	protected OptionManager om;
 
-  /** Tabbed pane. */
-  protected JTabbedPane tabs;
+	/** Tabbed pane. */
+	protected JTabbedPane tabs;
 
-  /** Non-tabbed pane. */
-  protected JPanel noTabs;
+	/** Non-tabbed pane. */
+	protected JPanel noTabs;
 
-  // -- Constructor --
+	// -- Constructor --
 
-  /** Creates a new options pane. */
-  public OptionPane(OptionManager om) {
-    super("VisBio Options");
-    this.om = om;
-    if (USE_TABS) {
-      tabs = new JTabbedPane();
-      add(tabs);
-    }
-    else {
-      noTabs = new JPanel();
-      noTabs.setLayout(new BoxLayout(noTabs, BoxLayout.Y_AXIS));
-      add(noTabs);
-    }
-  }
+	/** Creates a new options pane. */
+	public OptionPane(final OptionManager om) {
+		super("VisBio Options");
+		this.om = om;
+		if (USE_TABS) {
+			tabs = new JTabbedPane();
+			add(tabs);
+		}
+		else {
+			noTabs = new JPanel();
+			noTabs.setLayout(new BoxLayout(noTabs, BoxLayout.Y_AXIS));
+			add(noTabs);
+		}
+	}
 
-  // -- OptionPane API methods --
+	// -- OptionPane API methods --
 
-  /** Adds an option with a boolean value to the specified tab. */
-  public void addOption(String tab, BioOption option) {
-    JPanel tabPanel = USE_TABS ? getTab(tab) : noTabs;
-    Component c = option.getComponent();
-    if (c instanceof JComponent) {
-      JComponent jc = (JComponent) c;
-      jc.setAlignmentX(JComponent.LEFT_ALIGNMENT);
-    }
-    tabPanel.add(c);
-  }
+	/** Adds an option with a boolean value to the specified tab. */
+	public void addOption(final String tab, final BioOption option) {
+		final JPanel tabPanel = USE_TABS ? getTab(tab) : noTabs;
+		final Component c = option.getComponent();
+		if (c instanceof JComponent) {
+			final JComponent jc = (JComponent) c;
+			jc.setAlignmentX(Component.LEFT_ALIGNMENT);
+		}
+		tabPanel.add(c);
+	}
 
-  /** Initializes a tab with the given name. */
-  public void addTab(String tab) { if (USE_TABS) getTab(tab); }
+	/** Initializes a tab with the given name. */
+	public void addTab(final String tab) {
+		if (USE_TABS) getTab(tab);
+	}
 
-  // -- DialogPane API methods --
+	// -- DialogPane API methods --
 
-  /** Resets the dialog pane's components to their default states. */
-  public void resetComponents() { if (USE_TABS) tabs.setSelectedIndex(0); }
+	/** Resets the dialog pane's components to their default states. */
+	@Override
+	public void resetComponents() {
+		if (USE_TABS) tabs.setSelectedIndex(0);
+	}
 
-  // -- Helper methods --
+	// -- Helper methods --
 
-  /** Gets the tab with the given name, initializing it if necessary. */
-  protected JPanel getTab(String tab) {
-    int ndx = tabs.indexOfTab(tab);
-    if (ndx < 0) {
-      JPanel p = new JPanel();
-      p.setLayout(new BoxLayout(p, BoxLayout.Y_AXIS));
-      p.setBorder(new EmptyBorder(5, 5, 5, 5));
-      tabs.addTab(tab, p);
-      ndx = tabs.getTabCount() - 1;
-    }
-    return (JPanel) tabs.getComponentAt(ndx);
-  }
+	/** Gets the tab with the given name, initializing it if necessary. */
+	protected JPanel getTab(final String tab) {
+		int ndx = tabs.indexOfTab(tab);
+		if (ndx < 0) {
+			final JPanel p = new JPanel();
+			p.setLayout(new BoxLayout(p, BoxLayout.Y_AXIS));
+			p.setBorder(new EmptyBorder(5, 5, 5, 5));
+			tabs.addTab(tab, p);
+			ndx = tabs.getTabCount() - 1;
+		}
+		return (JPanel) tabs.getComponentAt(ndx);
+	}
 }

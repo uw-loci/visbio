@@ -31,64 +31,71 @@ import java.util.EventObject;
  */
 public class VisBioEvent extends EventObject {
 
-  // -- Constants --
+	// -- Constants --
 
-  /** Indicates a new logic manager has been integrated into VisBio. */
-  public static final int LOGIC_ADDED = 1;
+	/** Indicates a new logic manager has been integrated into VisBio. */
+	public static final int LOGIC_ADDED = 1;
 
-  /** Indicates the state of one of VisBio's logic managers has changed. */
-  public static final int STATE_CHANGED = 2;
+	/** Indicates the state of one of VisBio's logic managers has changed. */
+	public static final int STATE_CHANGED = 2;
 
-  // -- Fields --
+	// -- Fields --
 
-  /** The type of this event. */
-  private int eventType;
+	/** The type of this event. */
+	private final int eventType;
 
-  /** String message associated with this event. */
-  private String message;
+	/** String message associated with this event. */
+	private final String message;
 
-  /** Flag indicating whether event is undoable. */
-  private boolean undoable;
+	/** Flag indicating whether event is undoable. */
+	private final boolean undoable;
 
-  // -- Constructor --
+	// -- Constructor --
 
-  /** Constructs a VisBio event. */
-  public VisBioEvent(Object source, int eventType,
-    String message, boolean undoable)
-  {
-    super(source);
-    this.eventType = eventType;
-    this.message = message;
-    this.undoable = undoable;
-  }
+	/** Constructs a VisBio event. */
+	public VisBioEvent(final Object source, final int eventType,
+		final String message, final boolean undoable)
+	{
+		super(source);
+		this.eventType = eventType;
+		this.message = message;
+		this.undoable = undoable;
+	}
 
-  // -- VisBioEvent API methods --
+	// -- VisBioEvent API methods --
 
-  /** Gets the type of this event. */
-  public int getEventType() { return eventType; }
+	/** Gets the type of this event. */
+	public int getEventType() {
+		return eventType;
+	}
 
-  /** Gets the message for this event. */
-  public String getMessage() { return message; }
+	/** Gets the message for this event. */
+	public String getMessage() {
+		return message;
+	}
 
-  /** Gets whether the event is undoable. */
-  public boolean isUndoable() { return undoable; }
+	/** Gets whether the event is undoable. */
+	public boolean isUndoable() {
+		return undoable;
+	}
 
-  /** Gets a string representation of this event. */
-  public String toString() {
-    StringBuffer sb = new StringBuffer();
-    if (eventType == LOGIC_ADDED) sb.append("LOGIC_ADDED");
-    else if (eventType == STATE_CHANGED) sb.append("STATE_CHANGED");
-    else sb.append("(" + eventType + ")");
-    sb.append(": ");
-    String name = getSource().getClass().getName();
-    if (name.startsWith("loci.visbio.")) name = name.substring(12);
-    sb.append(name);
-    if (message != null) {
-      sb.append(": ");
-      sb.append(message);
-    }
-    if (undoable) sb.append(" [undoable]");
-    return sb.toString();
-  }
+	/** Gets a string representation of this event. */
+	@Override
+	public String toString() {
+		final StringBuffer sb = new StringBuffer();
+		if (eventType == LOGIC_ADDED) sb.append("LOGIC_ADDED");
+		else if (eventType == STATE_CHANGED) sb.append("STATE_CHANGED");
+		else sb.append("(" + eventType + ")");
+		sb.append(": ");
+		String name = getSource().getClass().getName();
+		if (name.startsWith("loci.visbio.")) name = name.substring(12);
+		sb.append(name);
+		if (message != null) {
+			sb.append(": ");
+			sb.append(message);
+		}
+		if (undoable) sb.append(" [undoable]");
+		return sb.toString();
+	}
 
 }

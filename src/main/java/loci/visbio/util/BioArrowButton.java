@@ -33,28 +33,30 @@ import javax.swing.plaf.basic.BasicArrowButton;
  */
 public class BioArrowButton extends BasicArrowButton {
 
-  // -- Constants --
+	// -- Constants --
 
-  /** Default size for arrow buttons. */
-  protected static final int BUTTON_SIZE = 24;
+	/** Default size for arrow buttons. */
+	protected static final int BUTTON_SIZE = 24;
 
-  // -- Fields --
+	// -- Fields --
 
-  /** Size of the arrow button in pixels. */
-  protected Dimension size;
+	/** Size of the arrow button in pixels. */
+	protected Dimension size;
 
-  // -- Constructors --
+	// -- Constructors --
 
-  /** Constructs a new arrow button of default size. */
-  public BioArrowButton(int dir) { this(dir, BUTTON_SIZE); }
+	/** Constructs a new arrow button of default size. */
+	public BioArrowButton(final int dir) {
+		this(dir, BUTTON_SIZE);
+	}
 
-  /** Constructs a new slider widget. */
-  public BioArrowButton(int dir, int size) {
-    super(dir);
-    this.size = new Dimension(size, size);
-    setMinimumSize(this.size);
-    setPreferredSize(this.size);
-    setMaximumSize(this.size);
-  }
+	/** Constructs a new slider widget. */
+	public BioArrowButton(final int dir, final int size) {
+		super(dir);
+		this.size = new Dimension(size, size);
+		setMinimumSize(this.size);
+		setPreferredSize(this.size);
+		setMaximumSize(this.size);
+	}
 
 }

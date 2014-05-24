@@ -27,12 +27,12 @@ package loci.visbio.overlays;
 /**
  * Exception thrown when spreadsheet launch command fails.
  */
-public class SpreadsheetLaunchException extends Exception{
+public class SpreadsheetLaunchException extends Exception {
 
-  // -- Constructor --
+	// -- Constructor --
 
-  /** Constructs a new SpreadsheetLaunchException. */
-  public SpreadsheetLaunchException(String msg) {
-    super(msg);
-  }
+	/** Constructs a new SpreadsheetLaunchException. */
+	public SpreadsheetLaunchException(final String msg) {
+		super(msg);
+	}
 }

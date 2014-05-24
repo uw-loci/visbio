@@ -29,30 +29,37 @@ package loci.visbio.state;
  */
 public class SaveException extends Exception {
 
-  // -- Fields --
+	// -- Fields --
 
-  /** The exception upon which the save exception is based. */
-  private Exception exc;
+	/** The exception upon which the save exception is based. */
+	private Exception exc;
 
-  // -- Constructors --
+	// -- Constructors --
 
-  /** Constructs a save exception with the given message. */
-  public SaveException(String msg) { super(msg); }
+	/** Constructs a save exception with the given message. */
+	public SaveException(final String msg) {
+		super(msg);
+	}
 
-  /** Constructs a save exception based on the given exception. */
-  public SaveException(Exception exc) { this.exc = exc; }
+	/** Constructs a save exception based on the given exception. */
+	public SaveException(final Exception exc) {
+		this.exc = exc;
+	}
 
-  // -- SaveException API methods --
+	// -- SaveException API methods --
 
-  /** Gets the exception upon which this save exception is based. */
-  public Exception getException() { return exc; }
+	/** Gets the exception upon which this save exception is based. */
+	public Exception getException() {
+		return exc;
+	}
 
-  // -- Exception API methods --
+	// -- Exception API methods --
 
-  /** Prints a stack trace. */
-  public void printStackTrace() {
-    if (exc == null) super.printStackTrace();
-    else exc.printStackTrace();
-  }
+	/** Prints a stack trace. */
+	@Override
+	public void printStackTrace() {
+		if (exc == null) super.printStackTrace();
+		else exc.printStackTrace();
+	}
 
 }

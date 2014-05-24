@@ -32,47 +32,50 @@ import visad.DisplayEvent;
  */
 public class LineTool extends OverlayTool {
 
-  // -- Fields --
+	// -- Fields --
 
-  /** Line currently being drawn. */
-  protected OverlayLine line;
+	/** Line currently being drawn. */
+	protected OverlayLine line;
 
-  // -- Constructor --
+	// -- Constructor --
 
-  /** Constructs a measurement line creation tool. */
-  public LineTool(OverlayTransform overlay) {
-    super(overlay, "Line", "Line", "line.png");
-  }
+	/** Constructs a measurement line creation tool. */
+	public LineTool(final OverlayTransform overlay) {
+		super(overlay, "Line", "Line", "line.png");
+	}
 
-  // -- OverlayTool API methods --
+	// -- OverlayTool API methods --
 
-  /** Instructs this tool to respond to a mouse press. */
-  public void mouseDown(DisplayEvent e, int px, int py,
-    float dx, float dy, int[] pos, int mods)
-  {
-    deselectAll();
-    line = new OverlayLine(overlay, dx, dy, dx, dy);
-    overlay.addObject(line, pos);
-  }
+	/** Instructs this tool to respond to a mouse press. */
+	@Override
+	public void mouseDown(final DisplayEvent e, final int px, final int py,
+		final float dx, final float dy, final int[] pos, final int mods)
+	{
+		deselectAll();
+		line = new OverlayLine(overlay, dx, dy, dx, dy);
+		overlay.addObject(line, pos);
+	}
 
-  /** Instructs this tool to respond to a mouse release. */
-  public void mouseUp(DisplayEvent e, int px, int py,
-    float dx, float dy, int[] pos, int mods)
-  {
-    if (line == null) return;
-    line.setDrawing(false);
-    if (!line.hasData()) overlay.removeObject(line);
-    line = null;
-    overlay.notifyListeners(new TransformEvent(overlay));
-  }
+	/** Instructs this tool to respond to a mouse release. */
+	@Override
+	public void mouseUp(final DisplayEvent e, final int px, final int py,
+		final float dx, final float dy, final int[] pos, final int mods)
+	{
+		if (line == null) return;
+		line.setDrawing(false);
+		if (!line.hasData()) overlay.removeObject(line);
+		line = null;
+		overlay.notifyListeners(new TransformEvent(overlay));
+	}
 
-  /** Instructs this tool to respond to a mouse drag. */
-  public void mouseDrag(DisplayEvent e, int px, int py,
-    float dx, float dy, int[] pos, int mods)
-  {
-    if (line == null) return;
-    line.setCoords2(dx, dy);
-    overlay.notifyListeners(new TransformEvent(overlay));
-  }
+	/** Instructs this tool to respond to a mouse drag. */
+	@Override
+	public void mouseDrag(final DisplayEvent e, final int px, final int py,
+		final float dx, final float dy, final int[] pos, final int mods)
+	{
+		if (line == null) return;
+		line.setCoords2(dx, dy);
+		overlay.notifyListeners(new TransformEvent(overlay));
+	}
 
 }

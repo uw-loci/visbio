@@ -29,7 +29,7 @@ package loci.visbio.util;
  */
 public interface OutputListener {
 
-  /** Used to notify listeners when an output console produces output. */
-  void outputProduced(OutputEvent e);
+	/** Used to notify listeners when an output console produces output. */
+	void outputProduced(OutputEvent e);
 
 }

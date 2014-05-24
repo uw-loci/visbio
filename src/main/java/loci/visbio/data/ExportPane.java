@@ -64,523 +64,540 @@ import visad.util.DataUtility;
  */
 public class ExportPane extends WizardPane {
 
-  // -- GUI components, page 1 --
+	// -- GUI components, page 1 --
 
-  /** Folder on disk text field. */
-  private JTextField folderField;
+	/** Folder on disk text field. */
+	private final JTextField folderField;
 
-  /** Button for choosing output folder. */
-  private JButton chooseButton;
+	/** Button for choosing output folder. */
+	private final JButton chooseButton;
 
-  /** File pattern text field. */
-  private JTextField patternField;
+	/** File pattern text field. */
+	private final JTextField patternField;
 
-  /** File format combo box. */
-  private BioComboBox formatBox;
+	/** File format combo box. */
+	private final BioComboBox formatBox;
 
-  // -- GUI components, page 2 --
+	// -- GUI components, page 2 --
 
-  /** Panel for dynamic second page components. */
-  private JPanel second;
+	/** Panel for dynamic second page components. */
+	private final JPanel second;
 
-  /** Check box indicating whether file numbering should use leading zeroes. */
-  private JCheckBox leadingZeroes;
+	/** Check box indicating whether file numbering should use leading zeroes. */
+	private final JCheckBox leadingZeroes;
 
-  /** Frames per second for movie formats. */
-  private JTextField fps;
+	/** Frames per second for movie formats. */
+	private final JTextField fps;
 
-  /** Checkbox for LZW compression (TIFF only). */
-  private JCheckBox lzw;
+	/** Checkbox for LZW compression (TIFF only). */
+	private final JCheckBox lzw;
 
-  /** Combo boxes for mapping each star to corresponding dimensional axes. */
-  private BioComboBox[] letterBoxes;
+	/** Combo boxes for mapping each star to corresponding dimensional axes. */
+	private BioComboBox[] letterBoxes;
 
-  // -- GUI components, page 3 --
+	// -- GUI components, page 3 --
 
-  /** Panel for dynamic third page components. */
-  private JPanel third;
+	/** Panel for dynamic third page components. */
+	private final JPanel third;
 
-  /** Pane containing export summary. */
-  private JEditorPane summary;
+	/** Pane containing export summary. */
+	private final JEditorPane summary;
 
-  // -- Other fields --
+	// -- Other fields --
 
-  /** Associated VisBio frame (for displaying export status). */
-  private VisBioFrame bio;
+	/** Associated VisBio frame (for displaying export status). */
+	private final VisBioFrame bio;
 
-  /** Writer for saving images to disk. */
-  private BufferedImageWriter saver;
+	/** Writer for saving images to disk. */
+	private final BufferedImageWriter saver;
 
-  /** Data object from which exportable data will be derived. */
-  private ImageTransform trans;
+	/** Data object from which exportable data will be derived. */
+	private ImageTransform trans;
 
-  /** File pattern, divided into tokens. */
-  private String[] tokens;
+	/** File pattern, divided into tokens. */
+	private String[] tokens;
 
-  /** Number of "stars" in the file pattern. */
-  private int stars;
+	/** Number of "stars" in the file pattern. */
+	private int stars;
 
-  /** Mapping from each star to corresponding dimensional axis. */
-  private int[] maps;
+	/** Mapping from each star to corresponding dimensional axis. */
+	private int[] maps;
 
-  /** Excluded index (not mapped to a star). */
-  private int excl;
+	/** Excluded index (not mapped to a star). */
+	private int excl;
 
-  /** Number of total files to export. */
-  private int numFiles;
+	/** Number of total files to export. */
+	private int numFiles;
 
-  // -- Constructor --
+	// -- Constructor --
 
-  /** Creates a multidimensional data export dialog. */
-  public ExportPane(VisBioFrame bio) {
-    super("Export data");
-    this.bio = bio;
-    saver = new BufferedImageWriter();
+	/** Creates a multidimensional data export dialog. */
+	public ExportPane(final VisBioFrame bio) {
+		super("Export data");
+		this.bio = bio;
+		saver = new BufferedImageWriter();
 
-    // -- Page 1 --
+		// -- Page 1 --
 
-    // folder widgets
-    folderField = new JTextField(System.getProperty("user.dir"));
-    chooseButton = new JButton("Choose...");
-    chooseButton.setMnemonic('h');
-    chooseButton.setActionCommand("folder");
-    chooseButton.addActionListener(this);
-
-    // pattern fields
-    patternField = new JTextField();
-
-    // format combo box
-    String[] formats = new String[] {"TIFF", "MOV"};
-    formatBox = new BioComboBox(formats);
-
-    // lay out first page
-    PanelBuilder builder = new PanelBuilder(new FormLayout(
-      "pref, 3dlu, pref:grow, 3dlu, pref, 3dlu, pref", "pref, 3dlu, pref"));
-    CellConstraints cc = new CellConstraints();
-    builder.addLabel("F&older", cc.xy(1, 1)).setLabelFor(folderField);
-    builder.add(folderField, cc.xyw(3, 1, 3));
-    builder.add(chooseButton, cc.xy(7, 1));
-
-    builder.addLabel("File &pattern", cc.xy(1, 3)).setLabelFor(patternField);
-    builder.add(patternField, cc.xy(3, 3));
-    builder.addLabel("&Format", cc.xy(5, 3)).setLabelFor(formatBox);
-    builder.add(formatBox, cc.xy(7, 3));
-    JPanel first = builder.getPanel();
-
-    // -- Page 2 --
-
-    // pad file numbering with leading zeroes checkbox
-    leadingZeroes = new JCheckBox("Pad file numbering with leading zeroes");
-    leadingZeroes.setMnemonic('p');
-
-    // frames per second text field
-    fps = new JTextField(4);
-
-    // LZW compression checkbox
-    lzw = new JCheckBox("LZW compression");
-    lzw.setMnemonic('c');
-
-    // lay out second page
-    second = new JPanel();
-    second.setLayout(new BorderLayout());
-
-    // -- Page 3 --
-
-    // summary text area
-    summary = new JEditorPane();
-    summary.setEditable(false);
-    summary.setContentType("text/html");
-    JScrollPane summaryScroll = new JScrollPane(summary);
-    SwingUtil.configureScrollPane(summaryScroll);
-
-    // lay out third page
-    third = new JPanel();
-    third.setLayout(new BorderLayout());
-
-    // lay out pages
-    setPages(new JPanel[] {first, second, third});
-  }
-
-  // -- ExportPane API methods --
-
-  /** Associates the given data object with the export pane. */
-  public void setData(ImageTransform trans) {
-    this.trans = trans;
-    if (trans == null) return;
-  }
-
-  /** Exports the data according to the current input parameters. */
-  public void export() {
-    final int[] lengths = trans.getLengths();
-    final int numImages = excl < 0 ? 1 : lengths[excl];
-    final int numTotal = numFiles * numImages;
-    final String format = (String) formatBox.getSelectedItem();
-    TaskManager tm = (TaskManager) bio.getManager(TaskManager.class);
-    final BioTask task = tm.createTask("Export " +
-      trans.getName() + " to disk");
-    new Thread() {
-      public void run() {
-        try {
-          int count = 0;
-          int max = 2 * numTotal;
-          task.setStatus(0, max, "Exporting data");
-          boolean doLZW = lzw.isSelected();
-          boolean padZeroes = leadingZeroes.isSelected();
-          int[] plen = new int[stars];
-          for (int i=0; i<stars; i++) plen[i] = lengths[maps[i]];
-
-          int[] lengths = trans.getLengths();
-          for (int i=0; i<numFiles; i++) {
-            int[] pos = FormatTools.rasterToPosition(plen, i);
-            int[] npos = new int[lengths.length];
-            for (int j=0; j<stars; j++) npos[maps[j]] = pos[j];
-
-            // construct filename
-            StringBuffer sb = new StringBuffer();
-            for (int j=0; j<stars; j++) {
-              sb.append(tokens[j]);
-              if (padZeroes) {
-                int len = ("" + lengths[maps[j]]).length() -
-                  ("" + (pos[j] + 1)).length();
-                for (int k=0; k<len; k++) sb.append("0");
-              }
-              sb.append(pos[j] + 1);
-            }
-            sb.append(tokens[stars]);
-            String filename = sb.toString();
-
-            // construct data object
-            if (excl < 0) {
-              task.setStatus(count++, max,
-                "Reading #" + (i + 1) + "/" + numTotal);
-              FlatField ff = (FlatField) trans.getData(null, npos, 2, null);
-              Image image = ff instanceof ImageFlatField ?
-                ((ImageFlatField) ff).getImage() :
-                DataUtility.extractImage(ff, false);
-              task.setStatus(count++, max,
-                "Writing #" + (i + 1) + "/" + numTotal);
-              saver.setId(filename);
-              if (doLZW) saver.setCompression("LZW");
-              saver.savePlane(0, AWTImageTools.makeBuffered(image));
-            }
-            else {
-              for (int j=0; j<lengths[excl]; j++) {
-                int img = numImages * i + j + 1;
-                task.setStatus(count++, max,
-                  "Reading #" + img + "/" + numTotal);
-                npos[excl] = j;
-                FlatField ff = (FlatField) trans.getData(null, npos, 2, null);
-                Image image = ff instanceof ImageFlatField ?
-                  ((ImageFlatField) ff).getImage() :
-                  DataUtility.extractImage(ff, false);
-                task.setStatus(count++, max,
-                  "Writing #" + img + "/" + numTotal);
-                saver.setId(filename);
-                if (doLZW) saver.setCompression("LZW");
-                saver.savePlane(j, AWTImageTools.makeBuffered(image));
-              }
-            }
-          }
-          task.setCompleted();
-        }
-        catch (FormatException exc) {
-          exc.printStackTrace();
-          JOptionPane.showMessageDialog(dialog,
-            "Error exporting data: " + exc.getMessage(),
-            "VisBio", JOptionPane.ERROR_MESSAGE);
-        }
-        catch (IOException exc) {
-          exc.printStackTrace();
-          JOptionPane.showMessageDialog(dialog,
-            "Error exporting data: " + exc.getMessage(),
-            "VisBio", JOptionPane.ERROR_MESSAGE);
-        }
-      }
-    }.start();
-  }
-
-  // -- DialogPane API methods --
-
-  /** Resets the wizard pane's components to their default states. */
-  public void resetComponents() {
-    super.resetComponents();
-    patternField.setText("");
-    formatBox.setSelectedIndex(0);
-  }
-
-  // -- ActionListener API methods --
-
-  /** Handles button press events. */
-  public void actionPerformed(ActionEvent e) {
-    String command = e.getActionCommand();
-    if (command.equals("next")) {
-      if (page == 0) { // lay out page 2
-        // ensure file pattern ends with appropriate format extension
-        // also determine visibility of "frames per second" text field
-        String pattern = folderField.getText() +
-          File.separator + patternField.getText();
-        String format = (String) formatBox.getSelectedItem();
-        String plow = pattern.toLowerCase();
-        boolean doFPS = false, doLZW = false;
-        if (format.equals("PIC")) {
-          if (!plow.endsWith(".pic")) pattern += ".pic";
-        }
-        else if (format.equals("TIFF")) {
-          if (!plow.endsWith(".tiff") && !plow.endsWith(".tif")) {
-            pattern += ".tif";
-            doLZW = true;
-          }
-        }
-        else if (format.equals("MOV")) {
-          if (!plow.endsWith(".mov")) pattern += ".mov";
-          doFPS = true;
-        }
-
-        // parse file pattern
-        StringTokenizer st = new StringTokenizer("#" + pattern + "#", "*");
-        tokens = new String[st.countTokens()];
-        for (int i=0; i<tokens.length; i++) {
-          String t = st.nextToken();
-          if (i == 0) t = t.substring(1);
-          if (i == tokens.length - 1) t = t.substring(0, t.length() - 1);
-          tokens[i] = t;
-        }
-        stars = tokens.length - 1;
-        String[] dims = trans.getDimTypes();
-        int q = dims.length - stars;
-        if (q < 0 || q > 1) {
-          String msg;
-          if (dims.length == 0) {
-            msg = "Please specify a single filename (no asterisks).";
-          }
-          else if (dims.length == 1) {
-            msg = "Please specify either a single filename (no asterisks) " +
-              "or a file pattern with\none asterisk to indicate where the " +
-              "dimensional axes should be numbered.";
-          }
-          else {
-            msg = "Please specify either " + (dims.length - 1) + " or " +
-              dims.length + " asterisks in the file pattern to\nindicate " +
-              "where the dimensional axes should be numbered.";
-          }
-          JOptionPane.showMessageDialog(dialog, msg, "VisBio",
-            JOptionPane.ERROR_MESSAGE);
-          return;
-        }
-
-        // determine visibility of "leading zeroes" checkbox
-        boolean doZeroes = stars > 0;
-
-        // build file pattern
-        StringBuffer sb = new StringBuffer();
-        for (int i=0; i<stars; i++) {
-          sb.append(tokens[i]);
-          sb.append("<");
-          sb.append((char) ('A' + i));
-          sb.append(">");
-        }
-        sb.append(tokens[stars]);
-        String pat = sb.toString();
-
-        // build list of dimensional axes
-        String[] dimChoices = new String[dims.length];
-        for (int i=0; i<dims.length; i++) {
-          dimChoices[i] = "<" + (i + 1) + "> " + dims[i];
-        }
-
-        // construct second page panel
-        sb = new StringBuffer("pref");
-        if (doFPS) sb.append(", 3dlu, pref");
-        if (doLZW) sb.append(", 3dlu, pref");
-        if (doZeroes) sb.append(", 3dlu, pref");
-        for (int i=0; i<stars; i++) {
-          sb.append(", 3dlu, pref");
-        }
-        PanelBuilder builder = new PanelBuilder(new FormLayout(
-          "pref:grow, 3dlu, pref", sb.toString()));
-        CellConstraints cc = new CellConstraints();
-        builder.addSeparator(pat, cc.xyw(1, 1, 3));
-        int row = 3;
-        if (doFPS) {
-          builder.addLabel("&Frames per second",
-            cc.xy(1, row, "right,center")).setLabelFor(fps);
-          builder.add(fps, cc.xy(3, row));
-          row += 2;
-        }
-        if (doLZW) {
-          builder.add(lzw, cc.xyw(1, row, 3, "right, center"));
-          row += 2;
-        }
-        if (doZeroes) {
-          builder.add(leadingZeroes, cc.xyw(1, row, 3, "right,center"));
-          row += 2;
-        }
-        letterBoxes = new BioComboBox[stars];
-        for (int i=0; i<stars; i++) {
-          char letter = (char) ('A' + i);
-          builder.addLabel("<" + letter + "> =",
-            cc.xy(1, row, "right,center"));
-          letterBoxes[i] = new BioComboBox(dimChoices);
-          letterBoxes[i].setSelectedIndex(i);
-          builder.add(letterBoxes[i], cc.xy(3, row));
-          row += 2;
-        }
-        second.removeAll();
-        second.add(builder.getPanel());
-      }
-      else if (page == 1) { // lay out page 3
-        String[] dims = trans.getDimTypes();
-        int[] lengths = trans.getLengths();
-
-        // file pattern
-        StringBuffer sb = new StringBuffer("File pattern: ");
-        for (int i=0; i<stars; i++) {
-          sb.append(tokens[i]);
-          char letter = (char) ('A' + i);
-          sb.append("<");
-          sb.append(letter);
-          sb.append(">");
-        }
-        sb.append(tokens[stars]);
-
-        // file format
-        sb.append("\nFormat: ");
-        String format = (String) formatBox.getSelectedItem();
-        if (format.equals("PIC")) sb.append("Bio-Rad PIC file");
-        else if (format.equals("TIFF")) {
-          if (dims.length == stars) sb.append("TIFF image");
-          else sb.append("Multi-page TIFF stack");
-          if (lzw.isSelected()) sb.append(" (LZW)");
-        }
-        else if (format.equals("MOV")) sb.append("QuickTime movie");
-        else sb.append("Unknown");
-        sb.append("\n \n");
-
-        // dimensional mappings
-        maps = new int[stars];
-        if (stars > 0) {
-          for (int i=0; i<stars; i++) {
-            char letter = (char) ('A' + i);
-            sb.append("<");
-            sb.append(letter);
-            sb.append("> numbered across dimension: ");
-            maps[i] = letterBoxes[i].getSelectedIndex();
-            sb.append("<");
-            sb.append(maps[i] + 1);
-            sb.append("> ");
-            sb.append(dims[maps[i]]);
-            sb.append("\n");
-          }
-        }
-        else sb.append(" \n");
-
-        // count dimensional axis exclusions
-        excl = -1;
-        boolean[] b = new boolean[dims.length];
-        for (int i=0; i<stars; i++) b[maps[i]] = true;
-        int exclude = 0;
-        for (int i=0; i<dims.length; i++) {
-          if (!b[i]) {
-            excl = i;
-            exclude++;
-          }
-        }
-
-        // file contents
-        sb.append("Each file will contain ");
-        int q = dims.length - stars;
-        if (q == 0) sb.append("a single image.\n \n");
-        else { // q == 1
-          int len = lengths[excl];
-          sb.append(len);
-          sb.append(" image");
-          if (len != 1) sb.append("s");
-          sb.append(" across dimension: <");
-          sb.append(excl + 1);
-          sb.append("> ");
-          sb.append(dims[excl]);
-          sb.append("\n \n");
-        }
-
-        // verify dimensional axis mappings are acceptable
-        if (exclude != q) {
-          JOptionPane.showMessageDialog(dialog,
-            "Please map each letter to a different dimensional axis.",
-            "VisBio", JOptionPane.ERROR_MESSAGE);
-          return;
-        }
-
-        // verify number of range components is acceptable
-        int rangeCount = trans.getRangeCount();
-        if (format.equals("PIC") && rangeCount != 1) {
-          JOptionPane.showMessageDialog(dialog,
-            "Bio-Rad PIC format requires a data object with a single " +
-            "range component. Please subsample your data object accordingly.",
-            "VisBio", JOptionPane.ERROR_MESSAGE);
-          return;
-        }
-        else if (rangeCount != 1 && rangeCount != 3) {
-          JOptionPane.showMessageDialog(dialog,
-            format + " format requires a data object with either 1 or 3 " +
-            "range components. Please subsample your data object accordingly.",
-            "VisBio", JOptionPane.ERROR_MESSAGE);
-          return;
-        }
-
-        // number of files
-        boolean padZeroes = leadingZeroes.isSelected();
-        sb.append("\nFirst file: ");
-        for (int i=0; i<stars; i++) {
-          sb.append(tokens[i]);
-          if (padZeroes) {
-            int len = ("" + lengths[maps[i]]).length() - 1;
-            for (int j=0; j<len; j++) sb.append("0");
-          }
-          sb.append("1");
-        }
-        sb.append(tokens[stars]);
-        sb.append("\nLast file: ");
-        numFiles = 1;
-        for (int i=0; i<stars; i++) {
-          sb.append(tokens[i]);
-          sb.append(lengths[maps[i]]);
-          numFiles *= lengths[maps[i]];
-        }
-        sb.append(tokens[stars]);
-        sb.append("\nTotal number of files: ");
-        sb.append(numFiles);
-
-        // construct third page panel
-        StringTokenizer st = new StringTokenizer(sb.toString(), "\n");
-        int numLines = st.countTokens();
-        sb = new StringBuffer("pref, 3dlu");
-        for (int i=0; i<numLines; i++) sb.append(", pref");
-        sb.append(", 5dlu");
-        PanelBuilder builder = new PanelBuilder(new FormLayout(
-          "pref:grow", sb.toString()));
-        CellConstraints cc = new CellConstraints();
-        builder.addSeparator("Summary", cc.xy(1, 1));
-        for (int i=0; i<numLines; i++) {
-          builder.addLabel(st.nextToken(), cc.xy(1, i + 3));
-        }
-        third.removeAll();
-        third.add(builder.getPanel());
-      }
-
-      super.actionPerformed(e);
-    }
-    else if (command.equals("folder")) {
-      // pop up folder chooser
-      File dir = new File(folderField.getText());
-      JFileChooser chooser = dir.isDirectory() ?
-        new JFileChooser(dir) : new JFileChooser();
-      chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-      if (chooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
-        dir = chooser.getSelectedFile();
-        if (dir != null) folderField.setText(dir.getPath());
-      }
-    }
-    else super.actionPerformed(e);
-  }
+		// folder widgets
+		folderField = new JTextField(System.getProperty("user.dir"));
+		chooseButton = new JButton("Choose...");
+		chooseButton.setMnemonic('h');
+		chooseButton.setActionCommand("folder");
+		chooseButton.addActionListener(this);
+
+		// pattern fields
+		patternField = new JTextField();
+
+		// format combo box
+		final String[] formats = new String[] { "TIFF", "MOV" };
+		formatBox = new BioComboBox(formats);
+
+		// lay out first page
+		final PanelBuilder builder =
+			new PanelBuilder(new FormLayout(
+				"pref, 3dlu, pref:grow, 3dlu, pref, 3dlu, pref", "pref, 3dlu, pref"));
+		final CellConstraints cc = new CellConstraints();
+		builder.addLabel("F&older", cc.xy(1, 1)).setLabelFor(folderField);
+		builder.add(folderField, cc.xyw(3, 1, 3));
+		builder.add(chooseButton, cc.xy(7, 1));
+
+		builder.addLabel("File &pattern", cc.xy(1, 3)).setLabelFor(patternField);
+		builder.add(patternField, cc.xy(3, 3));
+		builder.addLabel("&Format", cc.xy(5, 3)).setLabelFor(formatBox);
+		builder.add(formatBox, cc.xy(7, 3));
+		final JPanel first = builder.getPanel();
+
+		// -- Page 2 --
+
+		// pad file numbering with leading zeroes checkbox
+		leadingZeroes = new JCheckBox("Pad file numbering with leading zeroes");
+		leadingZeroes.setMnemonic('p');
+
+		// frames per second text field
+		fps = new JTextField(4);
+
+		// LZW compression checkbox
+		lzw = new JCheckBox("LZW compression");
+		lzw.setMnemonic('c');
+
+		// lay out second page
+		second = new JPanel();
+		second.setLayout(new BorderLayout());
+
+		// -- Page 3 --
+
+		// summary text area
+		summary = new JEditorPane();
+		summary.setEditable(false);
+		summary.setContentType("text/html");
+		final JScrollPane summaryScroll = new JScrollPane(summary);
+		SwingUtil.configureScrollPane(summaryScroll);
+
+		// lay out third page
+		third = new JPanel();
+		third.setLayout(new BorderLayout());
+
+		// lay out pages
+		setPages(new JPanel[] { first, second, third });
+	}
+
+	// -- ExportPane API methods --
+
+	/** Associates the given data object with the export pane. */
+	public void setData(final ImageTransform trans) {
+		this.trans = trans;
+		if (trans == null) return;
+	}
+
+	/** Exports the data according to the current input parameters. */
+	public void export() {
+		final int[] lengths = trans.getLengths();
+		final int numImages = excl < 0 ? 1 : lengths[excl];
+		final int numTotal = numFiles * numImages;
+		final String format = (String) formatBox.getSelectedItem();
+		final TaskManager tm = (TaskManager) bio.getManager(TaskManager.class);
+		final BioTask task =
+			tm.createTask("Export " + trans.getName() + " to disk");
+		new Thread() {
+
+			@Override
+			public void run() {
+				try {
+					int count = 0;
+					final int max = 2 * numTotal;
+					task.setStatus(0, max, "Exporting data");
+					final boolean doLZW = lzw.isSelected();
+					final boolean padZeroes = leadingZeroes.isSelected();
+					final int[] plen = new int[stars];
+					for (int i = 0; i < stars; i++)
+						plen[i] = lengths[maps[i]];
+
+					final int[] lengths = trans.getLengths();
+					for (int i = 0; i < numFiles; i++) {
+						final int[] pos = FormatTools.rasterToPosition(plen, i);
+						final int[] npos = new int[lengths.length];
+						for (int j = 0; j < stars; j++)
+							npos[maps[j]] = pos[j];
+
+						// construct filename
+						final StringBuffer sb = new StringBuffer();
+						for (int j = 0; j < stars; j++) {
+							sb.append(tokens[j]);
+							if (padZeroes) {
+								final int len =
+									("" + lengths[maps[j]]).length() -
+										("" + (pos[j] + 1)).length();
+								for (int k = 0; k < len; k++)
+									sb.append("0");
+							}
+							sb.append(pos[j] + 1);
+						}
+						sb.append(tokens[stars]);
+						final String filename = sb.toString();
+
+						// construct data object
+						if (excl < 0) {
+							task.setStatus(count++, max, "Reading #" + (i + 1) + "/" +
+								numTotal);
+							final FlatField ff =
+								(FlatField) trans.getData(null, npos, 2, null);
+							final Image image =
+								ff instanceof ImageFlatField ? ((ImageFlatField) ff).getImage()
+									: DataUtility.extractImage(ff, false);
+							task.setStatus(count++, max, "Writing #" + (i + 1) + "/" +
+								numTotal);
+							saver.setId(filename);
+							if (doLZW) saver.setCompression("LZW");
+							saver.savePlane(0, AWTImageTools.makeBuffered(image));
+						}
+						else {
+							for (int j = 0; j < lengths[excl]; j++) {
+								final int img = numImages * i + j + 1;
+								task
+									.setStatus(count++, max, "Reading #" + img + "/" + numTotal);
+								npos[excl] = j;
+								final FlatField ff =
+									(FlatField) trans.getData(null, npos, 2, null);
+								final Image image =
+									ff instanceof ImageFlatField ? ((ImageFlatField) ff)
+										.getImage() : DataUtility.extractImage(ff, false);
+								task
+									.setStatus(count++, max, "Writing #" + img + "/" + numTotal);
+								saver.setId(filename);
+								if (doLZW) saver.setCompression("LZW");
+								saver.savePlane(j, AWTImageTools.makeBuffered(image));
+							}
+						}
+					}
+					task.setCompleted();
+				}
+				catch (final FormatException exc) {
+					exc.printStackTrace();
+					JOptionPane.showMessageDialog(dialog, "Error exporting data: " +
+						exc.getMessage(), "VisBio", JOptionPane.ERROR_MESSAGE);
+				}
+				catch (final IOException exc) {
+					exc.printStackTrace();
+					JOptionPane.showMessageDialog(dialog, "Error exporting data: " +
+						exc.getMessage(), "VisBio", JOptionPane.ERROR_MESSAGE);
+				}
+			}
+		}.start();
+	}
+
+	// -- DialogPane API methods --
+
+	/** Resets the wizard pane's components to their default states. */
+	@Override
+	public void resetComponents() {
+		super.resetComponents();
+		patternField.setText("");
+		formatBox.setSelectedIndex(0);
+	}
+
+	// -- ActionListener API methods --
+
+	/** Handles button press events. */
+	@Override
+	public void actionPerformed(final ActionEvent e) {
+		final String command = e.getActionCommand();
+		if (command.equals("next")) {
+			if (page == 0) { // lay out page 2
+				// ensure file pattern ends with appropriate format extension
+				// also determine visibility of "frames per second" text field
+				String pattern =
+					folderField.getText() + File.separator + patternField.getText();
+				final String format = (String) formatBox.getSelectedItem();
+				final String plow = pattern.toLowerCase();
+				boolean doFPS = false, doLZW = false;
+				if (format.equals("PIC")) {
+					if (!plow.endsWith(".pic")) pattern += ".pic";
+				}
+				else if (format.equals("TIFF")) {
+					if (!plow.endsWith(".tiff") && !plow.endsWith(".tif")) {
+						pattern += ".tif";
+						doLZW = true;
+					}
+				}
+				else if (format.equals("MOV")) {
+					if (!plow.endsWith(".mov")) pattern += ".mov";
+					doFPS = true;
+				}
+
+				// parse file pattern
+				final StringTokenizer st =
+					new StringTokenizer("#" + pattern + "#", "*");
+				tokens = new String[st.countTokens()];
+				for (int i = 0; i < tokens.length; i++) {
+					String t = st.nextToken();
+					if (i == 0) t = t.substring(1);
+					if (i == tokens.length - 1) t = t.substring(0, t.length() - 1);
+					tokens[i] = t;
+				}
+				stars = tokens.length - 1;
+				final String[] dims = trans.getDimTypes();
+				final int q = dims.length - stars;
+				if (q < 0 || q > 1) {
+					String msg;
+					if (dims.length == 0) {
+						msg = "Please specify a single filename (no asterisks).";
+					}
+					else if (dims.length == 1) {
+						msg =
+							"Please specify either a single filename (no asterisks) "
+								+ "or a file pattern with\none asterisk to indicate where the "
+								+ "dimensional axes should be numbered.";
+					}
+					else {
+						msg =
+							"Please specify either " + (dims.length - 1) + " or " +
+								dims.length + " asterisks in the file pattern to\nindicate " +
+								"where the dimensional axes should be numbered.";
+					}
+					JOptionPane.showMessageDialog(dialog, msg, "VisBio",
+						JOptionPane.ERROR_MESSAGE);
+					return;
+				}
+
+				// determine visibility of "leading zeroes" checkbox
+				final boolean doZeroes = stars > 0;
+
+				// build file pattern
+				StringBuffer sb = new StringBuffer();
+				for (int i = 0; i < stars; i++) {
+					sb.append(tokens[i]);
+					sb.append("<");
+					sb.append((char) ('A' + i));
+					sb.append(">");
+				}
+				sb.append(tokens[stars]);
+				final String pat = sb.toString();
+
+				// build list of dimensional axes
+				final String[] dimChoices = new String[dims.length];
+				for (int i = 0; i < dims.length; i++) {
+					dimChoices[i] = "<" + (i + 1) + "> " + dims[i];
+				}
+
+				// construct second page panel
+				sb = new StringBuffer("pref");
+				if (doFPS) sb.append(", 3dlu, pref");
+				if (doLZW) sb.append(", 3dlu, pref");
+				if (doZeroes) sb.append(", 3dlu, pref");
+				for (int i = 0; i < stars; i++) {
+					sb.append(", 3dlu, pref");
+				}
+				final PanelBuilder builder =
+					new PanelBuilder(new FormLayout("pref:grow, 3dlu, pref", sb
+						.toString()));
+				final CellConstraints cc = new CellConstraints();
+				builder.addSeparator(pat, cc.xyw(1, 1, 3));
+				int row = 3;
+				if (doFPS) {
+					builder.addLabel("&Frames per second", cc.xy(1, row, "right,center"))
+						.setLabelFor(fps);
+					builder.add(fps, cc.xy(3, row));
+					row += 2;
+				}
+				if (doLZW) {
+					builder.add(lzw, cc.xyw(1, row, 3, "right, center"));
+					row += 2;
+				}
+				if (doZeroes) {
+					builder.add(leadingZeroes, cc.xyw(1, row, 3, "right,center"));
+					row += 2;
+				}
+				letterBoxes = new BioComboBox[stars];
+				for (int i = 0; i < stars; i++) {
+					final char letter = (char) ('A' + i);
+					builder.addLabel("<" + letter + "> =", cc.xy(1, row, "right,center"));
+					letterBoxes[i] = new BioComboBox(dimChoices);
+					letterBoxes[i].setSelectedIndex(i);
+					builder.add(letterBoxes[i], cc.xy(3, row));
+					row += 2;
+				}
+				second.removeAll();
+				second.add(builder.getPanel());
+			}
+			else if (page == 1) { // lay out page 3
+				final String[] dims = trans.getDimTypes();
+				final int[] lengths = trans.getLengths();
+
+				// file pattern
+				StringBuffer sb = new StringBuffer("File pattern: ");
+				for (int i = 0; i < stars; i++) {
+					sb.append(tokens[i]);
+					final char letter = (char) ('A' + i);
+					sb.append("<");
+					sb.append(letter);
+					sb.append(">");
+				}
+				sb.append(tokens[stars]);
+
+				// file format
+				sb.append("\nFormat: ");
+				final String format = (String) formatBox.getSelectedItem();
+				if (format.equals("PIC")) sb.append("Bio-Rad PIC file");
+				else if (format.equals("TIFF")) {
+					if (dims.length == stars) sb.append("TIFF image");
+					else sb.append("Multi-page TIFF stack");
+					if (lzw.isSelected()) sb.append(" (LZW)");
+				}
+				else if (format.equals("MOV")) sb.append("QuickTime movie");
+				else sb.append("Unknown");
+				sb.append("\n \n");
+
+				// dimensional mappings
+				maps = new int[stars];
+				if (stars > 0) {
+					for (int i = 0; i < stars; i++) {
+						final char letter = (char) ('A' + i);
+						sb.append("<");
+						sb.append(letter);
+						sb.append("> numbered across dimension: ");
+						maps[i] = letterBoxes[i].getSelectedIndex();
+						sb.append("<");
+						sb.append(maps[i] + 1);
+						sb.append("> ");
+						sb.append(dims[maps[i]]);
+						sb.append("\n");
+					}
+				}
+				else sb.append(" \n");
+
+				// count dimensional axis exclusions
+				excl = -1;
+				final boolean[] b = new boolean[dims.length];
+				for (int i = 0; i < stars; i++)
+					b[maps[i]] = true;
+				int exclude = 0;
+				for (int i = 0; i < dims.length; i++) {
+					if (!b[i]) {
+						excl = i;
+						exclude++;
+					}
+				}
+
+				// file contents
+				sb.append("Each file will contain ");
+				final int q = dims.length - stars;
+				if (q == 0) sb.append("a single image.\n \n");
+				else { // q == 1
+					final int len = lengths[excl];
+					sb.append(len);
+					sb.append(" image");
+					if (len != 1) sb.append("s");
+					sb.append(" across dimension: <");
+					sb.append(excl + 1);
+					sb.append("> ");
+					sb.append(dims[excl]);
+					sb.append("\n \n");
+				}
+
+				// verify dimensional axis mappings are acceptable
+				if (exclude != q) {
+					JOptionPane.showMessageDialog(dialog,
+						"Please map each letter to a different dimensional axis.",
+						"VisBio", JOptionPane.ERROR_MESSAGE);
+					return;
+				}
+
+				// verify number of range components is acceptable
+				final int rangeCount = trans.getRangeCount();
+				if (format.equals("PIC") && rangeCount != 1) {
+					JOptionPane
+						.showMessageDialog(
+							dialog,
+							"Bio-Rad PIC format requires a data object with a single "
+								+ "range component. Please subsample your data object accordingly.",
+							"VisBio", JOptionPane.ERROR_MESSAGE);
+					return;
+				}
+				else if (rangeCount != 1 && rangeCount != 3) {
+					JOptionPane.showMessageDialog(dialog, format +
+						" format requires a data object with either 1 or 3 " +
+						"range components. Please subsample your data object accordingly.",
+						"VisBio", JOptionPane.ERROR_MESSAGE);
+					return;
+				}
+
+				// number of files
+				final boolean padZeroes = leadingZeroes.isSelected();
+				sb.append("\nFirst file: ");
+				for (int i = 0; i < stars; i++) {
+					sb.append(tokens[i]);
+					if (padZeroes) {
+						final int len = ("" + lengths[maps[i]]).length() - 1;
+						for (int j = 0; j < len; j++)
+							sb.append("0");
+					}
+					sb.append("1");
+				}
+				sb.append(tokens[stars]);
+				sb.append("\nLast file: ");
+				numFiles = 1;
+				for (int i = 0; i < stars; i++) {
+					sb.append(tokens[i]);
+					sb.append(lengths[maps[i]]);
+					numFiles *= lengths[maps[i]];
+				}
+				sb.append(tokens[stars]);
+				sb.append("\nTotal number of files: ");
+				sb.append(numFiles);
+
+				// construct third page panel
+				final StringTokenizer st = new StringTokenizer(sb.toString(), "\n");
+				final int numLines = st.countTokens();
+				sb = new StringBuffer("pref, 3dlu");
+				for (int i = 0; i < numLines; i++)
+					sb.append(", pref");
+				sb.append(", 5dlu");
+				final PanelBuilder builder =
+					new PanelBuilder(new FormLayout("pref:grow", sb.toString()));
+				final CellConstraints cc = new CellConstraints();
+				builder.addSeparator("Summary", cc.xy(1, 1));
+				for (int i = 0; i < numLines; i++) {
+					builder.addLabel(st.nextToken(), cc.xy(1, i + 3));
+				}
+				third.removeAll();
+				third.add(builder.getPanel());
+			}
+
+			super.actionPerformed(e);
+		}
+		else if (command.equals("folder")) {
+			// pop up folder chooser
+			File dir = new File(folderField.getText());
+			final JFileChooser chooser =
+				dir.isDirectory() ? new JFileChooser(dir) : new JFileChooser();
+			chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+			if (chooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
+				dir = chooser.getSelectedFile();
+				if (dir != null) folderField.setText(dir.getPath());
+			}
+		}
+		else super.actionPerformed(e);
+	}
 
 }

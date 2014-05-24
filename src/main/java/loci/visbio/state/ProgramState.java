@@ -23,6 +23,7 @@
  */
 
 package loci.visbio.state;
+
 import org.w3c.dom.Document;
 
 /**
@@ -30,20 +31,20 @@ import org.w3c.dom.Document;
  */
 public class ProgramState {
 
-  // -- Fields --
+	// -- Fields --
 
-  /** Message to be displayed as part of "Undo" and "Redo" menu items. */
-  public String msg;
+	/** Message to be displayed as part of "Undo" and "Redo" menu items. */
+	public String msg;
 
-  /** State object for use in state restoration. */
-  public Document state;
+	/** State object for use in state restoration. */
+	public Document state;
 
-  // -- Constructor --
+	// -- Constructor --
 
-  /** Constructs a VisBio state wrapper. */
-  public ProgramState(String msg, Document state) {
-    this.msg = msg;
-    this.state = state;
-  }
+	/** Constructs a VisBio state wrapper. */
+	public ProgramState(final String msg, final Document state) {
+		this.msg = msg;
+		this.state = state;
+	}
 
 }

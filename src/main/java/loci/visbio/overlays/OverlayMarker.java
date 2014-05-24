@@ -42,117 +42,147 @@ import visad.VisADException;
  */
 public class OverlayMarker extends OverlayObject {
 
-  // -- Static Fields --
+	// -- Static Fields --
 
-  /** The names of the statistics this object reports. */
-  protected static final String COORDS = "Coordinates";
-  protected static final String[] STAT_TYPES =  {COORDS};
+	/** The names of the statistics this object reports. */
+	protected static final String COORDS = "Coordinates";
+	protected static final String[] STAT_TYPES = { COORDS };
 
-  /** The default width of the marker. */
-  protected float width;
+	/** The default width of the marker. */
+	protected float width;
 
-  // -- Constructors --
+	// -- Constructors --
 
-  /** Constructs an uninitialized measurement marker. */
-  public OverlayMarker(OverlayTransform overlay) { super(overlay); }
+	/** Constructs an uninitialized measurement marker. */
+	public OverlayMarker(final OverlayTransform overlay) {
+		super(overlay);
+	}
 
-  /** Constructs a measurement marker. */
-  public OverlayMarker(OverlayTransform overlay, float x, float y) {
-    super(overlay);
-    x1 = x;
-    y1 = y;
-    width = getDefaultWidth();
-  }
+	/** Constructs a measurement marker. */
+	public OverlayMarker(final OverlayTransform overlay, final float x,
+		final float y)
+	{
+		super(overlay);
+		x1 = x;
+		y1 = y;
+		width = getDefaultWidth();
+	}
 
-  // -- Static methods --
+	// -- Static methods --
 
-  /** Returns the names of the statistics this object reports. */
-  public static String[] getStatTypes() { return STAT_TYPES; }
+	/** Returns the names of the statistics this object reports. */
+	public static String[] getStatTypes() {
+		return STAT_TYPES;
+	}
 
-  // -- OverlayObject API methods --
+	// -- OverlayObject API methods --
 
-  /** Returns whether this object is drawable, i.e., is of nonzero
-   *  size, area, length, etc.
-   */
-  public boolean hasData() { return true; }
+	/**
+	 * Returns whether this object is drawable, i.e., is of nonzero size, area,
+	 * length, etc.
+	 */
+	@Override
+	public boolean hasData() {
+		return true;
+	}
 
-  /** Gets VisAD data object representing this overlay. */
-  public DataImpl getData() {
-    if (!hasData()) return null;
-    RealTupleType domain = overlay.getDomainType();
-    TupleType range = overlay.getRangeType();
+	/** Gets VisAD data object representing this overlay. */
+	@Override
+	public DataImpl getData() {
+		if (!hasData()) return null;
+		final RealTupleType domain = overlay.getDomainType();
+		final TupleType range = overlay.getRangeType();
 
-    float[][] setSamples = {
-      {x1, x1, x1, x1 + width, x1 - width},
-      {y1 + width, y1 - width, y1, y1, y1}
-    };
-    Color col = selected ? GLOW_COLOR : color;
-    float r = col.getRed() / 255f;
-    float g = col.getGreen() / 255f;
-    float b = col.getBlue() / 255f;
-    float[][] rangeSamples = new float[4][setSamples[0].length];
-    Arrays.fill(rangeSamples[0], r);
-    Arrays.fill(rangeSamples[1], g);
-    Arrays.fill(rangeSamples[2], b);
-    Arrays.fill(rangeSamples[3], 1.0f);
+		final float[][] setSamples =
+			{ { x1, x1, x1, x1 + width, x1 - width },
+				{ y1 + width, y1 - width, y1, y1, y1 } };
+		final Color col = selected ? GLOW_COLOR : color;
+		final float r = col.getRed() / 255f;
+		final float g = col.getGreen() / 255f;
+		final float b = col.getBlue() / 255f;
+		final float[][] rangeSamples = new float[4][setSamples[0].length];
+		Arrays.fill(rangeSamples[0], r);
+		Arrays.fill(rangeSamples[1], g);
+		Arrays.fill(rangeSamples[2], b);
+		Arrays.fill(rangeSamples[3], 1.0f);
 
-    FlatField field = null;
-    try {
-      GriddedSet fieldSet = new Gridded2DSet(domain,
-        setSamples, setSamples[0].length, null, null, null, false);
-      FunctionType fieldType = new FunctionType(domain, range);
-      field = new FlatField(fieldType, fieldSet);
-      field.setSamples(rangeSamples);
-    }
-    catch (VisADException exc) { exc.printStackTrace(); }
-    catch (RemoteException exc) { exc.printStackTrace(); }
-    return field;
-  }
+		FlatField field = null;
+		try {
+			final GriddedSet fieldSet =
+				new Gridded2DSet(domain, setSamples, setSamples[0].length, null, null,
+					null, false);
+			final FunctionType fieldType = new FunctionType(domain, range);
+			field = new FlatField(fieldType, fieldSet);
+			field.setSamples(rangeSamples);
+		}
+		catch (final VisADException exc) {
+			exc.printStackTrace();
+		}
+		catch (final RemoteException exc) {
+			exc.printStackTrace();
+		}
+		return field;
+	}
 
-  /** Computes the shortest distance from this object to the given point. */
-  public double getDistance(double x, double y) {
-    double xx = x1 - x;
-    double yy = y1 - y;
-    return Math.sqrt(xx * xx + yy * yy);
-  }
+	/** Computes the shortest distance from this object to the given point. */
+	@Override
+	public double getDistance(final double x, final double y) {
+		final double xx = x1 - x;
+		final double yy = y1 - y;
+		return Math.sqrt(xx * xx + yy * yy);
+	}
 
-  /** Returns a specific statistic of this object. */
-  public String getStat(String name) {
-    if (name.equals(COORDS)) {
-      return "(" + x1 + ", " + y1 + ")";
-    }
-    else return "No such statistic for this overlay type";
-  }
+	/** Returns a specific statistic of this object. */
+	@Override
+	public String getStat(final String name) {
+		if (name.equals(COORDS)) {
+			return "(" + x1 + ", " + y1 + ")";
+		}
+		else return "No such statistic for this overlay type";
+	}
 
-  /** Retrieves useful statistics about this overlay. */
-  public String getStatistics() {
-    return "Marker " + COORDS + " = (" + x1 + ", " + y1 + ")";
-  }
+	/** Retrieves useful statistics about this overlay. */
+	@Override
+	public String getStatistics() {
+		return "Marker " + COORDS + " = (" + x1 + ", " + y1 + ")";
+	}
 
-  /** True iff this overlay has an endpoint coordinate pair. */
-  public boolean hasEndpoint() { return true; }
+	/** True iff this overlay has an endpoint coordinate pair. */
+	@Override
+	public boolean hasEndpoint() {
+		return true;
+	}
 
-  /** OverlayMarker's are scalable--returns true. */
-  public boolean isScalable() { return true; }
+	/** OverlayMarker's are scalable--returns true. */
+	@Override
+	public boolean isScalable() {
+		return true;
+	}
 
-  /** Rescales an OverlayMarker. */
-  public void rescale(float multiplier) {
-    //width = getDefaultWidth() * multiplier;
-  }
+	/** Rescales an OverlayMarker. */
+	@Override
+	public void rescale(final float multiplier) {
+		// width = getDefaultWidth() * multiplier;
+	}
 
-  // -- Overlay Marker API methods --
+	// -- Overlay Marker API methods --
 
-  /** Returns the defualt width of this marker. */
-  protected float getDefaultWidth() {
-    return 0.02f * overlay.getScalingValue();
-  }
+	/** Returns the defualt width of this marker. */
+	protected float getDefaultWidth() {
+		return 0.02f * overlay.getScalingValue();
+	}
 
-  /** Returns the width of this marker. */
-  protected float getWidth() { return width; }
+	/** Returns the width of this marker. */
+	protected float getWidth() {
+		return width;
+	}
 
-  // -- Object API methods --
+	// -- Object API methods --
 
-  /** Gets a short string representation of this measurement marker. */
-  public String toString() { return "Marker"; }
+	/** Gets a short string representation of this measurement marker. */
+	@Override
+	public String toString() {
+		return "Marker";
+	}
 
 }

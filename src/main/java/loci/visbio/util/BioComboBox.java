@@ -35,27 +35,32 @@ import javax.swing.JComboBox;
  */
 public class BioComboBox extends JComboBox {
 
-  // -- Constructor --
+	// -- Constructor --
 
-  /** Constructs a new combo box. */
-  public BioComboBox() { super(); }
+	/** Constructs a new combo box. */
+	public BioComboBox() {
+		super();
+	}
 
-  /** Constructs a new combo box. */
-  public BioComboBox(String[] s) { super(s); }
+	/** Constructs a new combo box. */
+	public BioComboBox(final String[] s) {
+		super(s);
+	}
 
-  // -- Component API methods --
+	// -- Component API methods --
 
-  /**
-   * Gets a slightly wider preferred size than normal, to work around a bug
-   * in the Windows and GTK Look and Feels where combo boxes are slightly too
-   * narrow.
-   */
-  public Dimension getPreferredSize() {
-    Dimension prefSize = super.getPreferredSize();
-    if (LAFUtil.isWindowsLookAndFeel() || LAFUtil.isGTKLookAndFeel()) {
-      return new Dimension(prefSize.width + 10, prefSize.height);
-    }
-    return prefSize;
-  }
+	/**
+	 * Gets a slightly wider preferred size than normal, to work around a bug in
+	 * the Windows and GTK Look and Feels where combo boxes are slightly too
+	 * narrow.
+	 */
+	@Override
+	public Dimension getPreferredSize() {
+		final Dimension prefSize = super.getPreferredSize();
+		if (LAFUtil.isWindowsLookAndFeel() || LAFUtil.isGTKLookAndFeel()) {
+			return new Dimension(prefSize.width + 10, prefSize.height);
+		}
+		return prefSize;
+	}
 
 }

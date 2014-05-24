@@ -42,67 +42,76 @@ import org.w3c.dom.Element;
  */
 public class StringOption extends BioOption {
 
-  // -- Fields --
+	// -- Fields --
 
-  /** Text Field containing user's text */
-  private JTextField textField;
+	/** Text Field containing user's text */
+	private final JTextField textField;
 
-  /** Combined text field and label component */
-  private JPanel component;
+	/** Combined text field and label component */
+	private final JPanel component;
 
-  // -- Constructor --
+	// -- Constructor --
 
-  /** Constructs a new option. */
-  public StringOption(String text, String tip, String value, String label) {
-    super(text);
-    textField = new JTextField(value, Math.max(value.length(), 25));
-    textField.setToolTipText(tip);
-    component = makePanelFrom(label, textField);
-  }
+	/** Constructs a new option. */
+	public StringOption(final String text, final String tip, final String value,
+		final String label)
+	{
+		super(text);
+		textField = new JTextField(value, Math.max(value.length(), 25));
+		textField.setToolTipText(tip);
+		component = makePanelFrom(label, textField);
+	}
 
-  // -- StringOption API methods --
+	// -- StringOption API methods --
 
-  /** Gets this option's current setting. */
-  public String getValue() { return textField.getText(); }
+	/** Gets this option's current setting. */
+	public String getValue() {
+		return textField.getText();
+	}
 
-  // -- BioOption API methods --
+	// -- BioOption API methods --
 
-  /** Gets a GUI component representing this option. */
-  public Component getComponent() { return component; }
+	/** Gets a GUI component representing this option. */
+	@Override
+	public Component getComponent() {
+		return component;
+	}
 
-  // -- Saveable API methods --
+	// -- Saveable API methods --
 
-  /** Writes the current state to the given DOM element ("Options"). */
-  public void saveState(Element el) throws SaveException {
-    Element e = XMLUtil.createChild(el, "String");
-    e.setAttribute("name", text);
-    e.setAttribute("value", textField.getText());
-  }
+	/** Writes the current state to the given DOM element ("Options"). */
+	@Override
+	public void saveState(final Element el) throws SaveException {
+		final Element e = XMLUtil.createChild(el, "String");
+		e.setAttribute("name", text);
+		e.setAttribute("value", textField.getText());
+	}
 
-  /** Restores the current state from the given DOM element ("Options"). */
-  public void restoreState(Element el) throws SaveException {
-    Element[] e = XMLUtil.getChildren(el, "String");
-    for (int i=0; i<e.length; i++) {
-      String name = e[i].getAttribute("name");
-      if (!name.equals(text)) continue;
-      String value = e[i].getAttribute("value");
-      textField.setText(value);
-      break;
-    }
-  }
+	/** Restores the current state from the given DOM element ("Options"). */
+	@Override
+	public void restoreState(final Element el) throws SaveException {
+		final Element[] e = XMLUtil.getChildren(el, "String");
+		for (int i = 0; i < e.length; i++) {
+			final String name = e[i].getAttribute("name");
+			if (!name.equals(text)) continue;
+			final String value = e[i].getAttribute("value");
+			textField.setText(value);
+			break;
+		}
+	}
 
-  // -- Helper Methods --
+	// -- Helper Methods --
 
-  /** Constructs a JPanel containing a label and a JTextField */
-  private JPanel makePanelFrom(String label, JTextField textField) {
-    FormLayout fl = new FormLayout("pref, 3dlu, pref", "pref");
+	/** Constructs a JPanel containing a label and a JTextField */
+	private JPanel makePanelFrom(final String label, final JTextField textField) {
+		final FormLayout fl = new FormLayout("pref, 3dlu, pref", "pref");
 
-    PanelBuilder builder = new PanelBuilder(fl);
-    CellConstraints cc = new CellConstraints();
+		final PanelBuilder builder = new PanelBuilder(fl);
+		final CellConstraints cc = new CellConstraints();
 
-    builder.addLabel(label,   cc.xy(1, 1));
-    builder.add(textField,    cc.xy(3, 1));
+		builder.addLabel(label, cc.xy(1, 1));
+		builder.add(textField, cc.xy(3, 1));
 
-    return builder.getPanel();
-  }
+		return builder.getPanel();
+	}
 }

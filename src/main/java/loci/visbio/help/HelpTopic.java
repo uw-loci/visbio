@@ -31,25 +31,29 @@ import javax.swing.tree.DefaultMutableTreeNode;
  */
 public class HelpTopic extends DefaultMutableTreeNode {
 
-  // -- Fields --
+	// -- Fields --
 
-  /** Content source for this help topic. */
-  private String source;
+	/** Content source for this help topic. */
+	private final String source;
 
-  // -- Constructor --
+	// -- Constructor --
 
-  /** Creates a VisBio help topic. */
-  public HelpTopic(String name, String source) {
-    super(name);
-    this.source = source;
-  }
+	/** Creates a VisBio help topic. */
+	public HelpTopic(final String name, final String source) {
+		super(name);
+		this.source = source;
+	}
 
-  // -- HelpWindow API methods --
+	// -- HelpWindow API methods --
 
-  /** Gets the name associated with this help topic. */
-  public String getName() { return (String) getUserObject(); }
+	/** Gets the name associated with this help topic. */
+	public String getName() {
+		return (String) getUserObject();
+	}
 
-  /** Gets the content source for this help topic. */
-  public String getSource() { return source; }
+	/** Gets the content source for this help topic. */
+	public String getSource() {
+		return source;
+	}
 
 }

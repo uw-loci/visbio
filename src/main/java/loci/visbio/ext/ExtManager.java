@@ -31,50 +31,56 @@ import loci.visbio.data.DataManager;
 import loci.visbio.help.HelpManager;
 
 /**
- * ExtManager is the manager encapsulating VisBio's support for
- * external software interfaces (e.g., external programs or MATLAB).
+ * ExtManager is the manager encapsulating VisBio's support for external
+ * software interfaces (e.g., external programs or MATLAB).
  */
 public class ExtManager extends LogicManager {
 
-  // -- Constructor --
+	// -- Constructor --
 
-  /** Constructs an external interface manager. */
-  public ExtManager(VisBioFrame bio) { super(bio); }
+	/** Constructs an external interface manager. */
+	public ExtManager(final VisBioFrame bio) {
+		super(bio);
+	}
 
-  // -- LogicManager API methods --
+	// -- LogicManager API methods --
 
-  /** Called to notify the logic manager of a VisBio event. */
-  public void doEvent(VisBioEvent evt) {
-    int eventType = evt.getEventType();
-    if (eventType == VisBioEvent.LOGIC_ADDED) {
-      LogicManager lm = (LogicManager) evt.getSource();
-      if (lm == this) doGUI();
-    }
-  }
+	/** Called to notify the logic manager of a VisBio event. */
+	@Override
+	public void doEvent(final VisBioEvent evt) {
+		final int eventType = evt.getEventType();
+		if (eventType == VisBioEvent.LOGIC_ADDED) {
+			final LogicManager lm = (LogicManager) evt.getSource();
+			if (lm == this) doGUI();
+		}
+	}
 
-  /** Gets the number of tasks required to initialize this logic manager. */
-  public int getTasks() { return 3; }
+	/** Gets the number of tasks required to initialize this logic manager. */
+	@Override
+	public int getTasks() {
+		return 3;
+	}
 
-  // -- Helper methods --
+	// -- Helper methods --
 
-  /** Adds external interface-related GUI components to VisBio. */
-  private void doGUI() {
-    // external program transform registration
-    bio.setSplashStatus("Initializing external interfaces");
-    DataManager dm = (DataManager) bio.getManager(DataManager.class);
-    dm.registerDataType(ExternalProgram.class, "External program");
+	/** Adds external interface-related GUI components to VisBio. */
+	private void doGUI() {
+		// external program transform registration
+		bio.setSplashStatus("Initializing external interfaces");
+		final DataManager dm = (DataManager) bio.getManager(DataManager.class);
+		dm.registerDataType(ExternalProgram.class, "External program");
 
-    // MATLAB transform registration
-    bio.setSplashStatus(null);
-    if (MatlabUtil.getMatlabVersion() != null) {
-      dm.registerDataType(MatlabFunction.class, "MATLAB function");
-    }
+		// MATLAB transform registration
+		bio.setSplashStatus(null);
+		if (MatlabUtil.getMatlabVersion() != null) {
+			dm.registerDataType(MatlabFunction.class, "MATLAB function");
+		}
 
-    // help window
-    bio.setSplashStatus(null);
-    HelpManager hm = (HelpManager) bio.getManager(HelpManager.class);
-    hm.addHelpTopic("Data transforms/External programs", "external.html");
-    hm.addHelpTopic("Data transforms/MATLAB functions", "matlab.html");
-  }
+		// help window
+		bio.setSplashStatus(null);
+		final HelpManager hm = (HelpManager) bio.getManager(HelpManager.class);
+		hm.addHelpTopic("Data transforms/External programs", "external.html");
+		hm.addHelpTopic("Data transforms/MATLAB functions", "matlab.html");
+	}
 
 }

@@ -33,37 +33,46 @@ import javax.swing.JPanel;
  */
 public class ControlPanel extends JPanel {
 
-  // -- Fields --
+	// -- Fields --
 
-  /** Associated logic manager. */
-  protected LogicManager lm;
+	/** Associated logic manager. */
+	protected LogicManager lm;
 
-  /** Name of this control panel. */
-  protected String name;
+	/** Name of this control panel. */
+	protected String name;
 
-  /** Tip for this control panel. */
-  protected String tip;
+	/** Tip for this control panel. */
+	protected String tip;
 
-  // -- Constructor --
+	// -- Constructor --
 
-  /** Constructs a control panel. */
-  public ControlPanel(LogicManager logic, String name, String tip) {
-    super();
-    lm = logic;
-    this.name = name;
-    this.tip = tip;
-    setLayout(new BorderLayout());
-  }
+	/** Constructs a control panel. */
+	public ControlPanel(final LogicManager logic, final String name,
+		final String tip)
+	{
+		super();
+		lm = logic;
+		this.name = name;
+		this.tip = tip;
+		setLayout(new BorderLayout());
+	}
 
-  // -- ControlPanel API methods --
+	// -- ControlPanel API methods --
 
-  /** Gets control panel's logic manager. */
-  public LogicManager getManager() { return lm; }
+	/** Gets control panel's logic manager. */
+	public LogicManager getManager() {
+		return lm;
+	}
 
-  /** Gets the name of this control panel. */
-  public String getName() { return name; }
+	/** Gets the name of this control panel. */
+	@Override
+	public String getName() {
+		return name;
+	}
 
-  /** Gets the tip for this control panel. */
-  public String getTip() { return tip; }
+	/** Gets the tip for this control panel. */
+	public String getTip() {
+		return tip;
+	}
 
 }

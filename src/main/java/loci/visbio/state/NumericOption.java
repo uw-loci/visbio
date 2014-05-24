@@ -39,88 +39,110 @@ import org.w3c.dom.Element;
  */
 public class NumericOption extends BioOption {
 
-  // -- Fields --
+	// -- Fields --
 
-  /** Panel containing GUI components. */
-  private JPanel panel;
+	/** Panel containing GUI components. */
+	private final JPanel panel;
 
-  /** Text field GUI component. */
-  private JTextField field;
+	/** Text field GUI component. */
+	private final JTextField field;
 
-  // -- Constructor --
+	// -- Constructor --
 
-  /** Constructs a new option. */
-  public NumericOption(String text, String unit, String tip, int value) {
-    this(text, unit, tip, "" + value);
-  }
+	/** Constructs a new option. */
+	public NumericOption(final String text, final String unit, final String tip,
+		final int value)
+	{
+		this(text, unit, tip, "" + value);
+	}
 
-  /** Constructs a new option. */
-  public NumericOption(String text, String unit, String tip, double value) {
-    this(text, unit, tip, "" + value);
-  }
+	/** Constructs a new option. */
+	public NumericOption(final String text, final String unit, final String tip,
+		final double value)
+	{
+		this(text, unit, tip, "" + value);
+	}
 
-  /** Constructs a new option. */
-  public NumericOption(String text, String unit, String tip, String value) {
-    super(text);
+	/** Constructs a new option. */
+	public NumericOption(final String text, final String unit, final String tip,
+		final String value)
+	{
+		super(text);
 
-    // text field
-    field = new JTextField(4);
-    field.setText(value);
-    field.setToolTipText(tip);
+		// text field
+		field = new JTextField(4);
+		field.setText(value);
+		field.setToolTipText(tip);
 
-    // lay out components
-    panel = unit == null ? FormsUtil.makeRow(text, field) :
-      FormsUtil.makeRow(text, field, unit);
-  }
+		// lay out components
+		panel =
+			unit == null ? FormsUtil.makeRow(text, field) : FormsUtil.makeRow(text,
+				field, unit);
+	}
 
-  // -- NumericOption API methods --
+	// -- NumericOption API methods --
 
-  /** Gets this option's current setting as an integer value. */
-  public int getIntegerValue() {
-    int value;
-    try { value = Integer.parseInt(field.getText()); }
-    catch (NumberFormatException exc) { value = -1; }
-    return value;
-  }
+	/** Gets this option's current setting as an integer value. */
+	public int getIntegerValue() {
+		int value;
+		try {
+			value = Integer.parseInt(field.getText());
+		}
+		catch (final NumberFormatException exc) {
+			value = -1;
+		}
+		return value;
+	}
 
-  /**
-   * Gets this option's current setting as a
-   * double-precision floating point value.
-   */
-  public double getFloatingValue() {
-    double value;
-    try { value = Double.parseDouble(field.getText()); }
-    catch (NumberFormatException exc) { value = Double.NaN; }
-    return value;
-  }
+	/**
+	 * Gets this option's current setting as a double-precision floating point
+	 * value.
+	 */
+	public double getFloatingValue() {
+		double value;
+		try {
+			value = Double.parseDouble(field.getText());
+		}
+		catch (final NumberFormatException exc) {
+			value = Double.NaN;
+		}
+		return value;
+	}
 
-  // -- BioOption API methods --
+	// -- BioOption API methods --
 
-  /** Gets a GUI component representing this option. */
-  public Component getComponent() { return panel; }
+	/** Gets a GUI component representing this option. */
+	@Override
+	public Component getComponent() {
+		return panel;
+	}
 
-  /** Sets the GUI component to reflect the given value. */
-  public void setValue(String value) { field.setText(value); }
+	/** Sets the GUI component to reflect the given value. */
+	public void setValue(final String value) {
+		field.setText(value);
+	}
 
-  // -- Saveable API methods --
+	// -- Saveable API methods --
 
-  /** Writes the current state to the given DOM element ("Options"). */
-  public void saveState(Element el) throws SaveException {
-    Element e = XMLUtil.createChild(el, "Number");
-    e.setAttribute("name", text);
-    e.setAttribute("value", field.getText());
-  }
+	/** Writes the current state to the given DOM element ("Options"). */
+	@Override
+	public void saveState(final Element el) throws SaveException {
+		final Element e = XMLUtil.createChild(el, "Number");
+		e.setAttribute("name", text);
+		e.setAttribute("value", field.getText());
+	}
 
-  /** Restores the current state from the given DOM element ("Options"). */
-  public void restoreState(Element el) throws SaveException {
-    Element[] e = XMLUtil.getChildren(el, "Number");
-    for (int i=0; i<e.length; i++) {
-      String name = e[i].getAttribute("name");
-      if (!name.equals(text)) continue;
-      String value = e[i].getAttribute("value");
-      field.setText(value);
-      break;
-    }
-  }
+	/** Restores the current state from the given DOM element ("Options"). */
+	@Override
+	public void restoreState(final Element el) throws SaveException {
+		final Element[] e = XMLUtil.getChildren(el, "Number");
+		for (int i = 0; i < e.length; i++) {
+			final String name = e[i].getAttribute("name");
+			if (!name.equals(text)) continue;
+			final String value = e[i].getAttribute("value");
+			field.setText(value);
+			break;
+		}
+	}
 
 }

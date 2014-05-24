@@ -32,47 +32,50 @@ import visad.DisplayEvent;
  */
 public class TextTool extends OverlayTool {
 
-  // -- Fields --
+	// -- Fields --
 
-  /** Text currently being rendered. */
-  protected OverlayText text;
+	/** Text currently being rendered. */
+	protected OverlayText text;
 
-  // -- Constructor --
+	// -- Constructor --
 
-  /** Constructs a text overlay creation tool. */
-  public TextTool(OverlayTransform overlay) {
-    super(overlay, "Text", "Text", "text.png");
-  }
+	/** Constructs a text overlay creation tool. */
+	public TextTool(final OverlayTransform overlay) {
+		super(overlay, "Text", "Text", "text.png");
+	}
 
-  // -- OverlayTool API methods --
+	// -- OverlayTool API methods --
 
-  /** Instructs this tool to respond to a mouse press. */
-  public void mouseDown(DisplayEvent e, int px, int py,
-    float dx, float dy, int[] pos, int mods)
-  {
-    deselectAll();
-    OverlayWidget controls = (OverlayWidget) overlay.getControls();
-    text = new OverlayText(overlay, dx, dy, controls.getText());
-    overlay.addObject(text, pos);
-  }
+	/** Instructs this tool to respond to a mouse press. */
+	@Override
+	public void mouseDown(final DisplayEvent e, final int px, final int py,
+		final float dx, final float dy, final int[] pos, final int mods)
+	{
+		deselectAll();
+		final OverlayWidget controls = (OverlayWidget) overlay.getControls();
+		text = new OverlayText(overlay, dx, dy, controls.getText());
+		overlay.addObject(text, pos);
+	}
 
-  /** Instructs this tool to respond to a mouse release. */
-  public void mouseUp(DisplayEvent e, int px, int py,
-    float dx, float dy, int[] pos, int mods)
-  {
-    if (text == null) return;
-    text.setDrawing(false);
-    text = null;
-    overlay.notifyListeners(new TransformEvent(overlay));
-  }
+	/** Instructs this tool to respond to a mouse release. */
+	@Override
+	public void mouseUp(final DisplayEvent e, final int px, final int py,
+		final float dx, final float dy, final int[] pos, final int mods)
+	{
+		if (text == null) return;
+		text.setDrawing(false);
+		text = null;
+		overlay.notifyListeners(new TransformEvent(overlay));
+	}
 
-  /** Instructs this tool to respond to a mouse drag. */
-  public void mouseDrag(DisplayEvent e, int px, int py,
-    float dx, float dy, int[] pos, int mods)
-  {
-    if (text == null) return;
-    text.setCoords(dx, dy);
-    overlay.notifyListeners(new TransformEvent(overlay));
-  }
+	/** Instructs this tool to respond to a mouse drag. */
+	@Override
+	public void mouseDrag(final DisplayEvent e, final int px, final int py,
+		final float dx, final float dy, final int[] pos, final int mods)
+	{
+		if (text == null) return;
+		text.setCoords(dx, dy);
+		overlay.notifyListeners(new TransformEvent(overlay));
+	}
 
 }

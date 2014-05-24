@@ -29,19 +29,23 @@ package loci.visbio.util;
  */
 public class SpawnEvent {
 
-  // -- Fields --
+	// -- Fields --
 
-  /** The arguments passed from the spawned application instance. */
-  protected String[] args;
+	/** The arguments passed from the spawned application instance. */
+	protected String[] args;
 
-  // -- Constructor --
+	// -- Constructor --
 
-  /** Constructs an application instance spawn event. */
-  public SpawnEvent(String[] args) { this.args = args; }
+	/** Constructs an application instance spawn event. */
+	public SpawnEvent(final String[] args) {
+		this.args = args;
+	}
 
-  // -- SpawnEvent API methods --
+	// -- SpawnEvent API methods --
 
-  /** Gets the arguments passed from the spawned application instance. */
-  public String[] getArguments() { return args; }
+	/** Gets the arguments passed from the spawned application instance. */
+	public String[] getArguments() {
+		return args;
+	}
 
 }

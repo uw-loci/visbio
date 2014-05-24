@@ -32,38 +32,43 @@ import javax.swing.JCheckBox;
 import javax.swing.JPanel;
 
 /**
- * MessagePane provides a dialog box for displaying a dialog to the user with
- * an "Always display this dialog" checkbox for toggling its appearance.
+ * MessagePane provides a dialog box for displaying a dialog to the user with an
+ * "Always display this dialog" checkbox for toggling its appearance.
  */
 public class MessagePane extends DialogPane {
 
-  // -- Fields --
+	// -- Fields --
 
-  /** Checkbox within dialog. */
-  protected JCheckBox always;
+	/** Checkbox within dialog. */
+	protected JCheckBox always;
 
-  // -- Constructor --
+	// -- Constructor --
 
-  /** Creates a new message pane linked to the given checkbox. */
-  public MessagePane(String title, JPanel panel, boolean allowCancel) {
-    super(title, allowCancel);
+	/** Creates a new message pane linked to the given checkbox. */
+	public MessagePane(final String title, final JPanel panel,
+		final boolean allowCancel)
+	{
+		super(title, allowCancel);
 
-    // create checkbox
-    always = new JCheckBox("Always display this dialog", true);
-    if (!LAFUtil.isMacLookAndFeel()) always.setMnemonic('a');
+		// create checkbox
+		always = new JCheckBox("Always display this dialog", true);
+		if (!LAFUtil.isMacLookAndFeel()) always.setMnemonic('a');
 
-    // lay out components
-    PanelBuilder builder = new PanelBuilder(new FormLayout(
-      "fill:pref:grow", "fill:pref:grow, 3dlu, pref"));
-    CellConstraints cc = new CellConstraints();
-    builder.add(panel, cc.xy(1, 1));
-    builder.add(always, cc.xy(1, 3));
-    add(builder.getPanel());
-  }
+		// lay out components
+		final PanelBuilder builder =
+			new PanelBuilder(new FormLayout("fill:pref:grow",
+				"fill:pref:grow, 3dlu, pref"));
+		final CellConstraints cc = new CellConstraints();
+		builder.add(panel, cc.xy(1, 1));
+		builder.add(always, cc.xy(1, 3));
+		add(builder.getPanel());
+	}
 
-  // -- MessagePane API methods --
+	// -- MessagePane API methods --
 
-  /** Gets whether this warning pane should always be displayed. */
-  public boolean isAlwaysDisplayed() { return always.isSelected(); }
+	/** Gets whether this warning pane should always be displayed. */
+	public boolean isAlwaysDisplayed() {
+		return always.isSelected();
+	}
 
 }

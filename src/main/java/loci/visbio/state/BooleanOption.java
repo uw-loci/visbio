@@ -38,50 +38,59 @@ import org.w3c.dom.Element;
  */
 public class BooleanOption extends BioOption {
 
-  // -- Fields --
+	// -- Fields --
 
-  /** Check box GUI component. */
-  private JCheckBox box;
+	/** Check box GUI component. */
+	private final JCheckBox box;
 
-  // -- Constructor --
+	// -- Constructor --
 
-  /** Constructs a new option. */
-  public BooleanOption(String text, char mnemonic, String tip, boolean value) {
-    super(text);
-    box = new JCheckBox(text, value);
-    if (!LAFUtil.isMacLookAndFeel()) box.setMnemonic(mnemonic);
-    box.setToolTipText(tip);
-  }
+	/** Constructs a new option. */
+	public BooleanOption(final String text, final char mnemonic,
+		final String tip, final boolean value)
+	{
+		super(text);
+		box = new JCheckBox(text, value);
+		if (!LAFUtil.isMacLookAndFeel()) box.setMnemonic(mnemonic);
+		box.setToolTipText(tip);
+	}
 
-  // -- BooleanOption API methods --
+	// -- BooleanOption API methods --
 
-  /** Gets this option's current setting. */
-  public boolean getValue() { return box.isSelected(); }
+	/** Gets this option's current setting. */
+	public boolean getValue() {
+		return box.isSelected();
+	}
 
-  // -- BioOption API methods --
+	// -- BioOption API methods --
 
-  /** Gets a GUI component representing this option. */
-  public Component getComponent() { return box; }
+	/** Gets a GUI component representing this option. */
+	@Override
+	public Component getComponent() {
+		return box;
+	}
 
-  // -- Saveable API methods --
+	// -- Saveable API methods --
 
-  /** Writes the current state to the given DOM element ("Options"). */
-  public void saveState(Element el) throws SaveException {
-    Element e = XMLUtil.createChild(el, "Boolean");
-    e.setAttribute("name", text);
-    e.setAttribute("value", box.isSelected() ? "true" : "false");
-  }
+	/** Writes the current state to the given DOM element ("Options"). */
+	@Override
+	public void saveState(final Element el) throws SaveException {
+		final Element e = XMLUtil.createChild(el, "Boolean");
+		e.setAttribute("name", text);
+		e.setAttribute("value", box.isSelected() ? "true" : "false");
+	}
 
-  /** Restores the current state from the given DOM element ("Options"). */
-  public void restoreState(Element el) throws SaveException {
-    Element[] e = XMLUtil.getChildren(el, "Boolean");
-    for (int i=0; i<e.length; i++) {
-      String name = e[i].getAttribute("name");
-      if (!name.equals(text)) continue;
-      boolean value = e[i].getAttribute("value").equalsIgnoreCase("true");
-      box.setSelected(value);
-      break;
-    }
-  }
+	/** Restores the current state from the given DOM element ("Options"). */
+	@Override
+	public void restoreState(final Element el) throws SaveException {
+		final Element[] e = XMLUtil.getChildren(el, "Boolean");
+		for (int i = 0; i < e.length; i++) {
+			final String name = e[i].getAttribute("name");
+			if (!name.equals(text)) continue;
+			final boolean value = e[i].getAttribute("value").equalsIgnoreCase("true");
+			box.setSelected(value);
+			break;
+		}
+	}
 
 }

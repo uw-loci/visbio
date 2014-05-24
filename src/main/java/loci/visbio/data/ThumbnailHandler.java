@@ -41,201 +41,217 @@ import visad.VisADException;
  */
 public class ThumbnailHandler implements Runnable, TransformListener {
 
-  // -- Fields --
+	// -- Fields --
 
-  /** Data transform on which this thumbnail handler operates. */
-  protected DataTransform data;
+	/** Data transform on which this thumbnail handler operates. */
+	protected DataTransform data;
 
-  /** Resolution of each thumbnail dimension. */
-  protected int[] resolution = {
-    DataManager.DEFAULT_THUMBNAIL_RESOLUTION,
-    DataManager.DEFAULT_THUMBNAIL_RESOLUTION
-  };
+	/** Resolution of each thumbnail dimension. */
+	protected int[] resolution = { DataManager.DEFAULT_THUMBNAIL_RESOLUTION,
+		DataManager.DEFAULT_THUMBNAIL_RESOLUTION };
 
-  /** Thumbnail data computed from data transform. */
-  protected FlatField[] thumbs;
+	/** Thumbnail data computed from data transform. */
+	protected FlatField[] thumbs;
 
-  /** Thumbnail disk cache for faster thumbnail retrieval. */
-  protected ThumbnailCache cache;
+	/** Thumbnail disk cache for faster thumbnail retrieval. */
+	protected ThumbnailCache cache;
 
-  /** Flag indicating cache string ids are for use in default, global cache. */
-  protected boolean global = false;
+	/** Flag indicating cache string ids are for use in default, global cache. */
+	protected boolean global = false;
 
-  /**
-   * Task manager used for reporting background thumbnail generation progress.
-   */
-  protected TaskManager tm;
+	/**
+	 * Task manager used for reporting background thumbnail generation progress.
+	 */
+	protected TaskManager tm;
 
-  /** Background thumbnail generation thread. */
-  protected Thread loader;
+	/** Background thumbnail generation thread. */
+	protected Thread loader;
 
-  /** Number of thumbnails that have been generated. */
-  protected int count;
+	/** Number of thumbnails that have been generated. */
+	protected int count;
 
-  /** Flag indicating background thumbnail generation is enabled. */
-  protected boolean on = false;
+	/** Flag indicating background thumbnail generation is enabled. */
+	protected boolean on = false;
 
-  // -- Constructor --
+	// -- Constructor --
 
-  /** Creates a thumbnail handler. */
-  public ThumbnailHandler(DataTransform data, String filename) {
-    this.data = data;
-    data.addTransformListener(this);
-    if (filename != null) {
-      cache = new ThumbnailCache(filename);
-      global = cache.isDefault();
-    }
-    clear();
-  }
+	/** Creates a thumbnail handler. */
+	public ThumbnailHandler(final DataTransform data, final String filename) {
+		this.data = data;
+		data.addTransformListener(this);
+		if (filename != null) {
+			cache = new ThumbnailCache(filename);
+			global = cache.isDefault();
+		}
+		clear();
+	}
 
-  // -- ThumbnailHandler API methods --
+	// -- ThumbnailHandler API methods --
 
-  /** Gets the thumbnail at the given dimensional position. */
-  public FlatField getThumb(int[] pos) {
-    int ndx = FormatTools.positionToRaster(data.getLengths(), pos);
-    return ndx >= 0 && ndx < thumbs.length ? thumbs[ndx] : null;
-  }
+	/** Gets the thumbnail at the given dimensional position. */
+	public FlatField getThumb(final int[] pos) {
+		final int ndx = FormatTools.positionToRaster(data.getLengths(), pos);
+		return ndx >= 0 && ndx < thumbs.length ? thumbs[ndx] : null;
+	}
 
-  /** Sets the thumbnail at the given dimensional position. */
-  public void setThumb(int[] pos, FlatField thumb) {
-    int ndx = FormatTools.positionToRaster(data.getLengths(), pos);
-    if (ndx >= 0 && ndx < thumbs.length) thumbs[ndx] = thumb;
-  }
+	/** Sets the thumbnail at the given dimensional position. */
+	public void setThumb(final int[] pos, final FlatField thumb) {
+		final int ndx = FormatTools.positionToRaster(data.getLengths(), pos);
+		if (ndx >= 0 && ndx < thumbs.length) thumbs[ndx] = thumb;
+	}
 
-  /** Sets resolution of computed thumbnails. */
-  public void setResolution(int[] res) { resolution = res; }
+	/** Sets resolution of computed thumbnails. */
+	public void setResolution(final int[] res) {
+		resolution = res;
+	}
 
-  /** Creates an image thumbnail from the given data. */
-  public FlatField makeThumb(Data d) {
-    if (d == null || !(d instanceof FlatField)) return null;
-    FlatField ff = (FlatField) d;
-    FunctionType ftype = (FunctionType) ff.getType();
-    RealTupleType rtt = ftype.getDomain();
-    int[] res = new int[rtt.getDimension()];
-    for (int i=0; i<res.length; i++) res[i] = resolution[i];
-    try { return DataUtil.resample(ff, res, null); }
-    catch (VisADException exc) { exc.printStackTrace(); }
-    catch (RemoteException exc) { exc.printStackTrace(); }
-    return null;
-  }
+	/** Creates an image thumbnail from the given data. */
+	public FlatField makeThumb(final Data d) {
+		if (d == null || !(d instanceof FlatField)) return null;
+		final FlatField ff = (FlatField) d;
+		final FunctionType ftype = (FunctionType) ff.getType();
+		final RealTupleType rtt = ftype.getDomain();
+		final int[] res = new int[rtt.getDimension()];
+		for (int i = 0; i < res.length; i++)
+			res[i] = resolution[i];
+		try {
+			return DataUtil.resample(ff, res, null);
+		}
+		catch (final VisADException exc) {
+			exc.printStackTrace();
+		}
+		catch (final RemoteException exc) {
+			exc.printStackTrace();
+		}
+		return null;
+	}
 
-  /** Starts or stops background thumbnail generation. */
-  public void toggleGeneration(boolean on) {
-    if (this.on != on) {
-      this.on = on;
-      if (on && count < thumbs.length) startGeneration();
-    }
-  }
+	/** Starts or stops background thumbnail generation. */
+	public void toggleGeneration(final boolean on) {
+		if (this.on != on) {
+			this.on = on;
+			if (on && count < thumbs.length) startGeneration();
+		}
+	}
 
-  /**
-   * Clears thumbnails from memory, restarting background
-   * generation if auto-generation is enabled.
-   */
-  public void clear() {
-    if (loader != null) {
-      boolean oldOn = on;
-      on = false;
-      try { loader.join(); }
-      catch (InterruptedException exc) { exc.printStackTrace(); }
-      on = oldOn;
-    }
-    thumbs = new FlatField[FormatTools.getRasterLength(data.getLengths())];
-    count = 0;
-    if (on) startGeneration();
-  }
+	/**
+	 * Clears thumbnails from memory, restarting background generation if
+	 * auto-generation is enabled.
+	 */
+	public void clear() {
+		if (loader != null) {
+			final boolean oldOn = on;
+			on = false;
+			try {
+				loader.join();
+			}
+			catch (final InterruptedException exc) {
+				exc.printStackTrace();
+			}
+			on = oldOn;
+		}
+		thumbs = new FlatField[FormatTools.getRasterLength(data.getLengths())];
+		count = 0;
+		if (on) startGeneration();
+	}
 
-  /**
-   * Sets the task manager to use for reporting thumbnail generation progress.
-   */
-  public void setTaskManager(TaskManager tm) {
-    this.tm = tm;
-  }
+	/**
+	 * Sets the task manager to use for reporting thumbnail generation progress.
+	 */
+	public void setTaskManager(final TaskManager tm) {
+		this.tm = tm;
+	}
 
-  /** Gets the associated thumbnail disk cache object. */
-  public ThumbnailCache getCache() { return cache; }
+	/** Gets the associated thumbnail disk cache object. */
+	public ThumbnailCache getCache() {
+		return cache;
+	}
 
-  // -- Internal ThumbnailHandler API methods --
+	// -- Internal ThumbnailHandler API methods --
 
-  /** Computes the ith thumbnail. */
-  protected void loadThumb(int i) {
-    if (thumbs[i] != null) return;
+	/** Computes the ith thumbnail. */
+	protected void loadThumb(final int i) {
+		if (thumbs[i] != null) return;
 
-    int[] lengths = data.getLengths();
-    String id = data.getCacheId(
-      FormatTools.rasterToPosition(lengths, i), global);
+		final int[] lengths = data.getLengths();
+		final String id =
+			data.getCacheId(FormatTools.rasterToPosition(lengths, i), global);
 
-    // attempt to grab thumbnail from the disk cache
-    boolean cached = false;
-    if (cache != null) {
-      FlatField ff = cache.retrieve(id);
-      if (ff != null) {
-        thumbs[i] = ff;
-        cached = true;
-      }
-    }
+		// attempt to grab thumbnail from the disk cache
+		boolean cached = false;
+		if (cache != null) {
+			final FlatField ff = cache.retrieve(id);
+			if (ff != null) {
+				thumbs[i] = ff;
+				cached = true;
+			}
+		}
 
-    if (!cached) {
-      // compute thumbnail from data object
-      thumbs[i] = computeThumb(FormatTools.rasterToPosition(lengths, i));
-      if (cache != null && thumbs[i] != null) cache.store(id, thumbs[i]);
-    }
+		if (!cached) {
+			// compute thumbnail from data object
+			thumbs[i] = computeThumb(FormatTools.rasterToPosition(lengths, i));
+			if (cache != null && thumbs[i] != null) cache.store(id, thumbs[i]);
+		}
 
-    count++;
-  }
+		count++;
+	}
 
-  /**
-   * Computes a thumbnail for the given dimensional position.
-   * Subclasses may override this method to provide custom or
-   * more efficient thumbnail creation behavior.
-   */
-  protected FlatField computeThumb(int[] pos) {
-    Data d = data.getData(null, pos, 2, null);
-    return makeThumb(d);
-  }
+	/**
+	 * Computes a thumbnail for the given dimensional position. Subclasses may
+	 * override this method to provide custom or more efficient thumbnail creation
+	 * behavior.
+	 */
+	protected FlatField computeThumb(final int[] pos) {
+		final Data d = data.getData(null, pos, 2, null);
+		return makeThumb(d);
+	}
 
-  // -- Runnable API methods --
+	// -- Runnable API methods --
 
-  /** Loads all thumbnails in the background. */
-  public void run() {
-    BioTask task = null;
-    for (int i=count; i<thumbs.length; i++) {
-      if (task == null && tm != null) {
-        // register a task for thumbnail generation
-        task = tm.createTask(data.getName());
-        task.setStoppable(true);
-      }
-      if (task != null) {
-        if (task.isStopped()) break;
-        String message = on && count < thumbs.length ?
-          ("Thumbnail " + (count + 1) + " of " + thumbs.length) :
-          (count + " of " + thumbs.length + " thumbnails");
-        task.setStatus(count, thumbs.length, message);
-      }
-      loadThumb(i);
-      if (!on) break;
-    }
-    if (task != null) {
-      task.setCompleted();
-      task = null;
-    }
-  }
+	/** Loads all thumbnails in the background. */
+	@Override
+	public void run() {
+		BioTask task = null;
+		for (int i = count; i < thumbs.length; i++) {
+			if (task == null && tm != null) {
+				// register a task for thumbnail generation
+				task = tm.createTask(data.getName());
+				task.setStoppable(true);
+			}
+			if (task != null) {
+				if (task.isStopped()) break;
+				final String message =
+					on && count < thumbs.length
+						? ("Thumbnail " + (count + 1) + " of " + thumbs.length) : (count +
+							" of " + thumbs.length + " thumbnails");
+				task.setStatus(count, thumbs.length, message);
+			}
+			loadThumb(i);
+			if (!on) break;
+		}
+		if (task != null) {
+			task.setCompleted();
+			task = null;
+		}
+	}
 
-  // -- TransformListener API methods --
+	// -- TransformListener API methods --
 
-  /** Handles data transform parameter changes. */
-  public void transformChanged(TransformEvent e) {
-    int id = e.getId();
-    if (id == TransformEvent.DATA_CHANGED) clear();
-  }
+	/** Handles data transform parameter changes. */
+	@Override
+	public void transformChanged(final TransformEvent e) {
+		final int id = e.getId();
+		if (id == TransformEvent.DATA_CHANGED) clear();
+	}
 
-  // -- Helper methods --
+	// -- Helper methods --
 
-  /** Generates thumbnails in a new background thread. */
-  private void startGeneration() {
-    loader = new Thread(this,
-      "VisBio-ThumbnailGenerationThread-" + data.getName());
-    loader.setPriority(Thread.MIN_PRIORITY);
-    loader.start();
-  }
+	/** Generates thumbnails in a new background thread. */
+	private void startGeneration() {
+		loader =
+			new Thread(this, "VisBio-ThumbnailGenerationThread-" + data.getName());
+		loader.setPriority(Thread.MIN_PRIORITY);
+		loader.start();
+	}
 
 }

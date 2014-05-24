@@ -30,30 +30,36 @@ package loci.visbio.overlays;
 
 public class OverlayFreeform extends OverlayNodedObject {
 
-  // -- Constructors --
+	// -- Constructors --
 
-  /** Constructs an uninitialized freeform. */
-  public OverlayFreeform(OverlayTransform overlay) { super(overlay); }
+	/** Constructs an uninitialized freeform. */
+	public OverlayFreeform(final OverlayTransform overlay) {
+		super(overlay);
+	}
 
-  /** Constructs a freeform. */
-  public OverlayFreeform(OverlayTransform overlay,
-    float x1, float y1, float x2, float y2)
-  {
-    super(overlay, x1, y1, x2, y2);
-  }
+	/** Constructs a freeform. */
+	public OverlayFreeform(final OverlayTransform overlay, final float x1,
+		final float y1, final float x2, final float y2)
+	{
+		super(overlay, x1, y1, x2, y2);
+	}
 
-  /** Constructs a freeform from an array of nodes. */
-  public OverlayFreeform(OverlayTransform overlay, float[][] nodes) {
-    super(overlay, nodes);
-  }
+	/** Constructs a freeform from an array of nodes. */
+	public OverlayFreeform(final OverlayTransform overlay, final float[][] nodes)
+	{
+		super(overlay, nodes);
+	}
 
-  // -- OverlayObject API methods --
+	// -- OverlayObject API methods --
 
-  // -- Internal OverlayObject API methods --
+	// -- Internal OverlayObject API methods --
 
-  // -- Object API methods --
+	// -- Object API methods --
 
-  /** Gets a short string representation of this freeform. */
-  public String toString() { return "Freeform"; }
+	/** Gets a short string representation of this freeform. */
+	@Override
+	public String toString() {
+		return "Freeform";
+	}
 
 }

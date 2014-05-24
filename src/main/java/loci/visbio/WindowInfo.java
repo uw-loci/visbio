@@ -38,81 +38,97 @@ import loci.visbio.util.SwingUtil;
  */
 public class WindowInfo implements WindowListener {
 
-  // -- Constants --
+	// -- Constants --
 
-  /** Gap between cascading windows. */
-  protected static final int GAP = 25;
+	/** Gap between cascading windows. */
+	protected static final int GAP = 25;
 
-  /** Current gap from top left edge of screen. */
-  protected static int gap;
+	/** Current gap from top left edge of screen. */
+	protected static int gap;
 
-  // -- Fields --
+	// -- Fields --
 
-  /** Window for which this object stores additional information. */
-  protected Window window;
+	/** Window for which this object stores additional information. */
+	protected Window window;
 
-  /** Whether to pack this window the first time it is shown. */
-  protected boolean pack;
+	/** Whether to pack this window the first time it is shown. */
+	protected boolean pack;
 
-  /** True if the window has not yet been shown onscreen. */
-  protected boolean first;
+	/** True if the window has not yet been shown onscreen. */
+	protected boolean first;
 
-  // -- Constructor --
+	// -- Constructor --
 
-  /**
-   * Creates a new window information object for the given window,
-   * with the pack flag indicating whether the window is to be packed
-   * prior to being shown for the first time.
-   */
-  public WindowInfo(Window w, boolean pack) {
-    window = w;
-    this.pack = pack;
-    first = true;
-    window.addWindowListener(this);
-  }
+	/**
+	 * Creates a new window information object for the given window, with the pack
+	 * flag indicating whether the window is to be packed prior to being shown for
+	 * the first time.
+	 */
+	public WindowInfo(final Window w, final boolean pack) {
+		window = w;
+		this.pack = pack;
+		first = true;
+		window.addWindowListener(this);
+	}
 
-  // -- WindowInfo API methods --
+	// -- WindowInfo API methods --
 
-  /** Displays the window onscreen. */
-  public void showWindow() {
-    if (first && pack) SwingUtil.pack(window);
+	/** Displays the window onscreen. */
+	public void showWindow() {
+		if (first && pack) SwingUtil.pack(window);
 
-    // arrange window in cascade formation
-    Dimension ss = Toolkit.getDefaultToolkit().getScreenSize();
-    Rectangle scr = new Rectangle(0, 0, ss.width, ss.height);
-    Rectangle win = window.getBounds();
-    boolean offscreen = !win.intersects(scr);
+		// arrange window in cascade formation
+		final Dimension ss = Toolkit.getDefaultToolkit().getScreenSize();
+		final Rectangle scr = new Rectangle(0, 0, ss.width, ss.height);
+		final Rectangle win = window.getBounds();
+		final boolean offscreen = !win.intersects(scr);
 
-    if (first || offscreen) {
-      gap += GAP;
-      if (gap + win.width > scr.width || gap + win.height > scr.height) {
-        gap = 0;
-      }
-      window.setLocation(gap, gap);
-    }
+		if (first || offscreen) {
+			gap += GAP;
+			if (gap + win.width > scr.width || gap + win.height > scr.height) {
+				gap = 0;
+			}
+			window.setLocation(gap, gap);
+		}
 
-    window.setVisible(true);
-  }
+		window.setVisible(true);
+	}
 
-  /** Sets the window to match the given state. */
-  public void setState(WindowState ws) {
-    ws.applyTo(window);
-    first = !ws.hasPosition();
-    pack = !ws.hasSize();
-  }
+	/** Sets the window to match the given state. */
+	public void setState(final WindowState ws) {
+		ws.applyTo(window);
+		first = !ws.hasPosition();
+		pack = !ws.hasSize();
+	}
 
-  /** Gets the associated window. */
-  public Window getWindow() { return window; }
+	/** Gets the associated window. */
+	public Window getWindow() {
+		return window;
+	}
 
-  // -- WindowListener API methods --
+	// -- WindowListener API methods --
 
-  public void windowOpened(WindowEvent e) { first = false; }
+	@Override
+	public void windowOpened(final WindowEvent e) {
+		first = false;
+	}
 
-  public void windowActivated(WindowEvent e) { }
-  public void windowClosing(WindowEvent e) { }
-  public void windowClosed(WindowEvent e) { }
-  public void windowDeactivated(WindowEvent e) { }
-  public void windowDeiconified(WindowEvent e) { }
-  public void windowIconified(WindowEvent e) { }
+	@Override
+	public void windowActivated(final WindowEvent e) {}
+
+	@Override
+	public void windowClosing(final WindowEvent e) {}
+
+	@Override
+	public void windowClosed(final WindowEvent e) {}
+
+	@Override
+	public void windowDeactivated(final WindowEvent e) {}
+
+	@Override
+	public void windowDeiconified(final WindowEvent e) {}
+
+	@Override
+	public void windowIconified(final WindowEvent e) {}
 
 }

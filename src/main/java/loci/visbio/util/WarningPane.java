@@ -37,28 +37,30 @@ import javax.swing.JPanel;
  */
 public class WarningPane extends MessagePane {
 
-  // -- Constructor --
+	// -- Constructor --
 
-  /** Creates a new warning pane linked to the given warning checkbox. */
-  public WarningPane(String text, boolean allowCancel) {
-    super("VisBio Warning", makePanel(text), allowCancel);
-  }
+	/** Creates a new warning pane linked to the given warning checkbox. */
+	public WarningPane(final String text, final boolean allowCancel) {
+		super("VisBio Warning", makePanel(text), allowCancel);
+	}
 
-  // -- Helper methods --
+	// -- Helper methods --
 
-  /** Creates a panel containing the given text. */
-  private static JPanel makePanel(String text) {
-    StringTokenizer st = new StringTokenizer(text, "\n\r");
-    int count = st.countTokens();
-    StringBuffer sb = new StringBuffer("pref");
-    for (int i=1; i<count; i++) sb.append(", pref");
+	/** Creates a panel containing the given text. */
+	private static JPanel makePanel(final String text) {
+		final StringTokenizer st = new StringTokenizer(text, "\n\r");
+		final int count = st.countTokens();
+		final StringBuffer sb = new StringBuffer("pref");
+		for (int i = 1; i < count; i++)
+			sb.append(", pref");
 
-    // lay out components
-    PanelBuilder builder = new PanelBuilder(
-      new FormLayout("pref", sb.toString()));
-    CellConstraints cc = new CellConstraints();
-    for (int y=1; y<=count; y++) builder.addLabel(st.nextToken(), cc.xy(1, y));
-    return builder.getPanel();
-  }
+		// lay out components
+		final PanelBuilder builder =
+			new PanelBuilder(new FormLayout("pref", sb.toString()));
+		final CellConstraints cc = new CellConstraints();
+		for (int y = 1; y <= count; y++)
+			builder.addLabel(st.nextToken(), cc.xy(1, y));
+		return builder.getPanel();
+	}
 
 }

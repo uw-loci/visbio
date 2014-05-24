@@ -29,33 +29,32 @@ package loci.visbio.state;
  */
 public final class SpreadsheetOptionStrategy {
 
-  private SpreadsheetOptionStrategy() {}
+	private SpreadsheetOptionStrategy() {}
 
-  /** Returns the text for the spreadsheet option. */
-  public static String getText() {
-    return "Automatically launch spreadsheet application " +
-      "when exporting overlays";
-  }
+	/** Returns the text for the spreadsheet option. */
+	public static String getText() {
+		return "Automatically launch spreadsheet application "
+			+ "when exporting overlays";
+	}
 
-  /** Returns the text tooltip for the spreadsheet option. */
-  public static String getTextTip() {
-    return "The path to the spreadsheet application to launch";
-  }
+	/** Returns the text tooltip for the spreadsheet option. */
+	public static String getTextTip() {
+		return "The path to the spreadsheet application to launch";
+	}
 
-  /** Returns the checkbox tool tip for the spreadsheet option. */
-  public static String getBoxTip() {
-    return  "Toggles whether spreadsheet application is automatically" +
-      " launched when overlays are exported";
-  }
+	/** Returns the checkbox tool tip for the spreadsheet option. */
+	public static String getBoxTip() {
+		return "Toggles whether spreadsheet application is automatically"
+			+ " launched when overlays are exported";
+	}
 
-  /** Returns the label for the spreadsheet option. */
-  public static String getLabel() {
-    return "Path to Spreadsheet Application:";
-  }
+	/** Returns the label for the spreadsheet option. */
+	public static String getLabel() {
+		return "Path to Spreadsheet Application:";
+	}
 
-  /** Returns the button tip for the spreadsheet option. */
-  public static String getButtonTip() {
-    return "Restore the default predicted path to spreadsheet application";
-  }
+	/** Returns the button tip for the spreadsheet option. */
+	public static String getButtonTip() {
+		return "Restore the default predicted path to spreadsheet application";
+	}
 }
-

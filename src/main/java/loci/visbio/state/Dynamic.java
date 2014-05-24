@@ -28,51 +28,42 @@ package loci.visbio.state;
  * The Dynamic interface provides methods for testing whether two objects have
  * the same state, and for synchronizing states if they do not. The reason for
  * such an interface is to assist with state salvation and restoration (see the
- * Saveable interface).
- *
- * When we read a new list of Dynamic objects from a state file, we need a way
- * to determine how closely the list in memory matches the one just read, as
- * well as an efficient way to modify the existing list to conform to the one
- * just read without necessarily recreating all those objects from scratch
- * (which could be quite expensive).
- *
- * Thus, these "dynamic" objects implement the matches method to test if a
- * freshly read dynamic object is in the same state as any of the current
- * objects.
- *
- * If so, there is no need to reinitialize that object&mdash;we can just use
- * the existing one.
- *
- * If not, we call the initState method to force the original object's state to
- * conform to the one just read, without needing to recreate the object itself
- * or relink it into data structures.
- *
- * The {@link loci.visbio.state.StateManager} class contains the mergeStates
- * static method, which performs this procedure on two lists of dynamic
- * objects.
+ * Saveable interface). When we read a new list of Dynamic objects from a state
+ * file, we need a way to determine how closely the list in memory matches the
+ * one just read, as well as an efficient way to modify the existing list to
+ * conform to the one just read without necessarily recreating all those objects
+ * from scratch (which could be quite expensive). Thus, these "dynamic" objects
+ * implement the matches method to test if a freshly read dynamic object is in
+ * the same state as any of the current objects. If so, there is no need to
+ * reinitialize that object&mdash;we can just use the existing one. If not, we
+ * call the initState method to force the original object's state to conform to
+ * the one just read, without needing to recreate the object itself or relink it
+ * into data structures. The {@link loci.visbio.state.StateManager} class
+ * contains the mergeStates static method, which performs this procedure on two
+ * lists of dynamic objects.
  */
 public interface Dynamic {
 
-  /** Tests whether two dynamic objects are equivalent. */
-  boolean matches(Dynamic dyn);
+	/** Tests whether two dynamic objects are equivalent. */
+	boolean matches(Dynamic dyn);
 
-  /**
-   * Tests whether the given dynamic object can be used as an argument to
-   * initState, for initializing this dynamic object.
-   */
-  boolean isCompatible(Dynamic dyn);
+	/**
+	 * Tests whether the given dynamic object can be used as an argument to
+	 * initState, for initializing this dynamic object.
+	 */
+	boolean isCompatible(Dynamic dyn);
 
-  /**
-   * Modifies this object's state to match that of the given object.
-   * If the argument is null, the object is initialized according to
-   * its current state instead.
-   */
-  void initState(Dynamic dyn);
+	/**
+	 * Modifies this object's state to match that of the given object. If the
+	 * argument is null, the object is initialized according to its current state
+	 * instead.
+	 */
+	void initState(Dynamic dyn);
 
-  /**
-   * Called when this object is being discarded in favor of
-   * another object with a matching state.
-   */
-  void discard();
+	/**
+	 * Called when this object is being discarded in favor of another object with
+	 * a matching state.
+	 */
+	void discard();
 
 }

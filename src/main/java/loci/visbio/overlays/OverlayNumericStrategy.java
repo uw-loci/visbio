@@ -29,64 +29,79 @@ package loci.visbio.overlays;
  */
 public final class OverlayNumericStrategy {
 
-  // -- Fields --
+	// -- Fields --
 
-  /**
-   * When drawing or editing, how far mouse
-   * must be dragged before new node is added.
-   */
-  protected static final double DRAW_THRESH = 2.0;
+	/**
+	 * When drawing or editing, how far mouse must be dragged before new node is
+	 * added.
+	 */
+	protected static final double DRAW_THRESH = 2.0;
 
-  /**
-   * How close a mouseDrag event must be to a node
-   * in order to erase it.
-   */
-  protected static final double ERASE_THRESH = 10.0;
+	/**
+	 * How close a mouseDrag event must be to a node in order to erase it.
+	 */
+	protected static final double ERASE_THRESH = 10.0;
 
-  /** Threshhold within which click must occur to invoke edit mode. */
-  protected static final double EDIT_THRESH = 6.0;
+	/** Threshhold within which click must occur to invoke edit mode. */
+	protected static final double EDIT_THRESH = 6.0;
 
-  /**
-   * Threshhold within which click must occur to
-   * invoke extend mode or reconnect a freeformExtension.
-   */
-  protected static final double RECONNECT_THRESH = 1.0;
+	/**
+	 * Threshhold within which click must occur to invoke extend mode or reconnect
+	 * a freeformExtension.
+	 */
+	protected static final double RECONNECT_THRESH = 1.0;
 
-  /** How close mouse must be to end node to resume drawing. */
-  protected static final double RESUME_THRESH = 10.0;
+	/** How close mouse must be to end node to resume drawing. */
+	protected static final double RESUME_THRESH = 10.0;
 
-  /** Smoothing factor for "single exponential smoothing". */
-  protected static final float SMOOTHING_FACTOR = 0.35f;
+	/** Smoothing factor for "single exponential smoothing". */
+	protected static final float SMOOTHING_FACTOR = 0.35f;
 
-  /** Maximum distance (in pixels) mouse can be from a node to be considered
-   *  pointing to it. */
-  protected static final float POLYLINE_THRESH = 7.0f;
+	/**
+	 * Maximum distance (in pixels) mouse can be from a node to be considered
+	 * pointing to it.
+	 */
+	protected static final float POLYLINE_THRESH = 7.0f;
 
-  // -- Constructor --
+	// -- Constructor --
 
-  /** Private constructor--ensure this object is not instantiated. */
-  private OverlayNumericStrategy() {}
+	/** Private constructor--ensure this object is not instantiated. */
+	private OverlayNumericStrategy() {}
 
-  // -- Object API Methods --
+	// -- Object API Methods --
 
-  /** Returns the drawing threshold. */
-  public static double getDrawThreshold() { return DRAW_THRESH; }
+	/** Returns the drawing threshold. */
+	public static double getDrawThreshold() {
+		return DRAW_THRESH;
+	}
 
-  /** Returns the erasing threshold. */
-  public static double getEraseThreshold() { return ERASE_THRESH; }
+	/** Returns the erasing threshold. */
+	public static double getEraseThreshold() {
+		return ERASE_THRESH;
+	}
 
-  /** Returns the editing threshold. */
-  public static double getEditThreshold() { return EDIT_THRESH; }
+	/** Returns the editing threshold. */
+	public static double getEditThreshold() {
+		return EDIT_THRESH;
+	}
 
-  /** Returns the resume threshold. */
-  public static double getResumeThreshold() { return RESUME_THRESH; }
+	/** Returns the resume threshold. */
+	public static double getResumeThreshold() {
+		return RESUME_THRESH;
+	}
 
-  /** Returns the reconnect threshold. */
-  public static double getReconnectThreshold() { return RECONNECT_THRESH; }
+	/** Returns the reconnect threshold. */
+	public static double getReconnectThreshold() {
+		return RECONNECT_THRESH;
+	}
 
-  /** Returns the single exponential smoothing factor. */
-  public static double getSmoothingFactor() { return SMOOTHING_FACTOR; }
+	/** Returns the single exponential smoothing factor. */
+	public static double getSmoothingFactor() {
+		return SMOOTHING_FACTOR;
+	}
 
-  /** Returns the polyline threshold. */
-  public static double getPolylineThreshold() { return POLYLINE_THRESH; }
+	/** Returns the polyline threshold. */
+	public static double getPolylineThreshold() {
+		return POLYLINE_THRESH;
+	}
 }

@@ -53,308 +53,350 @@ import visad.VisADException;
  */
 public abstract class ImageTransform extends DataTransform {
 
-  // -- Constants --
+	// -- Constants --
 
-  /** Micron unit. */
-  public static final ScaledUnit MICRON =
-    new ScaledUnit(1e-6, SI.meter, "mu"); // VisAD font does not show MU char
+	/** Micron unit. */
+	public static final ScaledUnit MICRON = new ScaledUnit(1e-6, SI.meter, "mu"); // VisAD
+																																								// font
+																																								// does
+																																								// not
+																																								// show
+																																								// MU
+																																								// char
 
-  // -- Fields --
+	// -- Fields --
 
-  /** Physical image dimensions in microns. */
-  protected double micronWidth, micronHeight, micronStep;
+	/** Physical image dimensions in microns. */
+	protected double micronWidth, micronHeight, micronStep;
 
-  /** X-axis type. */
-  protected RealType xType;
+	/** X-axis type. */
+	protected RealType xType;
 
-  /** Y-axis type. */
-  protected RealType yType;
+	/** Y-axis type. */
+	protected RealType yType;
 
-  /** Z-axis type. */
-  protected RealType zType;
+	/** Z-axis type. */
+	protected RealType zType;
 
-  /** Range types. */
-  private RealType[] rangeTypes;
+	/** Range types. */
+	private RealType[] rangeTypes;
 
-  /** MathType of generated images. */
-  private FunctionType functionType;
+	/** MathType of generated images. */
+	private FunctionType functionType;
 
-  // -- Constructors --
+	// -- Constructors --
 
-  /** Constructs an uninitialized image transform. */
-  public ImageTransform() { this(null, null); }
+	/** Constructs an uninitialized image transform. */
+	public ImageTransform() {
+		this(null, null);
+	}
 
-  /** Creates an image transform with the given transform as its parent. */
-  public ImageTransform(DataTransform parent, String name) {
-    this(parent, name, Double.NaN, Double.NaN, Double.NaN);
-  }
+	/** Creates an image transform with the given transform as its parent. */
+	public ImageTransform(final DataTransform parent, final String name) {
+		this(parent, name, Double.NaN, Double.NaN, Double.NaN);
+	}
 
-  /**
-   * Creates an image transform with the given transform as its parent,
-   * that is dimensioned according to the specified values in microns.
-   */
-  public ImageTransform(DataTransform parent, String name,
-    double width, double height, double step)
-  {
-    super(parent, name);
+	/**
+	 * Creates an image transform with the given transform as its parent, that is
+	 * dimensioned according to the specified values in microns.
+	 */
+	public ImageTransform(final DataTransform parent, final String name,
+		double width, double height, double step)
+	{
+		super(parent, name);
 
-    // initialize physical dimensions
-    if (parent instanceof ImageTransform) {
-      ImageTransform it = (ImageTransform) parent;
-      // use parent values for physical dimensions if none specified
-      if (width != width) width = it.getMicronWidth();
-      if (height != height) height = it.getMicronHeight();
-      if (step != step) step = it.getMicronStep();
-    }
-    micronWidth = width;
-    micronHeight = height;
-    micronStep = step;
+		// initialize physical dimensions
+		if (parent instanceof ImageTransform) {
+			final ImageTransform it = (ImageTransform) parent;
+			// use parent values for physical dimensions if none specified
+			if (width != width) width = it.getMicronWidth();
+			if (height != height) height = it.getMicronHeight();
+			if (step != step) step = it.getMicronStep();
+		}
+		micronWidth = width;
+		micronHeight = height;
+		micronStep = step;
 
-    // initialize internal MathTypes
-    if (width == width) xType = DataUtil.getRealType(name + "_X_mu", MICRON);
-    else xType = DataUtil.getRealType(name + "_X", null);
-    if (height == height) yType = DataUtil.getRealType(name + "_Y_mu", MICRON);
-    else yType = DataUtil.getRealType(name + "_Y", null);
-    if (step == step) zType = DataUtil.getRealType(name + "_Z_mu", MICRON);
-    else zType = DataUtil.getRealType(name + "_Z", null);
-  }
+		// initialize internal MathTypes
+		if (width == width) xType = DataUtil.getRealType(name + "_X_mu", MICRON);
+		else xType = DataUtil.getRealType(name + "_X", null);
+		if (height == height) yType = DataUtil.getRealType(name + "_Y_mu", MICRON);
+		else yType = DataUtil.getRealType(name + "_Y", null);
+		if (step == step) zType = DataUtil.getRealType(name + "_Z_mu", MICRON);
+		else zType = DataUtil.getRealType(name + "_Z", null);
+	}
 
-  // -- ImageTransform API methods --
+	// -- ImageTransform API methods --
 
-  /** Gets the width in pixels of each image. */
-  public abstract int getImageWidth();
+	/** Gets the width in pixels of each image. */
+	public abstract int getImageWidth();
 
-  /** Gets the height in pixels of each image. */
-  public abstract int getImageHeight();
+	/** Gets the height in pixels of each image. */
+	public abstract int getImageHeight();
 
-  /** Gets number of range components at each pixel. */
-  public abstract int getRangeCount();
+	/** Gets number of range components at each pixel. */
+	public abstract int getRangeCount();
 
-  /** Obtains an image from the source(s) at the given dimensional position. */
-  public BufferedImage getImage(int[] pos) { return null; }
+	/** Obtains an image from the source(s) at the given dimensional position. */
+	public BufferedImage getImage(final int[] pos) {
+		return null;
+	}
 
-  /** Gets physical image width in microns. */
-  public double getMicronWidth() { return micronWidth; }
+	/** Gets physical image width in microns. */
+	public double getMicronWidth() {
+		return micronWidth;
+	}
 
-  /** Gets physical image height in microns. */
-  public double getMicronHeight() { return micronHeight; }
+	/** Gets physical image height in microns. */
+	public double getMicronHeight() {
+		return micronHeight;
+	}
 
-  /** Gets physical distance between image slices in microns. */
-  public double getMicronStep() { return micronStep; }
+	/** Gets physical distance between image slices in microns. */
+	public double getMicronStep() {
+		return micronStep;
+	}
 
-  /**
-   * Gets physical distance between image slices in microns for the given axis.
-   * The default implementation simply returns the default step value. This
-   * method matters because derivative data objects such as DataSamplings could
-   * have a different distance between slices depending on the stack axis.
-   */
-  public double getMicronStep(int axis) { return getMicronStep(); }
+	/**
+	 * Gets physical distance between image slices in microns for the given axis.
+	 * The default implementation simply returns the default step value. This
+	 * method matters because derivative data objects such as DataSamplings could
+	 * have a different distance between slices depending on the stack axis.
+	 */
+	public double getMicronStep(final int axis) {
+		return getMicronStep();
+	}
 
-  /** Gets the RealType used for the X-axis. */
-  public RealType getXType() { return xType; }
+	/** Gets the RealType used for the X-axis. */
+	public RealType getXType() {
+		return xType;
+	}
 
-  /** Gets the RealType used for the Y-axis. */
-  public RealType getYType() { return yType; }
+	/** Gets the RealType used for the Y-axis. */
+	public RealType getYType() {
+		return yType;
+	}
 
-  /** Gets the RealType used for the Z-axis. */
-  public RealType getZType() { return zType; }
+	/** Gets the RealType used for the Z-axis. */
+	public RealType getZType() {
+		return zType;
+	}
 
-  /** Gets the RealTypes used for the range components. */
-  public RealType[] getRangeTypes() {
-    if (rangeTypes == null) {
-      rangeTypes = new RealType[getRangeCount()];
-      for (int i=0; i<rangeTypes.length; i++) {
-        String s = "range" + (i + 1);
-        rangeTypes[i] = DataUtil.getRealType(name + "_" + s);
-      }
-    }
-    return rangeTypes;
-  }
+	/** Gets the RealTypes used for the range components. */
+	public RealType[] getRangeTypes() {
+		if (rangeTypes == null) {
+			rangeTypes = new RealType[getRangeCount()];
+			for (int i = 0; i < rangeTypes.length; i++) {
+				final String s = "range" + (i + 1);
+				rangeTypes[i] = DataUtil.getRealType(name + "_" + s);
+			}
+		}
+		return rangeTypes;
+	}
 
-  /** Gets MathType of images generated by this image transform. */
-  public FunctionType getType() {
-    if (functionType == null) {
-      try {
-        RealTupleType domain = new RealTupleType(xType, yType);
-        RealTupleType range = new RealTupleType(getRangeTypes());
-        functionType = new FunctionType(domain, range);
-      }
-      catch (VisADException exc) { exc.printStackTrace(); }
-    }
-    return functionType;
-  }
+	/** Gets MathType of images generated by this image transform. */
+	public FunctionType getType() {
+		if (functionType == null) {
+			try {
+				final RealTupleType domain = new RealTupleType(xType, yType);
+				final RealTupleType range = new RealTupleType(getRangeTypes());
+				functionType = new FunctionType(domain, range);
+			}
+			catch (final VisADException exc) {
+				exc.printStackTrace();
+			}
+		}
+		return functionType;
+	}
 
-  /**
-   * Gets X and Y units for use with image domain sets, computed from micron
-   * information. Pixel range is assumed to be from 0 to width-1 (X) and
-   * 0 to height-1 (Y).
-   */
-  public Unit[] getImageUnits() {
-    Unit xu = micronWidth == micronWidth ?
-      new ScaledUnit(micronWidth / getImageWidth(), MICRON) : null;
-    Unit yu = micronHeight == micronHeight ?
-      new ScaledUnit(micronHeight / getImageHeight(), MICRON) : null;
-    return new Unit[] {xu, yu};
-  }
+	/**
+	 * Gets X and Y units for use with image domain sets, computed from micron
+	 * information. Pixel range is assumed to be from 0 to width-1 (X) and 0 to
+	 * height-1 (Y).
+	 */
+	public Unit[] getImageUnits() {
+		final Unit xu =
+			micronWidth == micronWidth ? new ScaledUnit(
+				micronWidth / getImageWidth(), MICRON) : null;
+		final Unit yu =
+			micronHeight == micronHeight ? new ScaledUnit(micronHeight /
+				getImageHeight(), MICRON) : null;
+		return new Unit[] { xu, yu };
+	}
 
-  /**
-   * Gets Z unit for use with image stack domain sets, computed from
-   * micron information. Z range is assumed to be from 0 to numSlices-1.
-   */
-  public Unit getZUnit(int axis) {
-    if (axis < 0 || axis >= lengths.length) return null;
-    if (micronStep != micronStep) return null;
-    return new ScaledUnit(getMicronStep(axis), MICRON);
-  }
+	/**
+	 * Gets Z unit for use with image stack domain sets, computed from micron
+	 * information. Z range is assumed to be from 0 to numSlices-1.
+	 */
+	public Unit getZUnit(final int axis) {
+		if (axis < 0 || axis >= lengths.length) return null;
+		if (micronStep != micronStep) return null;
+		return new ScaledUnit(getMicronStep(axis), MICRON);
+	}
 
-  // -- DataTransform API methods --
+	// -- DataTransform API methods --
 
-  /**
-   * Retrieves the data corresponding to the given dimensional position,
-   * for the given display dimensionality.
-   */
-  public Data getData(TransformLink link, int[] pos, int dim, DataCache cache) {
-    if (dim != 2) return null;
-    if (cache != null) return cache.getData(this, pos, null, dim);
+	/**
+	 * Retrieves the data corresponding to the given dimensional position, for the
+	 * given display dimensionality.
+	 */
+	@Override
+	public Data getData(final TransformLink link, final int[] pos, final int dim,
+		final DataCache cache)
+	{
+		if (dim != 2) return null;
+		if (cache != null) return cache.getData(this, pos, null, dim);
 
-    BufferedImage img = getImage(pos);
-    if (img == null) return null;
-    try { return new ImageFlatField(img); }
-    catch (VisADException exc) {
-      exc.printStackTrace();
-      return null;
-    }
-    catch (RemoteException exc) {
-      exc.printStackTrace();
-      return null;
-    }
-  }
+		final BufferedImage img = getImage(pos);
+		if (img == null) return null;
+		try {
+			return new ImageFlatField(img);
+		}
+		catch (final VisADException exc) {
+			exc.printStackTrace();
+			return null;
+		}
+		catch (final RemoteException exc) {
+			exc.printStackTrace();
+			return null;
+		}
+	}
 
-  /** Retrieves a set of mappings for displaying this transform effectively. */
-  public ScalarMap[] getSuggestedMaps() {
-    RealType[] range = getRangeTypes();
-    ScalarMap[] maps = new ScalarMap[2 + range.length];
-    try {
-      maps[0] = new ScalarMap(xType, Display.XAxis);
-      maps[1] = new ScalarMap(yType, Display.YAxis);
-      for (int i=0; i<range.length; i++) {
-        maps[i + 2] = new ScalarMap(range[i], Display.RGBA);
-      }
-    }
-    catch (VisADException exc) { exc.printStackTrace(); }
-    return maps;
-  }
+	/** Retrieves a set of mappings for displaying this transform effectively. */
+	@Override
+	public ScalarMap[] getSuggestedMaps() {
+		final RealType[] range = getRangeTypes();
+		final ScalarMap[] maps = new ScalarMap[2 + range.length];
+		try {
+			maps[0] = new ScalarMap(xType, Display.XAxis);
+			maps[1] = new ScalarMap(yType, Display.YAxis);
+			for (int i = 0; i < range.length; i++) {
+				maps[i + 2] = new ScalarMap(range[i], Display.RGBA);
+			}
+		}
+		catch (final VisADException exc) {
+			exc.printStackTrace();
+		}
+		return maps;
+	}
 
-  /** Most image transforms are not rendered immediately. */
-  public boolean isImmediate() { return false; }
+	/** Most image transforms are not rendered immediately. */
+	@Override
+	public boolean isImmediate() {
+		return false;
+	}
 
-  /** Gets whether this data object can be displayed in 3D. */
-  public boolean canDisplay3D() {
-    return super.canDisplay3D() || canDisplay2D();
-  }
+	/** Gets whether this data object can be displayed in 3D. */
+	@Override
+	public boolean canDisplay3D() {
+		return super.canDisplay3D() || canDisplay2D();
+	}
 
-  /** Gets a description of this transform, with HTML markup. */
-  public String getHTMLDescription() {
-    StringBuffer sb = new StringBuffer();
-    int[] len = getLengths();
-    String[] dimTypes = getDimTypes();
+	/** Gets a description of this transform, with HTML markup. */
+	@Override
+	public String getHTMLDescription() {
+		final StringBuffer sb = new StringBuffer();
+		final int[] len = getLengths();
+		final String[] dimTypes = getDimTypes();
 
-    int width = getImageWidth();
-    int height = getImageHeight();
-    int rangeCount = getRangeCount();
+		final int width = getImageWidth();
+		final int height = getImageHeight();
+		final int rangeCount = getRangeCount();
 
-    // name
-    sb.append(getName());
-    sb.append("<p>\n\n");
+		// name
+		sb.append(getName());
+		sb.append("<p>\n\n");
 
-    // list of dimensional axes
-    sb.append("Dimensionality: ");
-    sb.append(len.length + 2);
-    sb.append("D\n");
-    sb.append("<ul>\n");
-    BigInteger images = BigInteger.ONE;
-    if (len.length > 0) {
-      for (int i=0; i<len.length; i++) {
-        images = images.multiply(new BigInteger("" + len[i]));
-        sb.append("<li>");
-        sb.append(len[i]);
-        sb.append(" ");
-        sb.append(getUnitDescription(dimTypes[i], len[i]));
-        sb.append("</li>\n");
-      }
-    }
+		// list of dimensional axes
+		sb.append("Dimensionality: ");
+		sb.append(len.length + 2);
+		sb.append("D\n");
+		sb.append("<ul>\n");
+		BigInteger images = BigInteger.ONE;
+		if (len.length > 0) {
+			for (int i = 0; i < len.length; i++) {
+				images = images.multiply(new BigInteger("" + len[i]));
+				sb.append("<li>");
+				sb.append(len[i]);
+				sb.append(" ");
+				sb.append(getUnitDescription(dimTypes[i], len[i]));
+				sb.append("</li>\n");
+			}
+		}
 
-    // image resolution
-    sb.append("<li>");
-    sb.append(width);
-    sb.append(" x ");
-    sb.append(height);
-    sb.append(" pixel");
-    if (width * height != 1) sb.append("s");
+		// image resolution
+		sb.append("<li>");
+		sb.append(width);
+		sb.append(" x ");
+		sb.append(height);
+		sb.append(" pixel");
+		if (width * height != 1) sb.append("s");
 
-    // physical width and height in microns
-    if (micronWidth == micronWidth && micronHeight == micronHeight) {
-      sb.append(" (");
-      sb.append(micronWidth);
-      sb.append(" x ");
-      sb.append(micronHeight);
-      sb.append(" " + MU + ")");
-    }
-    sb.append("</li>\n");
+		// physical width and height in microns
+		if (micronWidth == micronWidth && micronHeight == micronHeight) {
+			sb.append(" (");
+			sb.append(micronWidth);
+			sb.append(" x ");
+			sb.append(micronHeight);
+			sb.append(" " + MU + ")");
+		}
+		sb.append("</li>\n");
 
-    // physical distance between slices in microns
-    if (micronStep == micronStep) {
-      sb.append("<li>");
-      sb.append(micronStep);
-      sb.append(" " + MU + " between slices</li>\n");
-    }
+		// physical distance between slices in microns
+		if (micronStep == micronStep) {
+			sb.append("<li>");
+			sb.append(micronStep);
+			sb.append(" " + MU + " between slices</li>\n");
+		}
 
-    // range component count
-    sb.append("<li>");
-    sb.append(rangeCount);
-    sb.append(" range component");
-    if (rangeCount != 1) sb.append("s");
-    sb.append("</li>\n");
-    sb.append("</ul>\n");
+		// range component count
+		sb.append("<li>");
+		sb.append(rangeCount);
+		sb.append(" range component");
+		if (rangeCount != 1) sb.append("s");
+		sb.append("</li>\n");
+		sb.append("</ul>\n");
 
-    // image and pixel counts
-    BigInteger pixels = images.multiply(new BigInteger("" + width));
-    pixels = pixels.multiply(new BigInteger("" + height));
-    pixels = pixels.multiply(new BigInteger("" + rangeCount));
-    sb.append(images);
-    sb.append(" image");
-    if (!images.equals(BigInteger.ONE)) sb.append("s");
-    sb.append(" totaling ");
-    sb.append(MathUtil.getValueWithUnit(pixels, 2));
-    sb.append("pixel");
-    if (!pixels.equals(BigInteger.ONE)) sb.append("s");
-    sb.append(".<p>\n");
+		// image and pixel counts
+		BigInteger pixels = images.multiply(new BigInteger("" + width));
+		pixels = pixels.multiply(new BigInteger("" + height));
+		pixels = pixels.multiply(new BigInteger("" + rangeCount));
+		sb.append(images);
+		sb.append(" image");
+		if (!images.equals(BigInteger.ONE)) sb.append("s");
+		sb.append(" totaling ");
+		sb.append(MathUtil.getValueWithUnit(pixels, 2));
+		sb.append("pixel");
+		if (!pixels.equals(BigInteger.ONE)) sb.append("s");
+		sb.append(".<p>\n");
 
-    return sb.toString();
-  }
+		return sb.toString();
+	}
 
-  // -- Saveable API methods --
+	// -- Saveable API methods --
 
-  /**
-   * Writes the current state to the given DOM element
-   * (a child of "DataTransforms").
-   */
-  public void saveState(Element el) throws SaveException {
-    super.saveState(el);
-    el.setAttribute("width", "" + micronWidth);
-    el.setAttribute("height", "" + micronHeight);
-    el.setAttribute("step", "" + micronStep);
-  }
+	/**
+	 * Writes the current state to the given DOM element (a child of
+	 * "DataTransforms").
+	 */
+	@Override
+	public void saveState(final Element el) throws SaveException {
+		super.saveState(el);
+		el.setAttribute("width", "" + micronWidth);
+		el.setAttribute("height", "" + micronHeight);
+		el.setAttribute("step", "" + micronStep);
+	}
 
-  /**
-   * Restores the current state from the given DOM element
-   * (a child of "DataTransforms").
-   */
-  public void restoreState(Element el) throws SaveException {
-    super.restoreState(el);
-    micronWidth = ObjectUtil.stringToDouble(el.getAttribute("width"));
-    micronHeight = ObjectUtil.stringToDouble(el.getAttribute("height"));
-    micronStep = ObjectUtil.stringToDouble(el.getAttribute("step"));
-  }
+	/**
+	 * Restores the current state from the given DOM element (a child of
+	 * "DataTransforms").
+	 */
+	@Override
+	public void restoreState(final Element el) throws SaveException {
+		super.restoreState(el);
+		micronWidth = ObjectUtil.stringToDouble(el.getAttribute("width"));
+		micronHeight = ObjectUtil.stringToDouble(el.getAttribute("height"));
+		micronStep = ObjectUtil.stringToDouble(el.getAttribute("step"));
+	}
 
 }

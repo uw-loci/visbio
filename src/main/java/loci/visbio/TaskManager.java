@@ -31,59 +31,69 @@ import loci.visbio.help.HelpManager;
  */
 public class TaskManager extends LogicManager {
 
-  // -- Control panel --
+	// -- Control panel --
 
-  /** Tasks control panel. */
-  protected TaskControls taskControls;
+	/** Tasks control panel. */
+	protected TaskControls taskControls;
 
-  // -- Constructor --
+	// -- Constructor --
 
-  /** Constructs a tasks manager. */
-  public TaskManager(VisBioFrame bio) { super(bio); }
+	/** Constructs a tasks manager. */
+	public TaskManager(final VisBioFrame bio) {
+		super(bio);
+	}
 
-  // -- TaskManager API methods --
+	// -- TaskManager API methods --
 
-  /** Creates a new task with the given name. */
-  public BioTask createTask(String name) {
-    BioTask task = new BioTask(this, name);
-    taskControls.addTask(task);
-    return task;
-  }
+	/** Creates a new task with the given name. */
+	public BioTask createTask(final String name) {
+		final BioTask task = new BioTask(this, name);
+		taskControls.addTask(task);
+		return task;
+	}
 
-  /** Removes the given task from the task list. */
-  public void setCompleted(BioTask task) { taskControls.removeTask(task); }
+	/** Removes the given task from the task list. */
+	public void setCompleted(final BioTask task) {
+		taskControls.removeTask(task);
+	}
 
-  /** Gets associated control panel. */
-  public TaskControls getControls() { return taskControls; }
+	/** Gets associated control panel. */
+	public TaskControls getControls() {
+		return taskControls;
+	}
 
-  // -- LogicManager API methods --
+	// -- LogicManager API methods --
 
-  /** Called to notify the logic manager of a VisBio event. */
-  public void doEvent(VisBioEvent evt) {
-    int eventType = evt.getEventType();
-    if (eventType == VisBioEvent.LOGIC_ADDED) {
-      LogicManager lm = (LogicManager) evt.getSource();
-      if (lm == this) doGUI();
-    }
-  }
+	/** Called to notify the logic manager of a VisBio event. */
+	@Override
+	public void doEvent(final VisBioEvent evt) {
+		final int eventType = evt.getEventType();
+		if (eventType == VisBioEvent.LOGIC_ADDED) {
+			final LogicManager lm = (LogicManager) evt.getSource();
+			if (lm == this) doGUI();
+		}
+	}
 
-  /** Gets the number of tasks required to initialize this logic manager. */
-  public int getTasks() { return 2; }
+	/** Gets the number of tasks required to initialize this logic manager. */
+	@Override
+	public int getTasks() {
+		return 2;
+	}
 
-  // -- Helper methods --
+	// -- Helper methods --
 
-  /** Adds data-related GUI components to VisBio. */
-  private void doGUI() {
-    // control panel
-    bio.setSplashStatus("Initializing task management");
-    taskControls = new TaskControls(this);
-    PanelManager pm = (PanelManager) bio.getManager(PanelManager.class);
-    pm.addPanel(taskControls, 1, 1, 1, 1, "350:grow", "200:grow");
+	/** Adds data-related GUI components to VisBio. */
+	private void doGUI() {
+		// control panel
+		bio.setSplashStatus("Initializing task management");
+		taskControls = new TaskControls(this);
+		final PanelManager pm = (PanelManager) bio.getManager(PanelManager.class);
+		pm.addPanel(taskControls, 1, 1, 1, 1, "350:grow", "200:grow");
 
-    // help topics
-    bio.setSplashStatus(null);
-    HelpManager hm = (HelpManager) bio.getManager(HelpManager.class);
-    hm.addHelpTopic("Control panels/Tasks panel", "tasks_panel.html");
-  }
+		// help topics
+		bio.setSplashStatus(null);
+		final HelpManager hm = (HelpManager) bio.getManager(HelpManager.class);
+		hm.addHelpTopic("Control panels/Tasks panel", "tasks_panel.html");
+	}
 
 }

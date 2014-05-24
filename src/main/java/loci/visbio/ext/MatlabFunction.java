@@ -36,73 +36,88 @@ import visad.FlatField;
  */
 public class MatlabFunction extends ExternalFunction {
 
-  // -- Constructors --
+	// -- Constructors --
 
-  /** Creates an uninitialized MATLAB transform. */
-  public MatlabFunction() { super(); }
+	/** Creates an uninitialized MATLAB transform. */
+	public MatlabFunction() {
+		super();
+	}
 
-  /** Creates a MATLAB transform from the given transform. */
-  public MatlabFunction(DataTransform parent, String name, String function) {
-    super(parent, name, function);
-  }
+	/** Creates a MATLAB transform from the given transform. */
+	public MatlabFunction(final DataTransform parent, final String name,
+		final String function)
+	{
+		super(parent, name, function);
+	}
 
-  // -- ExternalFunction API methods --
+	// -- ExternalFunction API methods --
 
-  /**
-   * Predicts the width, height and number of output planes, given the width,
-   * height and number of input planes, and parameter values.
-   *
-   * @return An int[3] array representing output width, height and num values.
-   */
-  public int[] predict(int width, int height, int num, String[] params) {
-    double[] p = new double[params.length];
-    for (int i=0; i<params.length; i++) p[i] = Double.parseDouble(params[i]);
-    int[] mdims = MatlabUtil.getDimensions(function, height, width, num, p);
-    return new int[] {mdims[1], mdims[0], mdims[2]};
-  }
+	/**
+	 * Predicts the width, height and number of output planes, given the width,
+	 * height and number of input planes, and parameter values.
+	 * 
+	 * @return An int[3] array representing output width, height and num values.
+	 */
+	@Override
+	public int[] predict(final int width, final int height, final int num,
+		final String[] params)
+	{
+		final double[] p = new double[params.length];
+		for (int i = 0; i < params.length; i++)
+			p[i] = Double.parseDouble(params[i]);
+		final int[] mdims =
+			MatlabUtil.getDimensions(function, height, width, num, p);
+		return new int[] { mdims[1], mdims[0], mdims[2] };
+	}
 
-  /** Gets the input parameter names and corresponding default values. */
-  public FunctionParam[] params() {
-    return MatlabUtil.getParameters(function);
-  }
+	/** Gets the input parameter names and corresponding default values. */
+	@Override
+	public FunctionParam[] params() {
+		return MatlabUtil.getParameters(function);
+	}
 
-  /** Evaluates the function for the given input data and parameter values. */
-  public FlatField evaluate(FlatField input, String[] params) {
-    double[] p = new double[params.length];
-    for (int i=0; i<params.length; i++) p[i] = Double.parseDouble(params[i]);
-    return MatlabUtil.evaluate(function, input, p, getRangeTypes());
-  }
+	/** Evaluates the function for the given input data and parameter values. */
+	@Override
+	public FlatField evaluate(final FlatField input, final String[] params) {
+		final double[] p = new double[params.length];
+		for (int i = 0; i < params.length; i++)
+			p[i] = Double.parseDouble(params[i]);
+		return MatlabUtil.evaluate(function, input, p, getRangeTypes());
+	}
 
-  // -- Static DataTransform API methods --
+	// -- Static DataTransform API methods --
 
-  /** Creates a new MATLAB transform, with user interaction. */
-  public static DataTransform makeTransform(DataManager dm) {
-    DataTransform data = dm.getSelectedData();
-    if (!isValidParent(data)) return null;
+	/** Creates a new MATLAB transform, with user interaction. */
+	public static DataTransform makeTransform(final DataManager dm) {
+		final DataTransform data = dm.getSelectedData();
+		if (!isValidParent(data)) return null;
 
-    String func = (String) JOptionPane.showInputDialog(dm.getControls(),
-      "MATLAB function to call:", "Create MATLAB transform",
-      JOptionPane.INFORMATION_MESSAGE, null, null, "");
-    if (func == null) return null;
+		final String func =
+			(String) JOptionPane.showInputDialog(dm.getControls(),
+				"MATLAB function to call:", "Create MATLAB transform",
+				JOptionPane.INFORMATION_MESSAGE, null, null, "");
+		if (func == null) return null;
 
-    String n = (String) JOptionPane.showInputDialog(dm.getControls(),
-      "Transform name:", "Create MATLAB transform",
-      JOptionPane.INFORMATION_MESSAGE, null, null,
-      data.getName() + " " + func + " MATLAB");
-    if (n == null) return null;
+		final String n =
+			(String) JOptionPane.showInputDialog(dm.getControls(), "Transform name:",
+				"Create MATLAB transform", JOptionPane.INFORMATION_MESSAGE, null, null,
+				data.getName() + " " + func + " MATLAB");
+		if (n == null) return null;
 
-    return new MatlabFunction(data, n, func);
-  }
+		return new MatlabFunction(data, n, func);
+	}
 
-  /**
-   * Indicates whether this transform type would accept
-   * the given transform as its parent transform.
-   */
-  public static boolean isValidParent(DataTransform data) {
-    return data != null && data instanceof ImageTransform;
-  }
+	/**
+	 * Indicates whether this transform type would accept the given transform as
+	 * its parent transform.
+	 */
+	public static boolean isValidParent(final DataTransform data) {
+		return data != null && data instanceof ImageTransform;
+	}
 
-  /** Indicates whether this transform type requires a parent transform. */
-  public static boolean isParentRequired() { return true; }
+	/** Indicates whether this transform type requires a parent transform. */
+	public static boolean isParentRequired() {
+		return true;
+	}
 
 }

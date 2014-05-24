@@ -46,114 +46,131 @@ import javax.swing.border.EmptyBorder;
  */
 public class BioTask extends JPanel implements ActionListener {
 
-  // -- Fields --
+	// -- Fields --
 
-  /** Task manager associated with the task. */
-  protected TaskManager tm;
+	/** Task manager associated with the task. */
+	protected TaskManager tm;
 
-  /** Whether the task has been stopped. */
-  protected boolean stopped = false;
+	/** Whether the task has been stopped. */
+	protected boolean stopped = false;
 
-  // -- GUI components --
+	// -- GUI components --
 
-  /** Label displaying name of the task. */
-  protected JLabel title;
+	/** Label displaying name of the task. */
+	protected JLabel title;
 
-  /** Label displaying current status message for the task. */
-  protected JLabel status;
+	/** Label displaying current status message for the task. */
+	protected JLabel status;
 
-  /** Progress bar displaying the task's progress. */
-  protected JProgressBar progress;
+	/** Progress bar displaying the task's progress. */
+	protected JProgressBar progress;
 
-  /** Button for halting and resuming the task. */
-  protected JButton stop;
+	/** Button for halting and resuming the task. */
+	protected JButton stop;
 
-  // -- Constructor --
+	// -- Constructor --
 
-  /** Constructs a new VisBio task. */
-  public BioTask(TaskManager taskMan, String name) {
-    tm = taskMan;
-    title = new JLabel(name);
-    title.setFont(title.getFont().deriveFont(Font.BOLD));
-    status = new JLabel() {
-      public Dimension getPreferredSize() {
-        // HACK - limit label width to viewport
-        Dimension pref = super.getPreferredSize();
-        int width = tm.getControls().getPreferredTaskWidth() -
-          title.getPreferredSize().width - stop.getPreferredSize().width - 25;
-        if (pref.width < width) width = pref.width;
-        return new Dimension(width, pref.height);
-      }
-    };
-    progress = new JProgressBar();
-    progress.setIndeterminate(true);
-    stop = new JButton("Stop");
-    stop.addActionListener(this);
-    stop.setEnabled(false);
-    setLayout(new BorderLayout());
-    setBorder(new EmptyBorder(0, 0, 5, 0));
-    PanelBuilder builder = new PanelBuilder(new FormLayout(
-      "pref:grow, 3dlu, pref:grow, 3dlu, pref", "pref, pref"
-    ));
-    CellConstraints cc = new CellConstraints();
-    builder.add(title, cc.xy(1, 1, "left,bottom"));
-    builder.add(status, cc.xy(3, 1, "right,bottom"));
-    builder.add(progress, cc.xyw(1, 2, 3, "fill,top"));
-    builder.add(stop, cc.xywh(5, 1, 1, 2, "center,center"));
-    add(builder.getPanel());
-  }
+	/** Constructs a new VisBio task. */
+	public BioTask(final TaskManager taskMan, final String name) {
+		tm = taskMan;
+		title = new JLabel(name);
+		title.setFont(title.getFont().deriveFont(Font.BOLD));
+		status = new JLabel() {
 
-  // -- BioTask API methods --
+			@Override
+			public Dimension getPreferredSize() {
+				// HACK - limit label width to viewport
+				final Dimension pref = super.getPreferredSize();
+				int width =
+					tm.getControls().getPreferredTaskWidth() -
+						title.getPreferredSize().width - stop.getPreferredSize().width - 25;
+				if (pref.width < width) width = pref.width;
+				return new Dimension(width, pref.height);
+			}
+		};
+		progress = new JProgressBar();
+		progress.setIndeterminate(true);
+		stop = new JButton("Stop");
+		stop.addActionListener(this);
+		stop.setEnabled(false);
+		setLayout(new BorderLayout());
+		setBorder(new EmptyBorder(0, 0, 5, 0));
+		final PanelBuilder builder =
+			new PanelBuilder(new FormLayout("pref:grow, 3dlu, pref:grow, 3dlu, pref",
+				"pref, pref"));
+		final CellConstraints cc = new CellConstraints();
+		builder.add(title, cc.xy(1, 1, "left,bottom"));
+		builder.add(status, cc.xy(3, 1, "right,bottom"));
+		builder.add(progress, cc.xyw(1, 2, 3, "fill,top"));
+		builder.add(stop, cc.xywh(5, 1, 1, 2, "center,center"));
+		add(builder.getPanel());
+	}
 
-  /** Updates the status of this task. */
-  public void setStatus(int value, int maximum) {
-    setStatus(value, maximum, null);
-  }
+	// -- BioTask API methods --
 
-  /** Updates the status of this task. */
-  public void setStatus(String message) { setStatus(-1, -1, message); }
+	/** Updates the status of this task. */
+	public void setStatus(final int value, final int maximum) {
+		setStatus(value, maximum, null);
+	}
 
-  /** Updates the status of this task. */
-  public void setStatus(int value, int maximum, String message) {
-    final int val = value;
-    final int max = maximum;
-    final String msg = message;
-    SwingUtilities.invokeLater(new Runnable() {
-      public void run() {
-        if (val >= 0 && max >= 0) {
-          progress.setIndeterminate(false);
-          progress.setMaximum(max);
-          progress.setValue(val);
-        }
-        if (msg != null) status.setText(msg);
-      }
-    });
-  }
+	/** Updates the status of this task. */
+	public void setStatus(final String message) {
+		setStatus(-1, -1, message);
+	}
 
-  /** Marks a task as completed. */
-  public void setCompleted() { tm.setCompleted(this); }
+	/** Updates the status of this task. */
+	public void
+		setStatus(final int value, final int maximum, final String message)
+	{
+		final int val = value;
+		final int max = maximum;
+		final String msg = message;
+		SwingUtilities.invokeLater(new Runnable() {
 
-  /** Toggles whether the task can be stopped midway. */
-  public void setStoppable(boolean stoppable) { stop.setEnabled(stoppable); }
+			@Override
+			public void run() {
+				if (val >= 0 && max >= 0) {
+					progress.setIndeterminate(false);
+					progress.setMaximum(max);
+					progress.setValue(val);
+				}
+				if (msg != null) status.setText(msg);
+			}
+		});
+	}
 
-  /** Gets whether the task has been stopped. */
-  public boolean isStopped() { return stopped; }
+	/** Marks a task as completed. */
+	public void setCompleted() {
+		tm.setCompleted(this);
+	}
 
-  // -- Component API methods --
+	/** Toggles whether the task can be stopped midway. */
+	public void setStoppable(final boolean stoppable) {
+		stop.setEnabled(stoppable);
+	}
 
-  public Dimension getMaximumSize() {
-    Dimension max = super.getMaximumSize();
-    Dimension pref = super.getPreferredSize();
-    return new Dimension(max.width, pref.height);
-  }
+	/** Gets whether the task has been stopped. */
+	public boolean isStopped() {
+		return stopped;
+	}
 
-  // -- ActionListener methods --
+	// -- Component API methods --
 
-  /** Toggles the stop button. */
-  public void actionPerformed(ActionEvent e) {
-    progress.setIndeterminate(false);
-    stop.setEnabled(false);
-    stopped = true;
-  }
+	@Override
+	public Dimension getMaximumSize() {
+		final Dimension max = super.getMaximumSize();
+		final Dimension pref = super.getPreferredSize();
+		return new Dimension(max.width, pref.height);
+	}
+
+	// -- ActionListener methods --
+
+	/** Toggles the stop button. */
+	@Override
+	public void actionPerformed(final ActionEvent e) {
+		progress.setIndeterminate(false);
+		stop.setEnabled(false);
+		stopped = true;
+	}
 
 }

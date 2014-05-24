@@ -34,33 +34,41 @@ import org.w3c.dom.Element;
  */
 public class LogicManager implements Saveable {
 
-  // -- Fields --
+	// -- Fields --
 
-  /** VisBio frame. */
-  protected VisBioFrame bio;
+	/** VisBio frame. */
+	protected VisBioFrame bio;
 
-  // -- Constructor --
+	// -- Constructor --
 
-  /** Constructs a logic manager. */
-  public LogicManager(VisBioFrame bio) { this.bio = bio; }
+	/** Constructs a logic manager. */
+	public LogicManager(final VisBioFrame bio) {
+		this.bio = bio;
+	}
 
-  // -- LogicManager API methods --
+	// -- LogicManager API methods --
 
-  /** Called to notify the logic manager of a VisBio event. */
-  public void doEvent(VisBioEvent evt) { }
+	/** Called to notify the logic manager of a VisBio event. */
+	public void doEvent(final VisBioEvent evt) {}
 
-  /** Gets the VisBio frame for this logic manager. */
-  public VisBioFrame getVisBio() { return bio; }
+	/** Gets the VisBio frame for this logic manager. */
+	public VisBioFrame getVisBio() {
+		return bio;
+	}
 
-  /** Gets the number of tasks required to initialize this logic manager. */
-  public int getTasks() { return 0; }
+	/** Gets the number of tasks required to initialize this logic manager. */
+	public int getTasks() {
+		return 0;
+	}
 
-  // -- Saveable API methods --
+	// -- Saveable API methods --
 
-  /** Writes the current state to the given DOM element. */
-  public void saveState(Element el) throws SaveException { }
+	/** Writes the current state to the given DOM element. */
+	@Override
+	public void saveState(final Element el) throws SaveException {}
 
-  /** Restores the current state from the given DOM element. */
-  public void restoreState(Element el) throws SaveException { }
+	/** Restores the current state from the given DOM element. */
+	@Override
+	public void restoreState(final Element el) throws SaveException {}
 
 }

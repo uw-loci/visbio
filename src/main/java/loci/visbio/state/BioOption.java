@@ -33,30 +33,36 @@ import org.w3c.dom.Element;
  */
 public abstract class BioOption implements Saveable {
 
-  // -- Fields --
+	// -- Fields --
 
-  /** String identifying this option. */
-  protected String text;
+	/** String identifying this option. */
+	protected String text;
 
-  // -- Constructor --
+	// -- Constructor --
 
-  /** Constructs a new option. */
-  public BioOption(String text) { this.text = text; }
+	/** Constructs a new option. */
+	public BioOption(final String text) {
+		this.text = text;
+	}
 
-  // -- BioOption API methods --
+	// -- BioOption API methods --
 
-  /** Gets text identifying this option. */
-  public String getText() { return text; }
+	/** Gets text identifying this option. */
+	public String getText() {
+		return text;
+	}
 
-  /** Gets a GUI component representing this option. */
-  public abstract Component getComponent();
+	/** Gets a GUI component representing this option. */
+	public abstract Component getComponent();
 
-  // -- Saveable API methods --
+	// -- Saveable API methods --
 
-  /** Writes the current state to the given DOM element ("Options"). */
-  public void saveState(Element el) throws SaveException { }
+	/** Writes the current state to the given DOM element ("Options"). */
+	@Override
+	public void saveState(final Element el) throws SaveException {}
 
-  /** Restores the current state from the given DOM element ("Options"). */
-  public void restoreState(Element el) throws SaveException { }
+	/** Restores the current state from the given DOM element ("Options"). */
+	@Override
+	public void restoreState(final Element el) throws SaveException {}
 
 }

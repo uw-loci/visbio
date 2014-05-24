@@ -32,46 +32,49 @@ import visad.DisplayEvent;
  */
 public class MarkerTool extends OverlayTool {
 
-  // -- Fields --
+	// -- Fields --
 
-  /** Marker currently being drawn. */
-  protected OverlayMarker marker;
+	/** Marker currently being drawn. */
+	protected OverlayMarker marker;
 
-  // -- Constructor --
+	// -- Constructor --
 
-  /** Constructs a measurement marker creation tool. */
-  public MarkerTool(OverlayTransform overlay) {
-    super(overlay, "Marker", "Marker", "marker.png");
-  }
+	/** Constructs a measurement marker creation tool. */
+	public MarkerTool(final OverlayTransform overlay) {
+		super(overlay, "Marker", "Marker", "marker.png");
+	}
 
-  // -- OverlayTool API methods --
+	// -- OverlayTool API methods --
 
-  /** Instructs this tool to respond to a mouse press. */
-  public void mouseDown(DisplayEvent e, int px, int py,
-    float dx, float dy, int[] pos, int mods)
-  {
-    deselectAll();
-    marker = new OverlayMarker(overlay, dx, dy);
-    overlay.addObject(marker, pos);
-  }
+	/** Instructs this tool to respond to a mouse press. */
+	@Override
+	public void mouseDown(final DisplayEvent e, final int px, final int py,
+		final float dx, final float dy, final int[] pos, final int mods)
+	{
+		deselectAll();
+		marker = new OverlayMarker(overlay, dx, dy);
+		overlay.addObject(marker, pos);
+	}
 
-  /** Instructs this tool to respond to a mouse release. */
-  public void mouseUp(DisplayEvent e, int px, int py,
-    float dx, float dy, int[] pos, int mods)
-  {
-    if (marker == null) return;
-    marker.setDrawing(false);
-    marker = null;
-    overlay.notifyListeners(new TransformEvent(overlay));
-  }
+	/** Instructs this tool to respond to a mouse release. */
+	@Override
+	public void mouseUp(final DisplayEvent e, final int px, final int py,
+		final float dx, final float dy, final int[] pos, final int mods)
+	{
+		if (marker == null) return;
+		marker.setDrawing(false);
+		marker = null;
+		overlay.notifyListeners(new TransformEvent(overlay));
+	}
 
-  /** Instructs this tool to respond to a mouse drag. */
-  public void mouseDrag(DisplayEvent e, int px, int py,
-    float dx, float dy, int[] pos, int mods)
-  {
-    if (marker == null) return;
-    marker.setCoords(dx, dy);
-    overlay.notifyListeners(new TransformEvent(overlay));
-  }
+	/** Instructs this tool to respond to a mouse drag. */
+	@Override
+	public void mouseDrag(final DisplayEvent e, final int px, final int py,
+		final float dx, final float dy, final int[] pos, final int mods)
+	{
+		if (marker == null) return;
+		marker.setCoords(dx, dy);
+		overlay.notifyListeners(new TransformEvent(overlay));
+	}
 
 }

@@ -32,10 +32,10 @@ import org.w3c.dom.Element;
  */
 public interface Saveable {
 
-  /** Writes the current state to the given DOM element. */
-  void saveState(Element el) throws SaveException;
+	/** Writes the current state to the given DOM element. */
+	void saveState(Element el) throws SaveException;
 
-  /** Restores the current state from the given DOM element. */
-  void restoreState(Element el) throws SaveException;
+	/** Restores the current state from the given DOM element. */
+	void restoreState(Element el) throws SaveException;
 
 }

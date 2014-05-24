@@ -32,83 +32,97 @@ import loci.visbio.data.ImageTransform;
 /**
  * DummyImageTransform is a fake ImageTransform.
  */
-public class DummyImageTransform extends ImageTransform{
+public class DummyImageTransform extends ImageTransform {
 
-  // -- Constants --
+	// -- Constants --
 
-  /**  An arbitrary fake width. */
-  public static final int WIDTH = 0;
+	/** An arbitrary fake width. */
+	public static final int WIDTH = 0;
 
-  /**  An arbitrary fake height. */
-  public static final int HEIGHT = 0;
+	/** An arbitrary fake height. */
+	public static final int HEIGHT = 0;
 
-  /**
-   * An arbitrary fake number of range components.  Matches the typical
-   * R,G,B,Alpha range.
-   */
-  public static final int RC = 4;
+	/**
+	 * An arbitrary fake number of range components. Matches the typical
+	 * R,G,B,Alpha range.
+	 */
+	public static final int RC = 4;
 
-  /** Creates an image transform with the given transform as its parent. */
-  public DummyImageTransform(DataTransform parent, String name) {
-    this(parent, name, Double.NaN, Double.NaN, Double.NaN);
-  }
+	/** Creates an image transform with the given transform as its parent. */
+	public DummyImageTransform(final DataTransform parent, final String name) {
+		this(parent, name, Double.NaN, Double.NaN, Double.NaN);
+	}
 
-  /**
-   * Creates an image transform with the given transform as its parent,
-   * that is dimensioned according to the specified values in microns.
-   */
-  public DummyImageTransform(DataTransform parent, String name,
-    double width, double height, double step)
-  {
-    super(parent, name);
-  }
+	/**
+	 * Creates an image transform with the given transform as its parent, that is
+	 * dimensioned according to the specified values in microns.
+	 */
+	public DummyImageTransform(final DataTransform parent, final String name,
+		final double width, final double height, final double step)
+	{
+		super(parent, name);
+	}
 
-  // -- ImageTransform API methods --
+	// -- ImageTransform API methods --
 
-  /** Gets the width in pixels of each image. */
-  public int getImageWidth(){ return WIDTH; }
+	/** Gets the width in pixels of each image. */
+	@Override
+	public int getImageWidth() {
+		return WIDTH;
+	}
 
-  /** Gets the height in pixels of each image. */
-  public int getImageHeight() { return HEIGHT; }
+	/** Gets the height in pixels of each image. */
+	@Override
+	public int getImageHeight() {
+		return HEIGHT;
+	}
 
-  /** Gets number of range components at each pixel. */
-  public int getRangeCount() { return RC; }
+	/** Gets number of range components at each pixel. */
+	@Override
+	public int getRangeCount() {
+		return RC;
+	}
 
-  /**
-   * ImageTransform: "Obtains an image from the source(s) at the given
-   * dimensional position." This version just returns blank images.
-   */
-  public BufferedImage getImage(int[] pos) {
-    BufferedImage bi = new BufferedImage(getImageWidth(), getImageHeight(),
-        BufferedImage.TYPE_INT_RGB);
-    return bi;
-  }
+	/**
+	 * ImageTransform: "Obtains an image from the source(s) at the given
+	 * dimensional position." This version just returns blank images.
+	 */
+	@Override
+	public BufferedImage getImage(final int[] pos) {
+		final BufferedImage bi =
+			new BufferedImage(getImageWidth(), getImageHeight(),
+				BufferedImage.TYPE_INT_RGB);
+		return bi;
+	}
 
-  // -- DataTransform API methods --
+	// -- DataTransform API methods --
 
-  /**
-   * DataTransform: "Gets whether this transform provides data of the given
-   * dimensionality." Allow 2D and 3D for dummy version.
-   */
-  public boolean isValidDimension(int dim) {
-    return (dim == 3 || dim == 2);
-  }
+	/**
+	 * DataTransform: "Gets whether this transform provides data of the given
+	 * dimensionality." Allow 2D and 3D for dummy version.
+	 */
+	@Override
+	public boolean isValidDimension(final int dim) {
+		return (dim == 3 || dim == 2);
+	}
 
-  /**
-   * DataTransform: "Gets a string id uniquely describing this data transform
-   * at the given
-   * dimensional position, for the purposes of thumbnail caching.
-   * If global flag is true, the id is suitable for use in the default,
-   * global cache file."
-   * Returns arbitrary string "LOCI".
-   */
-  public String getCacheId(int[] pos, boolean global){
-    return "LOCI";
-  }
+	/**
+	 * DataTransform: "Gets a string id uniquely describing this data transform at
+	 * the given dimensional position, for the purposes of thumbnail caching. If
+	 * global flag is true, the id is suitable for use in the default, global
+	 * cache file." Returns arbitrary string "LOCI".
+	 */
+	@Override
+	public String getCacheId(final int[] pos, final boolean global) {
+		return "LOCI";
+	}
 
-  // -- DataTransform methods overriden --
+	// -- DataTransform methods overriden --
 
-  /** Return a fake lengths array. */
-  public int[] getLengths() { return new int[]{1}; }
+	/** Return a fake lengths array. */
+	@Override
+	public int[] getLengths() {
+		return new int[] { 1 };
+	}
 
 }

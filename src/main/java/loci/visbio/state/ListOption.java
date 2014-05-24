@@ -39,58 +39,66 @@ import org.w3c.dom.Element;
  */
 public class ListOption extends BioOption {
 
-  // -- Fields --
+	// -- Fields --
 
-  /** Panel containing GUI components. */
-  private JPanel panel;
+	/** Panel containing GUI components. */
+	private final JPanel panel;
 
-  /** Text box GUI component. */
-  private BioComboBox box;
+	/** Text box GUI component. */
+	private final BioComboBox box;
 
-  // -- Constructor --
+	// -- Constructor --
 
-  /** Constructs a new option. */
-  public ListOption(String text, String tip, String[] choices) {
-    super(text);
+	/** Constructs a new option. */
+	public ListOption(final String text, final String tip, final String[] choices)
+	{
+		super(text);
 
-    // combo box
-    box = new BioComboBox(choices);
-    box.setToolTipText(tip);
-    box.setSelectedIndex(0);
+		// combo box
+		box = new BioComboBox(choices);
+		box.setToolTipText(tip);
+		box.setSelectedIndex(0);
 
-    // lay out components
-    panel = FormsUtil.makeRow(text, box);
-  }
+		// lay out components
+		panel = FormsUtil.makeRow(text, box);
+	}
 
-  // -- ListOption API methods --
+	// -- ListOption API methods --
 
-  /** Gets this option's current setting. */
-  public String getValue() { return (String) box.getSelectedItem(); }
+	/** Gets this option's current setting. */
+	public String getValue() {
+		return (String) box.getSelectedItem();
+	}
 
-  // -- BioOption API methods --
+	// -- BioOption API methods --
 
-  /** Gets a GUI component representing this option. */
-  public Component getComponent() { return panel; }
+	/** Gets a GUI component representing this option. */
+	@Override
+	public Component getComponent() {
+		return panel;
+	}
 
-  // -- Saveable API methods --
+	// -- Saveable API methods --
 
-  /** Writes the current state to the given DOM element ("Options"). */
-  public void saveState(Element el) throws SaveException {
-    Element e = XMLUtil.createChild(el, "List");
-    e.setAttribute("name", text);
-    e.setAttribute("value", getValue());
-  }
+	/** Writes the current state to the given DOM element ("Options"). */
+	@Override
+	public void saveState(final Element el) throws SaveException {
+		final Element e = XMLUtil.createChild(el, "List");
+		e.setAttribute("name", text);
+		e.setAttribute("value", getValue());
+	}
 
-  /** Restores the current state from the given DOM element ("Options"). */
-  public void restoreState(Element el) throws SaveException {
-    Element[] e = XMLUtil.getChildren(el, "List");
-    for (int i=0; i<e.length; i++) {
-      String name = e[i].getAttribute("name");
-      if (!name.equals(text)) continue;
-      String value = e[i].getAttribute("value");
-      box.setSelectedItem(value);
-      break;
-    }
-  }
+	/** Restores the current state from the given DOM element ("Options"). */
+	@Override
+	public void restoreState(final Element el) throws SaveException {
+		final Element[] e = XMLUtil.getChildren(el, "List");
+		for (int i = 0; i < e.length; i++) {
+			final String name = e[i].getAttribute("name");
+			if (!name.equals(text)) continue;
+			final String value = e[i].getAttribute("value");
+			box.setSelectedItem(value);
+			break;
+		}
+	}
 
 }

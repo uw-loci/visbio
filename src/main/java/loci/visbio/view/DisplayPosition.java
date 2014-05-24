@@ -37,87 +37,100 @@ import org.w3c.dom.Element;
  */
 public class DisplayPosition implements Dynamic, Saveable {
 
-  // -- Fields --
+	// -- Fields --
 
-  /** Name of the group. */
-  private String name;
+	/** Name of the group. */
+	private String name;
 
-  /** Matrix representing the position. */
-  private double[] matrix;
+	/** Matrix representing the position. */
+	private double[] matrix;
 
-  // -- Constructor --
+	// -- Constructor --
 
-  /** Constructs an uninitialized display position. */
-  public DisplayPosition() { }
+	/** Constructs an uninitialized display position. */
+	public DisplayPosition() {}
 
-  /** Constructs a display position. */
-  public DisplayPosition(String name, double[] matrix) {
-    this.name = name;
-    this.matrix = matrix;
-  }
+	/** Constructs a display position. */
+	public DisplayPosition(final String name, final double[] matrix) {
+		this.name = name;
+		this.matrix = matrix;
+	}
 
-  // -- DisplayPosition API methods --
+	// -- DisplayPosition API methods --
 
-  /** Gets the position's string representation (name). */
-  public String toString() { return name; }
+	/** Gets the position's string representation (name). */
+	@Override
+	public String toString() {
+		return name;
+	}
 
-  /** Gets the positions's name. */
-  public String getName() { return name; }
+	/** Gets the positions's name. */
+	public String getName() {
+		return name;
+	}
 
-  /** Gets the position's description. */
-  public double[] getMatrix() { return matrix; }
+	/** Gets the position's description. */
+	public double[] getMatrix() {
+		return matrix;
+	}
 
-  // -- Dynamic API methods --
+	// -- Dynamic API methods --
 
-  /** Tests whether two dynamic objects have matching states. */
-  public boolean matches(Dynamic dyn) {
-    if (!isCompatible(dyn)) return false;
-    DisplayPosition position = (DisplayPosition) dyn;
+	/** Tests whether two dynamic objects have matching states. */
+	@Override
+	public boolean matches(final Dynamic dyn) {
+		if (!isCompatible(dyn)) return false;
+		final DisplayPosition position = (DisplayPosition) dyn;
 
-    return ObjectUtil.objectsEqual(name, position.name) &&
-      ObjectUtil.arraysEqual(matrix, position.matrix);
-  }
+		return ObjectUtil.objectsEqual(name, position.name) &&
+			ObjectUtil.arraysEqual(matrix, position.matrix);
+	}
 
-  /**
-   * Tests whether the given dynamic object can be used as an argument to
-   * initState, for initializing this dynamic object.
-   */
-  public boolean isCompatible(Dynamic dyn) {
-    return dyn instanceof DisplayPosition;
-  }
+	/**
+	 * Tests whether the given dynamic object can be used as an argument to
+	 * initState, for initializing this dynamic object.
+	 */
+	@Override
+	public boolean isCompatible(final Dynamic dyn) {
+		return dyn instanceof DisplayPosition;
+	}
 
-  /** Modifies this object's state to match that of the given object. */
-  public void initState(Dynamic dyn) {
-    if (dyn != null && !isCompatible(dyn)) return;
-    DisplayPosition position = (DisplayPosition) dyn;
+	/** Modifies this object's state to match that of the given object. */
+	@Override
+	public void initState(final Dynamic dyn) {
+		if (dyn != null && !isCompatible(dyn)) return;
+		final DisplayPosition position = (DisplayPosition) dyn;
 
-    if (position != null) {
-      name = position.name;
-      matrix = position.matrix;
-    }
-  }
+		if (position != null) {
+			name = position.name;
+			matrix = position.matrix;
+		}
+	}
 
-  /**
-   * Called when this object is being discarded in favor of
-   * another object with a matching state.
-   */
-  public void discard() { }
+	/**
+	 * Called when this object is being discarded in favor of another object with
+	 * a matching state.
+	 */
+	@Override
+	public void discard() {}
 
-  // -- Saveable API methods --
+	// -- Saveable API methods --
 
-  /** Writes the current state to the given DOM element ("Capture"). */
-  public void saveState(Element el) throws SaveException {
-    Element child = XMLUtil.createChild(el, "DisplayPosition");
-    child.setAttribute("name", name);
-    child.setAttribute("matrix", ObjectUtil.arrayToString(matrix));
-  }
+	/** Writes the current state to the given DOM element ("Capture"). */
+	@Override
+	public void saveState(final Element el) throws SaveException {
+		final Element child = XMLUtil.createChild(el, "DisplayPosition");
+		child.setAttribute("name", name);
+		child.setAttribute("matrix", ObjectUtil.arrayToString(matrix));
+	}
 
-  /**
-   * Restores the current state from the given DOM element ("DisplayPosition").
-   */
-  public void restoreState(Element el) throws SaveException {
-    name = el.getAttribute("name");
-    matrix = ObjectUtil.stringToDoubleArray(el.getAttribute("matrix"));
-  }
+	/**
+	 * Restores the current state from the given DOM element ("DisplayPosition").
+	 */
+	@Override
+	public void restoreState(final Element el) throws SaveException {
+		name = el.getAttribute("name");
+		matrix = ObjectUtil.stringToDoubleArray(el.getAttribute("matrix"));
+	}
 
 }

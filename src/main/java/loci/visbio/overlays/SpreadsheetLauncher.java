@@ -34,108 +34,110 @@ import java.io.IOException;
  */
 public class SpreadsheetLauncher {
 
-  // -- Constants --
+	// -- Constants --
 
-  /** Default path to spreadsheet (Excel) on Windows computers. */
-  protected static final String WIN_PATH =
-    "C:\\Program Files\\Microsoft Office\\excel.exe";
+	/** Default path to spreadsheet (Excel) on Windows computers. */
+	protected static final String WIN_PATH =
+		"C:\\Program Files\\Microsoft Office\\excel.exe";
 
-  /** Default path to spreadsheet (OpenOffice) on Linux computers. */
-  protected static final String LIN_PATH = "/usr/bin/oocalc";
+	/** Default path to spreadsheet (OpenOffice) on Linux computers. */
+	protected static final String LIN_PATH = "/usr/bin/oocalc";
 
-  /** Default path to spreadsheet (Excel) on Macintosh computers. */
-  protected static final String MAC_PATH =
-    "/Applications/Microsoft Office 2004/Microsoft Excel";
+	/** Default path to spreadsheet (Excel) on Macintosh computers. */
+	protected static final String MAC_PATH =
+		"/Applications/Microsoft Office 2004/Microsoft Excel";
 
-  // --  Fields --
+	// -- Fields --
 
-  /** Path to spreadsheet executable. */
-  protected final String path;
+	/** Path to spreadsheet executable. */
+	protected final String path;
 
-  // -- Constructor --
+	// -- Constructor --
 
-  /** Constructs a spreadsheet launcher. */
-  public SpreadsheetLauncher() throws SpreadsheetLaunchException{
-    path = getDefaultApplicationPath();
-  }
+	/** Constructs a spreadsheet launcher. */
+	public SpreadsheetLauncher() throws SpreadsheetLaunchException {
+		path = getDefaultApplicationPath();
+	}
 
-  // -- Static SpreadsheetLauncher API methods
+	// -- Static SpreadsheetLauncher API methods
 
-  /** Returns the default spreadsheet application path for the current OS. */
-  public static String getDefaultApplicationPath() throws
-    SpreadsheetLaunchException
-  {
-    String def = "";
-    if (isWindows()) def = WIN_PATH;
-    else if (isLinux()) def = LIN_PATH;
-    else if (isMac()) def = MAC_PATH;
-    else {
-      throw new SpreadsheetLaunchException(makeCantIdentifyOSMessage());
-    }
-    return def;
-  }
+	/** Returns the default spreadsheet application path for the current OS. */
+	public static String getDefaultApplicationPath()
+		throws SpreadsheetLaunchException
+	{
+		String def = "";
+		if (isWindows()) def = WIN_PATH;
+		else if (isLinux()) def = LIN_PATH;
+		else if (isMac()) def = MAC_PATH;
+		else {
+			throw new SpreadsheetLaunchException(makeCantIdentifyOSMessage());
+		}
+		return def;
+	}
 
-  // -- SpreadsheetLauncher API methods --
+	// -- SpreadsheetLauncher API methods --
 
-  /** Tries to launch the appropriate spreadsheet application. */
-  public void launchSpreadsheet(File file) throws SpreadsheetLaunchException {
-    launchSpreadsheet(file, path);
-  }
+	/** Tries to launch the appropriate spreadsheet application. */
+	public void launchSpreadsheet(final File file)
+		throws SpreadsheetLaunchException
+	{
+		launchSpreadsheet(file, path);
+	}
 
-  /** Tries to launch the appropriate spreadsheet application. */
-  public void launchSpreadsheet(File file, String appPath) throws
-    SpreadsheetLaunchException
-  {
-    if (file.exists()) {
-      String cmd = appPath;
-      String filePath = file.getAbsolutePath();
-      String[] command = {cmd, filePath};
-      try {
-        Runtime.getRuntime().exec(command);
-      }
-      catch (IOException ex) {
-        throw new SpreadsheetLaunchException(makeCommandErrorMessage(cmd));
-      }
-    }
-    else {
-      throw new SpreadsheetLaunchException(makeFileDoesNotExistMessage(file));
-    }
-  }
+	/** Tries to launch the appropriate spreadsheet application. */
+	public void launchSpreadsheet(final File file, final String appPath)
+		throws SpreadsheetLaunchException
+	{
+		if (file.exists()) {
+			final String cmd = appPath;
+			final String filePath = file.getAbsolutePath();
+			final String[] command = { cmd, filePath };
+			try {
+				Runtime.getRuntime().exec(command);
+			}
+			catch (final IOException ex) {
+				throw new SpreadsheetLaunchException(makeCommandErrorMessage(cmd));
+			}
+		}
+		else {
+			throw new SpreadsheetLaunchException(makeFileDoesNotExistMessage(file));
+		}
+	}
 
-  // -- Helper methods --
+	// -- Helper methods --
 
-  /** Whether the OS is windows. */
-  protected static boolean isWindows() {
-    return LookUtils.IS_OS_WINDOWS_MODERN;
-  }
+	/** Whether the OS is windows. */
+	protected static boolean isWindows() {
+		return LookUtils.IS_OS_WINDOWS_MODERN;
+	}
 
-  /** Whether the OS is mac. */
-  protected static boolean isMac() {
-    return LookUtils.IS_OS_MAC;
-  }
+	/** Whether the OS is mac. */
+	protected static boolean isMac() {
+		return LookUtils.IS_OS_MAC;
+	}
 
-  /** Whether OS is Linux. */
-  protected static boolean isLinux() {
-    return LookUtils.IS_OS_LINUX;
-  }
+	/** Whether OS is Linux. */
+	protected static boolean isLinux() {
+		return LookUtils.IS_OS_LINUX;
+	}
 
-  /** Makes an error message from the given command. */
-  protected String makeCommandErrorMessage(String command) {
-    String msg =
-      "Could not launch spreadsheet using the following command:\n\t" +
-      command + "\nYou may wish to change the spreadsheet application path" +
-      " in the 'File > Options...' menu.";
-    return msg;
-  }
+	/** Makes an error message from the given command. */
+	protected String makeCommandErrorMessage(final String command) {
+		final String msg =
+			"Could not launch spreadsheet using the following command:\n\t" +
+				command + "\nYou may wish to change the spreadsheet application path" +
+				" in the 'File > Options...' menu.";
+		return msg;
+	}
 
-  /** Makes an error message from the given file. */
-  protected String makeFileDoesNotExistMessage(File file) {
-    return "Could not launch spreadsheet.  File does not exist:\n\t" +
-      file.getAbsolutePath();
-  }
+	/** Makes an error message from the given file. */
+	protected String makeFileDoesNotExistMessage(final File file) {
+		return "Could not launch spreadsheet.  File does not exist:\n\t" +
+			file.getAbsolutePath();
+	}
 
-  /** Returns an error message indicating the OS could not be identified. */
-  protected static String makeCantIdentifyOSMessage() {
-    return "Could not launch spreadsheet: could not identify OS.";
-  }
+	/** Returns an error message indicating the OS could not be identified. */
+	protected static String makeCantIdentifyOSMessage() {
+		return "Could not launch spreadsheet: could not identify OS.";
+	}
 }

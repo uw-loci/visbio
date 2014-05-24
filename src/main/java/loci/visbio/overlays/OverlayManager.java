@@ -37,59 +37,65 @@ import loci.visbio.state.SpreadsheetLaunchOption;
  */
 public class OverlayManager extends LogicManager {
 
-  // -- Constructor --
+	// -- Constructor --
 
-  /** Constructs a window manager. */
-  public OverlayManager(VisBioFrame bio) { super(bio); }
+	/** Constructs a window manager. */
+	public OverlayManager(final VisBioFrame bio) {
+		super(bio);
+	}
 
-  // -- LogicManager API methods --
+	// -- LogicManager API methods --
 
-  /** Called to notify the logic manager of a VisBio event. */
-  public void doEvent(VisBioEvent evt) {
-    int eventType = evt.getEventType();
-    if (eventType == VisBioEvent.LOGIC_ADDED) {
-      LogicManager lm = (LogicManager) evt.getSource();
-      if (lm == this) doGUI();
-    }
-  }
+	/** Called to notify the logic manager of a VisBio event. */
+	@Override
+	public void doEvent(final VisBioEvent evt) {
+		final int eventType = evt.getEventType();
+		if (eventType == VisBioEvent.LOGIC_ADDED) {
+			final LogicManager lm = (LogicManager) evt.getSource();
+			if (lm == this) doGUI();
+		}
+	}
 
-  /** Gets the number of tasks required to initialize this logic manager. */
-  public int getTasks() { return 2; }
+	/** Gets the number of tasks required to initialize this logic manager. */
+	@Override
+	public int getTasks() {
+		return 2;
+	}
 
-  // -- Helper methods --
+	// -- Helper methods --
 
-  /** Adds overlay-related GUI components to VisBio. */
-  protected void doGUI() {
-    // overlay transform registration
-    bio.setSplashStatus("Initializing overlay logic");
-    DataManager dm = (DataManager) bio.getManager(DataManager.class);
-    dm.registerDataType(OverlayTransform.class, "Overlays");
+	/** Adds overlay-related GUI components to VisBio. */
+	protected void doGUI() {
+		// overlay transform registration
+		bio.setSplashStatus("Initializing overlay logic");
+		final DataManager dm = (DataManager) bio.getManager(DataManager.class);
+		dm.registerDataType(OverlayTransform.class, "Overlays");
 
-    // register Overlay options
-    OptionManager om = (OptionManager) bio.getManager(OptionManager.class);
-    String[] overlayTypes = OverlayUtil.getOverlayTypes();
-    for (int i=0; i<overlayTypes.length; i++) {
-      String[] statTypes = OverlayUtil.getStatTypes(overlayTypes[i]);
-      for (int j=0; j<statTypes.length; j++) {
-        String name = overlayTypes[i] + "." + statTypes[j];
-        om.addBooleanOption("Overlays", name, '|',
-            "Toggles whether the " + name + " statistic is exported or saved",
-            true);
-      }
-    }
+		// register Overlay options
+		final OptionManager om =
+			(OptionManager) bio.getManager(OptionManager.class);
+		final String[] overlayTypes = OverlayUtil.getOverlayTypes();
+		for (int i = 0; i < overlayTypes.length; i++) {
+			final String[] statTypes = OverlayUtil.getStatTypes(overlayTypes[i]);
+			for (int j = 0; j < statTypes.length; j++) {
+				final String name = overlayTypes[i] + "." + statTypes[j];
+				om.addBooleanOption("Overlays", name, '|', "Toggles whether the " +
+					name + " statistic is exported or saved", true);
+			}
+		}
 
-    // add option for launching spreadsheet automatically
-    String path = "";
-    try {
-      path = SpreadsheetLauncher.getDefaultApplicationPath();
-    }
-    catch (SpreadsheetLaunchException ex) {}
-    om.addOption("General", new SpreadsheetLaunchOption('s', path, true));
+		// add option for launching spreadsheet automatically
+		String path = "";
+		try {
+			path = SpreadsheetLauncher.getDefaultApplicationPath();
+		}
+		catch (final SpreadsheetLaunchException ex) {}
+		om.addOption("General", new SpreadsheetLaunchOption('s', path, true));
 
-    // help window
-    bio.setSplashStatus(null);
-    HelpManager hm = (HelpManager) bio.getManager(HelpManager.class);
-    hm.addHelpTopic("Data transforms/Overlays", "overlays.html");
-  }
+		// help window
+		bio.setSplashStatus(null);
+		final HelpManager hm = (HelpManager) bio.getManager(HelpManager.class);
+		hm.addHelpTopic("Data transforms/Overlays", "overlays.html");
+	}
 
 }

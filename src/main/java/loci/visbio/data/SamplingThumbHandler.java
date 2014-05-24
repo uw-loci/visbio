@@ -35,40 +35,49 @@ import visad.VisADException;
  */
 public class SamplingThumbHandler extends ThumbnailHandler {
 
-  // -- Constructor --
+	// -- Constructor --
 
-  /** Creates a thumbnail handler. */
-  public SamplingThumbHandler(DataTransform data, String filename) {
-    super(data, filename);
-  }
+	/** Creates a thumbnail handler. */
+	public SamplingThumbHandler(final DataTransform data, final String filename) {
+		super(data, filename);
+	}
 
-  // -- Internal ThumbnailHandler API methods --
+	// -- Internal ThumbnailHandler API methods --
 
-  /**
-   * Computes a thumbnail for the given dimensional position.
-   * This method is intelligent enough to check for parent thumbnails
-   * before going to disk, and resample from them if they are available.
-   */
-  protected FlatField computeThumb(int[] pos) {
-    DataSampling samp = (DataSampling) data;
-    ThumbnailHandler th = samp.getParent().getThumbHandler();
-    if (th == null) return super.computeThumb(pos);
+	/**
+	 * Computes a thumbnail for the given dimensional position. This method is
+	 * intelligent enough to check for parent thumbnails before going to disk, and
+	 * resample from them if they are available.
+	 */
+	@Override
+	protected FlatField computeThumb(final int[] pos) {
+		final DataSampling samp = (DataSampling) data;
+		final ThumbnailHandler th = samp.getParent().getThumbHandler();
+		if (th == null) return super.computeThumb(pos);
 
-    int[] min = samp.getMin();
-    int[] step = samp.getStep();
-    boolean[] range = samp.getRange();
+		final int[] min = samp.getMin();
+		final int[] step = samp.getStep();
+		final boolean[] range = samp.getRange();
 
-    int[] p = new int[pos.length];
-    for (int i=0; i<p.length; i++) p[i] = min[i] + step[i] * pos[i] - 1;
-    FlatField ff = th.getThumb(p);
-    if (ff == null) return super.computeThumb(pos);
+		final int[] p = new int[pos.length];
+		for (int i = 0; i < p.length; i++)
+			p[i] = min[i] + step[i] * pos[i] - 1;
+		final FlatField ff = th.getThumb(p);
+		if (ff == null) return super.computeThumb(pos);
 
-    float[] smin = {0, 0};
-    float[] smax = {samp.getImageWidth() - 1, samp.getImageHeight() - 1};
-    try { return DataUtil.resample(ff, resolution, range, smin, smax); }
-    catch (VisADException exc) { exc.printStackTrace(); }
-    catch (RemoteException exc) { exc.printStackTrace(); }
-    return null;
-  }
+		final float[] smin = { 0, 0 };
+		final float[] smax =
+			{ samp.getImageWidth() - 1, samp.getImageHeight() - 1 };
+		try {
+			return DataUtil.resample(ff, resolution, range, smin, smax);
+		}
+		catch (final VisADException exc) {
+			exc.printStackTrace();
+		}
+		catch (final RemoteException exc) {
+			exc.printStackTrace();
+		}
+		return null;
+	}
 
 }

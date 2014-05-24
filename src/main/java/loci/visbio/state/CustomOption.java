@@ -31,25 +31,28 @@ import java.awt.Component;
  */
 public class CustomOption extends BioOption {
 
-  // -- Fields --
+	// -- Fields --
 
-  /** Custom GUI component. */
-  private Component c;
+	/** Custom GUI component. */
+	private final Component c;
 
-  // -- Constructor --
+	// -- Constructor --
 
-  /** Constructs a new option. */
-  public CustomOption(Component c) {
-    super("[Custom]");
-    this.c = c;
-  }
+	/** Constructs a new option. */
+	public CustomOption(final Component c) {
+		super("[Custom]");
+		this.c = c;
+	}
 
-  // -- BioOption API methods --
+	// -- BioOption API methods --
 
-  /** Gets a GUI component representing this option. */
-  public Component getComponent() { return c; }
+	/** Gets a GUI component representing this option. */
+	@Override
+	public Component getComponent() {
+		return c;
+	}
 
-  /** Does nothing for a custom option. */
-  public void setValue(String value) { }
+	/** Does nothing for a custom option. */
+	public void setValue(final String value) {}
 
 }

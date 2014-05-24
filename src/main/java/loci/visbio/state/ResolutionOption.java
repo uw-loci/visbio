@@ -36,88 +36,104 @@ import loci.visbio.util.XMLUtil;
 import org.w3c.dom.Element;
 
 /**
- * ResolutionOption is an option for changing image resolution
- * (two positive integers) in the VisBio Options dialog.
+ * ResolutionOption is an option for changing image resolution (two positive
+ * integers) in the VisBio Options dialog.
  */
 public class ResolutionOption extends BioOption {
 
-  // -- Fields --
+	// -- Fields --
 
-  /** Panel containing GUI components. */
-  private JPanel panel;
+	/** Panel containing GUI components. */
+	private final JPanel panel;
 
-  /** X resolution text field GUI component. */
-  private JTextField resX;
+	/** X resolution text field GUI component. */
+	private final JTextField resX;
 
-  /** Y resolution text field GUI component. */
-  private JTextField resY;
+	/** Y resolution text field GUI component. */
+	private final JTextField resY;
 
-  // -- Constructor --
+	// -- Constructor --
 
-  /** Constructs a new option. */
-  public ResolutionOption(String text, String tip, int valueX, int valueY) {
-    super(text);
+	/** Constructs a new option. */
+	public ResolutionOption(final String text, final String tip,
+		final int valueX, final int valueY)
+	{
+		super(text);
 
-    // X resolution text field
-    resX = new JTextField(4);
-    resX.setText("" + valueX);
-    resX.setToolTipText(tip);
+		// X resolution text field
+		resX = new JTextField(4);
+		resX.setText("" + valueX);
+		resX.setToolTipText(tip);
 
-    // Y resolution text field
-    resY = new JTextField(4);
-    resY.setText("" + valueY);
-    resY.setToolTipText(tip);
+		// Y resolution text field
+		resY = new JTextField(4);
+		resY.setText("" + valueY);
+		resY.setToolTipText(tip);
 
-    // lay out components
-    panel = FormsUtil.makeRow(new Object[]
-      {text + ":", resX, new JLabel("x"), resY});
-  }
+		// lay out components
+		panel =
+			FormsUtil
+				.makeRow(new Object[] { text + ":", resX, new JLabel("x"), resY });
+	}
 
-  // -- ResolutionOption API methods --
+	// -- ResolutionOption API methods --
 
-  /** Gets this option's current X resolution. */
-  public int getValueX() {
-    int valueX;
-    try { valueX = Integer.parseInt(resX.getText()); }
-    catch (NumberFormatException exc) { valueX = -1; }
-    return valueX;
-  }
+	/** Gets this option's current X resolution. */
+	public int getValueX() {
+		int valueX;
+		try {
+			valueX = Integer.parseInt(resX.getText());
+		}
+		catch (final NumberFormatException exc) {
+			valueX = -1;
+		}
+		return valueX;
+	}
 
-  /** Gets this option's current Y resolution. */
-  public int getValueY() {
-    int valueY;
-    try { valueY = Integer.parseInt(resY.getText()); }
-    catch (NumberFormatException exc) { valueY = -1; }
-    return valueY;
-  }
+	/** Gets this option's current Y resolution. */
+	public int getValueY() {
+		int valueY;
+		try {
+			valueY = Integer.parseInt(resY.getText());
+		}
+		catch (final NumberFormatException exc) {
+			valueY = -1;
+		}
+		return valueY;
+	}
 
-  // -- BioOption API methods --
+	// -- BioOption API methods --
 
-  /** Gets a GUI component representing this option. */
-  public Component getComponent() { return panel; }
+	/** Gets a GUI component representing this option. */
+	@Override
+	public Component getComponent() {
+		return panel;
+	}
 
-  // -- Saveable API methods --
+	// -- Saveable API methods --
 
-  /** Writes the current state to the given DOM element ("Options"). */
-  public void saveState(Element el) throws SaveException {
-    Element e = XMLUtil.createChild(el, "Resolution");
-    e.setAttribute("name", text);
-    e.setAttribute("resX", "" + getValueX());
-    e.setAttribute("resY", "" + getValueY());
-  }
+	/** Writes the current state to the given DOM element ("Options"). */
+	@Override
+	public void saveState(final Element el) throws SaveException {
+		final Element e = XMLUtil.createChild(el, "Resolution");
+		e.setAttribute("name", text);
+		e.setAttribute("resX", "" + getValueX());
+		e.setAttribute("resY", "" + getValueY());
+	}
 
-  /** Restores the current state from the given DOM element ("Options"). */
-  public void restoreState(Element el) throws SaveException {
-    Element[] e = XMLUtil.getChildren(el, "Resolution");
-    for (int i=0; i<e.length; i++) {
-      String name = e[i].getAttribute("name");
-      if (!name.equals(text)) continue;
-      String valueX = e[i].getAttribute("resX");
-      resX.setText(valueX);
-      String valueY = e[i].getAttribute("resY");
-      resY.setText(valueY);
-      break;
-    }
-  }
+	/** Restores the current state from the given DOM element ("Options"). */
+	@Override
+	public void restoreState(final Element el) throws SaveException {
+		final Element[] e = XMLUtil.getChildren(el, "Resolution");
+		for (int i = 0; i < e.length; i++) {
+			final String name = e[i].getAttribute("name");
+			if (!name.equals(text)) continue;
+			final String valueX = e[i].getAttribute("resX");
+			resX.setText(valueX);
+			final String valueY = e[i].getAttribute("resY");
+			resY.setText(valueY);
+			break;
+		}
+	}
 
 }

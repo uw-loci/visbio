@@ -29,31 +29,34 @@ package loci.visbio.ext;
  */
 public class FunctionParam {
 
-  // -- Fields --
+	// -- Fields --
 
-  /** Name of this parameter. */
-  protected String name;
+	/** Name of this parameter. */
+	protected String name;
 
-  /** Default value of this parameter. */
-  protected String value;
+	/** Default value of this parameter. */
+	protected String value;
 
-  // -- Constructor --
+	// -- Constructor --
 
-  /**
-   * Constructs a new function parameter with
-   * the given name and default value.
-   */
-  public FunctionParam(String name, String value) {
-    this.name = name;
-    this.value = value;
-  }
+	/**
+	 * Constructs a new function parameter with the given name and default value.
+	 */
+	public FunctionParam(final String name, final String value) {
+		this.name = name;
+		this.value = value;
+	}
 
-  // -- FunctionParam API methods --
+	// -- FunctionParam API methods --
 
-  /** Gets the name of this parameter. */
-  public String getName() { return name; }
+	/** Gets the name of this parameter. */
+	public String getName() {
+		return name;
+	}
 
-  /** Gets the default value of this parameter. */
-  public String getValue() { return value; }
+	/** Gets the default value of this parameter. */
+	public String getValue() {
+		return value;
+	}
 
 }

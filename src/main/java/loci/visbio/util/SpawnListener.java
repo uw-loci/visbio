@@ -29,7 +29,7 @@ package loci.visbio.util;
  */
 public interface SpawnListener {
 
-  /** Used to notify listeners when a new application instance is spawned. */
-  void instanceSpawned(SpawnEvent e);
+	/** Used to notify listeners when a new application instance is spawned. */
+	void instanceSpawned(SpawnEvent e);
 
 }

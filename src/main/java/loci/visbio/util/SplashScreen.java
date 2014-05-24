@@ -36,6 +36,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.JWindow;
+import javax.swing.SwingConstants;
 import javax.swing.border.LineBorder;
 
 /**
@@ -43,82 +44,93 @@ import javax.swing.border.LineBorder;
  */
 public class SplashScreen extends JWindow {
 
-  // -- Fields --
+	// -- Fields --
 
-  /** Label containing (bottom line of) the splash message. */
-  private JLabel msgLabel;
+	/** Label containing (bottom line of) the splash message. */
+	private JLabel msgLabel;
 
-  /** Progress bar. */
-  private JProgressBar bar;
+	/** Progress bar. */
+	private final JProgressBar bar;
 
-  /** Current task number. */
-  private int task = 0;
+	/** Current task number. */
+	private int task = 0;
 
-  /** Total number of tasks. */
-  private int tasks = 0;
+	/** Total number of tasks. */
+	private int tasks = 0;
 
-  // -- Constructor --
+	// -- Constructor --
 
-  /**
-   * Constructs a splash screen using the given logo image,
-   * informative messages and message background color.
-   */
-  public SplashScreen(URL logo, String[] msg, Color bgColor) {
-    this(logo, msg, bgColor, null);
-  }
+	/**
+	 * Constructs a splash screen using the given logo image, informative messages
+	 * and message background color.
+	 */
+	public SplashScreen(final URL logo, final String[] msg, final Color bgColor) {
+		this(logo, msg, bgColor, null);
+	}
 
-  /**
-   * Constructs a splash screen using the given logo image, informative
-   * messages, message background color and progress bar color.
-   */
-  public SplashScreen(URL logo, String[] msg, Color bgColor, Color pbColor) {
-    JLabel logoImage = new JLabel(new ImageIcon(logo));
-    bar = new JProgressBar();
-    if (pbColor != null) bar.setForeground(pbColor);
+	/**
+	 * Constructs a splash screen using the given logo image, informative
+	 * messages, message background color and progress bar color.
+	 */
+	public SplashScreen(final URL logo, final String[] msg, final Color bgColor,
+		final Color pbColor)
+	{
+		final JLabel logoImage = new JLabel(new ImageIcon(logo));
+		bar = new JProgressBar();
+		if (pbColor != null) bar.setForeground(pbColor);
 
-    // lay out components
-    StringBuffer sb = new StringBuffer();
-    sb.append("pref, pref, 2dlu");
-    for (int i=0; i<msg.length; i++) sb.append(", pref");
-    sb.append(", 2dlu");
-    PanelBuilder builder = new PanelBuilder(
-      new FormLayout("pref", sb.toString()));
-    CellConstraints cc = new CellConstraints();
-    builder.add(logoImage, cc.xy(1, 1));
-    builder.add(bar, cc.xy(1, 2));
-    for (int i=0; i<msg.length; i++) {
-      msgLabel = builder.addLabel(msg[i], cc.xy(1, i + 4));
-      msgLabel.setHorizontalAlignment(JLabel.CENTER);
-    }
-    JPanel pane = builder.getPanel();
-    pane.setBorder(new LineBorder(Color.black, 2));
-    if (bgColor != null) pane.setBackground(bgColor);
-    setContentPane(pane);
-    pack();
-    SwingUtil.centerWindow(this);
-  }
+		// lay out components
+		final StringBuffer sb = new StringBuffer();
+		sb.append("pref, pref, 2dlu");
+		for (int i = 0; i < msg.length; i++)
+			sb.append(", pref");
+		sb.append(", 2dlu");
+		final PanelBuilder builder =
+			new PanelBuilder(new FormLayout("pref", sb.toString()));
+		final CellConstraints cc = new CellConstraints();
+		builder.add(logoImage, cc.xy(1, 1));
+		builder.add(bar, cc.xy(1, 2));
+		for (int i = 0; i < msg.length; i++) {
+			msgLabel = builder.addLabel(msg[i], cc.xy(1, i + 4));
+			msgLabel.setHorizontalAlignment(SwingConstants.CENTER);
+		}
+		final JPanel pane = builder.getPanel();
+		pane.setBorder(new LineBorder(Color.black, 2));
+		if (bgColor != null) pane.setBackground(bgColor);
+		setContentPane(pane);
+		pack();
+		SwingUtil.centerWindow(this);
+	}
 
-  // -- SplashScreen API methods --
+	// -- SplashScreen API methods --
 
-  /** Sets the number of tasks for splash screen progress bar. */
-  public void setTaskCount(int taskCount) { tasks = taskCount; }
+	/** Sets the number of tasks for splash screen progress bar. */
+	public void setTaskCount(final int taskCount) {
+		tasks = taskCount;
+	}
 
-  /** Changes the currently displayed text. */
-  public void setText(String msg) { msgLabel.setText(msg); }
+	/** Changes the currently displayed text. */
+	public void setText(final String msg) {
+		msgLabel.setText(msg);
+	}
 
-  /** Advances task counter. */
-  public void nextTask() {
-    if (tasks > 0) {
-      task++;
-      int p = 100 * task / tasks;
-      bar.setValue(p);
-    }
-  }
+	/** Advances task counter. */
+	public void nextTask() {
+		if (tasks > 0) {
+			task++;
+			final int p = 100 * task / tasks;
+			bar.setValue(p);
+		}
+	}
 
-  /** Gets current task number. */
-  public int getTask() { return task; }
+	/** Gets current task number. */
+	public int getTask() {
+		return task;
+	}
 
-  /** Gets number of tasks for splash screen progress bar. */
-  public int getTaskCount() { return tasks; }
+	/** Gets number of tasks for splash screen progress bar. */
+	public int getTaskCount() {
+		return tasks;
+	}
 
 }

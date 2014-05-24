@@ -42,154 +42,174 @@ import loci.visbio.util.OutputListener;
  */
 public class ConsoleManager extends LogicManager implements OutputListener {
 
-  // -- Constants --
+	// -- Constants --
 
-  /** String for automatically displaying console windows option. */
-  private static final String AUTO_POPUP =
-    "Pop up console windows whenever output is produced";
+	/** String for automatically displaying console windows option. */
+	private static final String AUTO_POPUP =
+		"Pop up console windows whenever output is produced";
 
-  /** String for debug mode option. */
-  private static final String DEBUG_MODE =
-    "Dump output to console rather than graphical windows";
+	/** String for debug mode option. */
+	private static final String DEBUG_MODE =
+		"Dump output to console rather than graphical windows";
 
-  // -- Fields --
+	// -- Fields --
 
-  /** Standard output console. */
-  private OutputConsole out;
+	/** Standard output console. */
+	private OutputConsole out;
 
-  /** Standard error console. */
-  private OutputConsole err;
+	/** Standard error console. */
+	private OutputConsole err;
 
-  /** The original output stream. */
-  private PrintStream origOut;
+	/** The original output stream. */
+	private PrintStream origOut;
 
-  /** The original error stream. */
-  private PrintStream origErr;
+	/** The original error stream. */
+	private PrintStream origErr;
 
-  /** Whether consoles should automatically be shown when output occurs. */
-  private boolean autoPopup = true;
+	/** Whether consoles should automatically be shown when output occurs. */
+	private boolean autoPopup = true;
 
-  /** Whether output should be dumped to the default console window. */
-  private boolean debug;
+	/** Whether output should be dumped to the default console window. */
+	private boolean debug;
 
-  // -- Constructor --
+	// -- Constructor --
 
-  /** Constructs an exit manager. */
-  public ConsoleManager(VisBioFrame bio) { super(bio); }
+	/** Constructs an exit manager. */
+	public ConsoleManager(final VisBioFrame bio) {
+		super(bio);
+	}
 
-  // -- ConsoleManager API methods --
+	// -- ConsoleManager API methods --
 
-  /** Sets whether consoles are automatically shown when output occurs. */
-  public void setAutoPopup(boolean autoPopup) { this.autoPopup = autoPopup; }
+	/** Sets whether consoles are automatically shown when output occurs. */
+	public void setAutoPopup(final boolean autoPopup) {
+		this.autoPopup = autoPopup;
+	}
 
-  /** Gets whether consoles are automatically shown when output occurs. */
-  public boolean isAutoPopup() { return autoPopup; }
+	/** Gets whether consoles are automatically shown when output occurs. */
+	public boolean isAutoPopup() {
+		return autoPopup;
+	}
 
-  /** Sets whether debugging mode is enabled. */
-  public void setDebug(boolean debug) {
-    if (this.debug == debug) return;
-    this.debug = debug;
+	/** Sets whether debugging mode is enabled. */
+	public void setDebug(final boolean debug) {
+		if (this.debug == debug) return;
+		this.debug = debug;
 
-    if (debug) {
-      System.setOut(origOut);
-      System.setErr(origErr);
-    }
-    else {
-      System.setOut(new PrintStream(out));
-      System.setErr(new PrintStream(err));
-    }
-  }
+		if (debug) {
+			System.setOut(origOut);
+			System.setErr(origErr);
+		}
+		else {
+			System.setOut(new PrintStream(out));
+			System.setErr(new PrintStream(err));
+		}
+	}
 
-  /** Gets whether debugging mode is enabled. */
-  public boolean isDebug() { return debug; }
+	/** Gets whether debugging mode is enabled. */
+	public boolean isDebug() {
+		return debug;
+	}
 
-  // -- Menu commands --
+	// -- Menu commands --
 
-  /** Displays the given output console window. */
-  public void windowConsole(String console) {
-    WindowManager wm = (WindowManager) bio.getManager(WindowManager.class);
-    if (console.equals("err")) wm.showWindow(err.getWindow());
-    else if (console.equals("out")) wm.showWindow(out.getWindow());
-  }
+	/** Displays the given output console window. */
+	public void windowConsole(final String console) {
+		final WindowManager wm =
+			(WindowManager) bio.getManager(WindowManager.class);
+		if (console.equals("err")) wm.showWindow(err.getWindow());
+		else if (console.equals("out")) wm.showWindow(out.getWindow());
+	}
 
-  // -- LogicManager API methods --
+	// -- LogicManager API methods --
 
-  /** Called to notify the logic manager of a VisBio event. */
-  public void doEvent(VisBioEvent evt) {
-    int eventType = evt.getEventType();
-    if (eventType == VisBioEvent.LOGIC_ADDED) {
-      Object src = evt.getSource();
-      if (src == this) doGUI();
-    }
-    else if (eventType == VisBioEvent.STATE_CHANGED) {
-      Object src = evt.getSource();
-      if (src instanceof OptionManager) {
-        OptionManager om = (OptionManager) src;
-        BooleanOption autoPop = (BooleanOption) om.getOption(AUTO_POPUP);
-        if (autoPop != null) setAutoPopup(autoPop.getValue());
-        BooleanOption debugMode = (BooleanOption) om.getOption(DEBUG_MODE);
-        if (debugMode != null) setDebug(debugMode.getValue());
-      }
-    }
-  }
+	/** Called to notify the logic manager of a VisBio event. */
+	@Override
+	public void doEvent(final VisBioEvent evt) {
+		final int eventType = evt.getEventType();
+		if (eventType == VisBioEvent.LOGIC_ADDED) {
+			final Object src = evt.getSource();
+			if (src == this) doGUI();
+		}
+		else if (eventType == VisBioEvent.STATE_CHANGED) {
+			final Object src = evt.getSource();
+			if (src instanceof OptionManager) {
+				final OptionManager om = (OptionManager) src;
+				final BooleanOption autoPop = (BooleanOption) om.getOption(AUTO_POPUP);
+				if (autoPop != null) setAutoPopup(autoPop.getValue());
+				final BooleanOption debugMode =
+					(BooleanOption) om.getOption(DEBUG_MODE);
+				if (debugMode != null) setDebug(debugMode.getValue());
+			}
+		}
+	}
 
-  /** Gets the number of tasks required to initialize this logic manager. */
-  public int getTasks() { return 2; }
+	/** Gets the number of tasks required to initialize this logic manager. */
+	@Override
+	public int getTasks() {
+		return 2;
+	}
 
-  // -- OutputListener API methods --
+	// -- OutputListener API methods --
 
-  /** Handles output and error console window updates. */
-  public void outputProduced(OutputEvent e) {
-    if (!autoPopup) return;
-    Object src = e.getSource();
-    JFrame frame = null;
-    if (src == out) frame = out.getWindow();
-    else if (src == err) frame = err.getWindow();
-    if (frame != null && !frame.isVisible()) {
-      WindowManager wm = (WindowManager) bio.getManager(WindowManager.class);
-      wm.showWindow(frame);
-    }
-  }
+	/** Handles output and error console window updates. */
+	@Override
+	public void outputProduced(final OutputEvent e) {
+		if (!autoPopup) return;
+		final Object src = e.getSource();
+		JFrame frame = null;
+		if (src == out) frame = out.getWindow();
+		else if (src == err) frame = err.getWindow();
+		if (frame != null && !frame.isVisible()) {
+			final WindowManager wm =
+				(WindowManager) bio.getManager(WindowManager.class);
+			wm.showWindow(frame);
+		}
+	}
 
-  // -- Helper methods --
+	// -- Helper methods --
 
-  /** Adds data-related GUI components to VisBio. */
-  private void doGUI() {
-    bio.setSplashStatus("Initializing console windows");
-    out = new OutputConsole("Output Console", "output.log");
-    err = new OutputConsole("Error Console", "errors.log");
+	/** Adds data-related GUI components to VisBio. */
+	private void doGUI() {
+		bio.setSplashStatus("Initializing console windows");
+		out = new OutputConsole("Output Console", "output.log");
+		err = new OutputConsole("Error Console", "errors.log");
 
-    origOut = System.out;
-    origErr = System.err;
-    if (!VisBioFrame.DEBUG) {
-      System.setOut(new PrintStream(out));
-      System.setErr(new PrintStream(err));
-    }
+		origOut = System.out;
+		origErr = System.err;
+		if (!VisBioFrame.DEBUG) {
+			System.setOut(new PrintStream(out));
+			System.setErr(new PrintStream(err));
+		}
 
-    // listen for output produced within console windows
-    out.addOutputListener(this);
-    err.addOutputListener(this);
+		// listen for output produced within console windows
+		out.addOutputListener(this);
+		err.addOutputListener(this);
 
-    // register console windows with window manager
-    WindowManager wm = (WindowManager) bio.getManager(WindowManager.class);
-    wm.addWindow(out.getWindow());
-    wm.addWindow(err.getWindow());
+		// register console windows with window manager
+		final WindowManager wm =
+			(WindowManager) bio.getManager(WindowManager.class);
+		wm.addWindow(out.getWindow());
+		wm.addWindow(err.getWindow());
 
-    // options menu
-    bio.setSplashStatus(null);
-    OptionManager om = (OptionManager) bio.getManager(OptionManager.class);
-    om.addBooleanOption("Debug", AUTO_POPUP, 'p',
-      "Toggles whether output causes console windows to be shown", autoPopup);
-    om.addBooleanOption("Debug", DEBUG_MODE, 'd',
-      "Toggles whether output dumps to the default console", debug);
+		// options menu
+		bio.setSplashStatus(null);
+		final OptionManager om =
+			(OptionManager) bio.getManager(OptionManager.class);
+		om.addBooleanOption("Debug", AUTO_POPUP, 'p',
+			"Toggles whether output causes console windows to be shown", autoPopup);
+		om.addBooleanOption("Debug", DEBUG_MODE, 'd',
+			"Toggles whether output dumps to the default console", debug);
 
-    // window menu
-    JMenuItem output = bio.addMenuItem("Window", "Output console",
-      "loci.visbio.ConsoleManager.windowConsole(out)", 'o');
-    output.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F7, 0));
-    JMenuItem error = bio.addMenuItem("Window", "Error console",
-      "loci.visbio.ConsoleManager.windowConsole(err)", 'e');
-    error.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F8, 0));
-  }
+		// window menu
+		final JMenuItem output =
+			bio.addMenuItem("Window", "Output console",
+				"loci.visbio.ConsoleManager.windowConsole(out)", 'o');
+		output.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F7, 0));
+		final JMenuItem error =
+			bio.addMenuItem("Window", "Error console",
+				"loci.visbio.ConsoleManager.windowConsole(err)", 'e');
+		error.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F8, 0));
+	}
 
 }

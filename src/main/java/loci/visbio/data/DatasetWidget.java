@@ -52,97 +52,99 @@ import org.xml.sax.SAXException;
  */
 public class DatasetWidget extends JPanel {
 
-  // -- Constants --
+	// -- Constants --
 
-  /** Column headings for metadata table. */
-  protected static final String[] META_COLUMNS = {"Name", "Value"};
+	/** Column headings for metadata table. */
+	protected static final String[] META_COLUMNS = { "Name", "Value" };
 
-  // -- Fields --
+	// -- Fields --
 
-  /** Associated dataset. */
-  protected Dataset dataset;
+	/** Associated dataset. */
+	protected Dataset dataset;
 
-  /** Dataset's associated metadata. */
-  protected Hashtable metadata;
+	/** Dataset's associated metadata. */
+	protected Hashtable metadata;
 
-  /** Metadata hashtable's sorted key lists. */
-  protected String[] keys;
+	/** Metadata hashtable's sorted key lists. */
+	protected String[] keys;
 
-  /** Table listing metadata fields. */
-  protected JTable metaTable;
+	/** Table listing metadata fields. */
+	protected JTable metaTable;
 
-  /** Table model backing metadata table. */
-  protected DefaultTableModel metaTableModel;
+	/** Table model backing metadata table. */
+	protected DefaultTableModel metaTableModel;
 
-  // -- Constructor --
+	// -- Constructor --
 
-  /** Constructs widget for display of dataset's associated metadata. */
-  public DatasetWidget(Dataset dataset) {
-    super();
-    this.dataset = dataset;
+	/** Constructs widget for display of dataset's associated metadata. */
+	public DatasetWidget(final Dataset dataset) {
+		super();
+		this.dataset = dataset;
 
-    // get dataset's metadata
-    metadata = dataset.getMetadata();
+		// get dataset's metadata
+		metadata = dataset.getMetadata();
 
-    // sort metadata keys
-    if (metadata == null) keys = new String[0];
-    else {
-      Enumeration e = metadata.keys();
-      Vector v = new Vector();
-      while (e.hasMoreElements()) v.add(e.nextElement());
-      keys = new String[v.size()];
-      v.copyInto(keys);
-      Arrays.sort(keys);
-    }
+		// sort metadata keys
+		if (metadata == null) keys = new String[0];
+		else {
+			final Enumeration e = metadata.keys();
+			final Vector v = new Vector();
+			while (e.hasMoreElements())
+				v.add(e.nextElement());
+			keys = new String[v.size()];
+			v.copyInto(keys);
+			Arrays.sort(keys);
+		}
 
-    // -- First tab --
+		// -- First tab --
 
-    // metadata table
-    metaTableModel = new DefaultTableModel(META_COLUMNS, 0);
-    metaTable = new JTable(metaTableModel);
-    JScrollPane scrollMetaTable = new JScrollPane(metaTable);
-    SwingUtil.configureScrollPane(scrollMetaTable);
+		// metadata table
+		metaTableModel = new DefaultTableModel(META_COLUMNS, 0);
+		metaTable = new JTable(metaTableModel);
+		final JScrollPane scrollMetaTable = new JScrollPane(metaTable);
+		SwingUtil.configureScrollPane(scrollMetaTable);
 
-    // -- Second tab --
+		// -- Second tab --
 
-    // OME-XML tree
-    Document doc = null;
-    try {
-      doc = XMLTools.parseDOM(dataset.getOMEXML());
-    }
-    catch (final ParserConfigurationException exc) {
-      if (VisBioFrame.DEBUG) exc.printStackTrace();
-    }
-    catch (final SAXException exc) {
-      if (VisBioFrame.DEBUG) exc.printStackTrace();
-    }
-    catch (final IOException exc) {
-      if (VisBioFrame.DEBUG) exc.printStackTrace();
-    }
-    JTree xmlTree;
-    if (doc == null) xmlTree = new JTree(new Object[] {"No OME-XML available"});
-    else xmlTree = XMLCellRenderer.makeJTree(doc);
-    JScrollPane scrollTree = new JScrollPane(xmlTree);
-    SwingUtil.configureScrollPane(scrollTree);
+		// OME-XML tree
+		Document doc = null;
+		try {
+			doc = XMLTools.parseDOM(dataset.getOMEXML());
+		}
+		catch (final ParserConfigurationException exc) {
+			if (VisBioFrame.DEBUG) exc.printStackTrace();
+		}
+		catch (final SAXException exc) {
+			if (VisBioFrame.DEBUG) exc.printStackTrace();
+		}
+		catch (final IOException exc) {
+			if (VisBioFrame.DEBUG) exc.printStackTrace();
+		}
+		JTree xmlTree;
+		if (doc == null) xmlTree =
+			new JTree(new Object[] { "No OME-XML available" });
+		else xmlTree = XMLCellRenderer.makeJTree(doc);
+		final JScrollPane scrollTree = new JScrollPane(xmlTree);
+		SwingUtil.configureScrollPane(scrollTree);
 
-    // -- Main GUI --
+		// -- Main GUI --
 
-    // tabbed pane
-    JTabbedPane tabbed = new JTabbedPane();
-    tabbed.addTab("Original metadata", scrollMetaTable);
-    tabbed.addTab("OME-XML", scrollTree);
+		// tabbed pane
+		final JTabbedPane tabbed = new JTabbedPane();
+		tabbed.addTab("Original metadata", scrollMetaTable);
+		tabbed.addTab("OME-XML", scrollTree);
 
-    // lay out components
-    setLayout(new BorderLayout());
-    add(tabbed);
+		// lay out components
+		setLayout(new BorderLayout());
+		add(tabbed);
 
-    // populate metadata table
-    int len = keys.length;
-    metaTableModel.setRowCount(len);
-    for (int i=0; i<len; i++) {
-      metaTableModel.setValueAt(keys[i], i, 0);
-      metaTableModel.setValueAt(metadata.get(keys[i]), i, 1);
-    }
-  }
+		// populate metadata table
+		final int len = keys.length;
+		metaTableModel.setRowCount(len);
+		for (int i = 0; i < len; i++) {
+			metaTableModel.setValueAt(keys[i], i, 0);
+			metaTableModel.setValueAt(metadata.get(keys[i]), i, 1);
+		}
+	}
 
 }

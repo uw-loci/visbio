@@ -31,9 +31,11 @@ import java.awt.AWTEvent;
  */
 public class OutputEvent extends AWTEvent {
 
-  // -- Constructor --
+	// -- Constructor --
 
-  /** Constructs an output console event. */
-  public OutputEvent(Object src) { super(src, 0); }
+	/** Constructs an output console event. */
+	public OutputEvent(final Object src) {
+		super(src, 0);
+	}
 
 }
