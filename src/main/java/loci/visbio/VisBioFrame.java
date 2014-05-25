@@ -79,7 +79,7 @@ public class VisBioFrame extends GUIFrame implements Runnable, SpawnListener {
 	// -- Fields --
 
 	/** Logic managers. */
-	protected Vector managers;
+	protected Vector<LogicManager> managers;
 
 	/** Associated splash screen. */
 	protected SplashScreen splash;
@@ -126,7 +126,7 @@ public class VisBioFrame extends GUIFrame implements Runnable, SpawnListener {
 			}
 
 			setTitle(VisBio.TITLE);
-			managers = new Vector();
+			managers = new Vector<LogicManager>();
 			this.splash = splash;
 
 			// initialize Look & Feel parameters
@@ -268,9 +268,9 @@ public class VisBioFrame extends GUIFrame implements Runnable, SpawnListener {
 	}
 
 	/** Gets the logic manager of the given class. */
-	public LogicManager getManager(final Class c) {
+	public LogicManager getManager(final Class<?> c) {
 		for (int i = 0; i < managers.size(); i++) {
-			final LogicManager lm = (LogicManager) managers.elementAt(i);
+			final LogicManager lm = managers.elementAt(i);
 			if (lm.getClass().equals(c)) return lm;
 		}
 		return null;
@@ -294,7 +294,7 @@ public class VisBioFrame extends GUIFrame implements Runnable, SpawnListener {
 	public void generateEvent(final VisBioEvent evt) {
 		if (DEBUG) System.out.println(evt.toString());
 		for (int i = 0; i < managers.size(); i++) {
-			final LogicManager lm = (LogicManager) managers.elementAt(i);
+			final LogicManager lm = managers.elementAt(i);
 			lm.doEvent(evt);
 		}
 	}
@@ -332,10 +332,10 @@ public class VisBioFrame extends GUIFrame implements Runnable, SpawnListener {
 		try {
 			// determine class from fully qualified name
 			final int dot = cmd.lastIndexOf(".");
-			final Class c = Class.forName(cmd.substring(0, dot));
+			final Class<?> c = Class.forName(cmd.substring(0, dot));
 
 			// determine if action command has an argument
-			Class[] param = null;
+			Class<?>[] param = null;
 			Object[] s = null;
 			int paren = cmd.indexOf("(");
 			if (paren >= 0) {
@@ -419,7 +419,7 @@ public class VisBioFrame extends GUIFrame implements Runnable, SpawnListener {
 
 		// extract classes to preload from data file
 		task.setStatus("Reading classes list");
-		final Vector preloadClasses = new Vector();
+		final Vector<String> preloadClasses = new Vector<String>();
 		try {
 			final InputStream rc = getClass().getResourceAsStream("classes.txt");
 			if (rc != null) {
@@ -439,7 +439,7 @@ public class VisBioFrame extends GUIFrame implements Runnable, SpawnListener {
 		final int size = preloadClasses.size();
 		String pkg = "";
 		for (int i = 0; i < size; i++) {
-			final String className = (String) preloadClasses.elementAt(i);
+			final String className = preloadClasses.elementAt(i);
 			final int dot = className.lastIndexOf(".");
 			final String prefix = className.substring(0, dot);
 			if (!prefix.equals(pkg)) {

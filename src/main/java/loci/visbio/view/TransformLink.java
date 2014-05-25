@@ -180,7 +180,7 @@ public class TransformLink implements DisplayListener, Dynamic, Runnable,
 			// use ImageRendererJ3D when possible
 			rend = null;
 			try {
-				final Class c = Class.forName(imageRenderer);
+				final Class<?> c = Class.forName(imageRenderer);
 				rend = (DataRenderer) c.newInstance();
 				rend.toggle(visible);
 			}
@@ -463,7 +463,7 @@ public class TransformLink implements DisplayListener, Dynamic, Runnable,
 			if (font != null) font = new Font(font.getName(), font.getStyle(), 8);
 
 			// compile list of potential maps to Display.Text
-			final Vector textMaps = new Vector();
+			final Vector<ScalarMap> textMaps = new Vector<ScalarMap>();
 			final ScalarMap[] maps = trans.getSuggestedMaps();
 			for (int i = 0; i < maps.length; i++) {
 				if (maps[i].getDisplayScalar().equals(Display.Text)) {
@@ -473,11 +473,11 @@ public class TransformLink implements DisplayListener, Dynamic, Runnable,
 
 			// search display for matching text maps
 			final DisplayImpl display = handler.getWindow().getDisplay();
-			final Vector mapVector = display.getMapVector();
+			final Vector<ScalarMap> mapVector = display.getMapVector();
 			for (int i = 0; i < mapVector.size(); i++) {
-				final ScalarMap map = (ScalarMap) mapVector.elementAt(i);
+				final ScalarMap map = mapVector.elementAt(i);
 				for (int j = 0; j < textMaps.size(); j++) {
-					final ScalarMap textMap = (ScalarMap) textMaps.elementAt(j);
+					final ScalarMap textMap = textMaps.elementAt(j);
 					if (map.equals(textMap)) {
 						// update font for matching text map
 						final TextControl textControl = (TextControl) map.getControl();
@@ -640,7 +640,7 @@ public class TransformLink implements DisplayListener, Dynamic, Runnable,
 		cursor = null;
 		final DisplayImpl display = handler.getWindow().getDisplay();
 		final DisplayRenderer dr = display.getDisplayRenderer();
-		final Vector cursorStringVector = dr.getCursorStringVector();
+		final Vector<?> cursorStringVector = dr.getCursorStringVector();
 		if (cursorStringVector == null || cursorStringVector.size() == 0) return;
 
 		// get cursor value
@@ -694,8 +694,8 @@ public class TransformLink implements DisplayListener, Dynamic, Runnable,
 	 */
 	private void doMessages(final boolean swing) {
 		if (rend == null) return;
-		final Vector oldList = rend.getExceptionVector();
-		final Vector newList = new Vector();
+		final Vector<VisADException> oldList = rend.getExceptionVector();
+		final Vector<VisADException> newList = new Vector<VisADException>();
 		if (cursor != null) {
 			for (int i = 0; i < cursor.length; i++)
 				newList.add(cursor[i]);
@@ -709,8 +709,8 @@ public class TransformLink implements DisplayListener, Dynamic, Runnable,
 			if (newList.size() != len) equal = false;
 			else {
 				for (int i = 0; i < len; i++) {
-					final VisADException oldExc = (VisADException) oldList.elementAt(i);
-					final VisADException newExc = (VisADException) newList.elementAt(i);
+					final VisADException oldExc = oldList.elementAt(i);
+					final VisADException newExc = newList.elementAt(i);
 					if (!oldExc.getMessage().equals(newExc.getMessage())) {
 						equal = false;
 						break;
@@ -723,7 +723,7 @@ public class TransformLink implements DisplayListener, Dynamic, Runnable,
 		rend.clearExceptions();
 		final int len = newList.size();
 		for (int i = 0; i < len; i++) {
-			rend.addException((VisADException) newList.elementAt(i));
+			rend.addException(newList.elementAt(i));
 		}
 
 		if (swing) {

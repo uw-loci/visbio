@@ -260,7 +260,7 @@ public class ColorPane extends DialogPane implements ChangeListener,
 			if (sm.length == 1) {
 				// use ImageRendererJ3D when possible
 				try {
-					final Class c = Class.forName("visad.bom.ImageRendererJ3D");
+					final Class<?> c = Class.forName("visad.bom.ImageRendererJ3D");
 					dr = (DataRenderer) c.newInstance();
 				}
 				catch (final NoClassDefFoundError err) {}

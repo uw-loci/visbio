@@ -444,7 +444,7 @@ public class DataControls extends ControlPanel implements ActionListener,
 
 		if (cmd.equals("addData")) {
 			final DataTransform data = getSelectedData();
-			final Class[] dataTypes = dm.getRegisteredDataTypes();
+			final Class<?>[] dataTypes = dm.getRegisteredDataTypes();
 			final String[] dataLabels = dm.getRegisteredDataLabels();
 
 			// build popup menu from registered data transform types

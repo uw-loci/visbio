@@ -74,10 +74,10 @@ public class StackLink extends TransformLink {
 	// -- Fields --
 
 	/** Data references linking data to the display. */
-	protected Vector references;
+	protected Vector<DataReference> references;
 
 	/** Data renderers for toggling data's visibility and other parameters. */
-	protected Vector renderers;
+	protected Vector<DataRenderer> renderers;
 
 	/** Dimensional axis to use for image stacks. */
 	protected int stackAxis;
@@ -193,7 +193,7 @@ public class StackLink extends TransformLink {
 	/** Enables or disables visibility at the specified slice index. */
 	public void setSliceVisible(final int slice, final boolean vis) {
 		if (slice < 0 || slice >= references.size()) return;
-		((DataRenderer) renderers.elementAt(slice)).toggle(vis);
+		renderers.elementAt(slice).toggle(vis);
 	}
 
 	/** Gets visibility at the specified slice index. */
@@ -203,7 +203,7 @@ public class StackLink extends TransformLink {
 				? visSlices[slice] : false;
 		}
 		if (slice < 0 || slice >= renderers.size()) return false;
-		return ((DataRenderer) renderers.elementAt(slice)).getEnabled();
+		return renderers.elementAt(slice).getEnabled();
 	}
 
 	/** Enables or disables visibility of the yellow bounding box. */
@@ -233,7 +233,7 @@ public class StackLink extends TransformLink {
 			final int len = renderers.size();
 			visSlices = new boolean[len];
 			for (int s = 0; s < len; s++) {
-				final DataRenderer sliceRend = (DataRenderer) renderers.elementAt(s);
+				final DataRenderer sliceRend = renderers.elementAt(s);
 				visSlices[s] = sliceRend.getEnabled();
 				sliceRend.toggle(false);
 			}
@@ -243,7 +243,7 @@ public class StackLink extends TransformLink {
 			final int len = renderers.size();
 			final boolean all = visSlices == null || visSlices.length != len;
 			for (int s = 0; s < len; s++) {
-				final DataRenderer sliceRend = (DataRenderer) renderers.elementAt(s);
+				final DataRenderer sliceRend = renderers.elementAt(s);
 				sliceRend.toggle(all ? true : visSlices[s]);
 			}
 		}
@@ -283,13 +283,13 @@ public class StackLink extends TransformLink {
 				renderers.firstElement().getClass().getName().equals(imageRenderer);
 		final boolean[] vis = new boolean[renderers.size()];
 		for (int i = 0; i < vis.length; i++) {
-			vis[i] = ((DataRenderer) renderers.elementAt(i)).getEnabled();
+			vis[i] = renderers.elementAt(i).getEnabled();
 		}
 		if (numMaps == 1 && !isImageRend) {
 			// use ImageRendererJ3D when possible
 			renderers.removeAllElements();
 			try {
-				final Class c = Class.forName(imageRenderer);
+				final Class<?> c = Class.forName(imageRenderer);
 				for (int i = 0; i < len; i++) {
 					final DataRenderer dr = (DataRenderer) c.newInstance();
 					renderers.addElement(dr);
@@ -334,14 +334,12 @@ public class StackLink extends TransformLink {
 		try {
 			// add image slices
 			if (stackAxis < 0) {
-				display.addReferences((DataRenderer) renderers.elementAt(0),
-					(DataReferenceImpl) references.elementAt(0));
+				display.addReferences(renderers.elementAt(0), references.elementAt(0));
 			}
 			else {
 				for (int i = 0; i < len; i++) {
-					final DataRenderer dataRend = (DataRenderer) renderers.elementAt(i);
-					final DataReference dataRef =
-						(DataReferenceImpl) references.elementAt(i);
+					final DataRenderer dataRend = renderers.elementAt(i);
+					final DataReference dataRef = references.elementAt(i);
 					display.addReferences(dataRend, dataRef);
 					setZLevel(dataRend, i, len);
 				}
@@ -372,7 +370,7 @@ public class StackLink extends TransformLink {
 			final int len = stackAxis < 0 ? 1 : references.size();
 			final DisplayImpl display = handler.getWindow().getDisplay();
 			for (int i = 0; i < len; i++) {
-				display.removeReference((DataReferenceImpl) references.elementAt(i));
+				display.removeReference(references.elementAt(i));
 			}
 
 			// remove yellow bounding box
@@ -393,7 +391,7 @@ public class StackLink extends TransformLink {
 	@Override
 	public void setVisible(final boolean vis) {
 		for (int i = 0; i < renderers.size(); i++) {
-			((DataRenderer) renderers.elementAt(i)).toggle(vis);
+			renderers.elementAt(i).toggle(vis);
 		}
 	}
 
@@ -402,7 +400,7 @@ public class StackLink extends TransformLink {
 	public boolean isVisible() {
 		boolean vis = false;
 		for (int i = 0; i < renderers.size(); i++) {
-			if (((DataRenderer) renderers.elementAt(i)).getEnabled()) {
+			if (renderers.elementAt(i).getEnabled()) {
 				vis = true;
 				break;
 			}
@@ -449,8 +447,8 @@ public class StackLink extends TransformLink {
 		if (dyn != null && !isCompatible(dyn)) return;
 		super.initState(dyn);
 
-		references = new Vector();
-		renderers = new Vector();
+		references = new Vector<DataReference>();
+		renderers = new Vector<DataRenderer>();
 		try {
 			volumeRef = new DataReferenceImpl(trans.getName() + "_volume");
 		}
@@ -662,7 +660,7 @@ public class StackLink extends TransformLink {
 			final Data thumb = th == null ? null : th.getThumb(pos);
 			final DataReferenceImpl sliceRef =
 				(DataReferenceImpl) references.elementAt(s);
-			final DataRenderer sliceRend = (DataRenderer) renderers.elementAt(s);
+			final DataRenderer sliceRend = renderers.elementAt(s);
 			if (thumbs) setData(thumb, sliceRef, sliceRend, true, s);
 			else {
 				if (!volume || collapse == null) {
@@ -759,7 +757,7 @@ public class StackLink extends TransformLink {
 		cursor = null;
 		final DisplayImpl display = handler.getWindow().getDisplay();
 		final DisplayRenderer dr = display.getDisplayRenderer();
-		final Vector cursorStringVector = dr.getCursorStringVector();
+		final Vector<?> cursorStringVector = dr.getCursorStringVector();
 		if (cursorStringVector == null || cursorStringVector.size() == 0) return;
 
 		// get cursor value

@@ -63,10 +63,11 @@ public class WindowManager extends LogicManager implements WindowListener {
 	// -- Fields --
 
 	/** Table for keeping track of registered windows. */
-	protected Hashtable windows = new Hashtable();
+	protected Hashtable<Window, WindowInfo> windows =
+		new Hashtable<Window, WindowInfo>();
 
 	/** List of windows that were visible before VisBio was minimized. */
-	protected Vector visible = new Vector();
+	protected Vector<Window> visible = new Vector<Window>();
 
 	/** Number of queued wait cursors. */
 	protected int waiting = 0;
@@ -86,7 +87,8 @@ public class WindowManager extends LogicManager implements WindowListener {
 	// -- Fields - initial state --
 
 	/** Table of window states read during state restore. */
-	protected Hashtable windowStates = new Hashtable();
+	protected Hashtable<String, WindowState> windowStates =
+		new Hashtable<String, WindowState>();
 
 	// -- Constructor --
 
@@ -110,7 +112,7 @@ public class WindowManager extends LogicManager implements WindowListener {
 		if (w instanceof Frame) ((Frame) w).setIconImage(bio.getIcon());
 		final WindowInfo winfo = new WindowInfo(w, pack);
 		final String wname = SwingUtil.getWindowTitle(w);
-		final WindowState ws = (WindowState) windowStates.get(wname);
+		final WindowState ws = windowStates.get(wname);
 		if (ws != null) {
 			winfo.setState(ws);
 			windowStates.remove(wname);
@@ -138,10 +140,10 @@ public class WindowManager extends LogicManager implements WindowListener {
 
 	/** Gets a list of windows being handled by the window manager. */
 	public Window[] getWindows() {
-		final Enumeration e = windows.keys();
+		final Enumeration<Window> e = windows.keys();
 		final Window[] w = new Window[windows.size()];
 		for (int i = 0; i < w.length; i++) {
-			w[i] = (Window) e.nextElement();
+			w[i] = e.nextElement();
 		}
 		return w;
 	}
@@ -161,9 +163,9 @@ public class WindowManager extends LogicManager implements WindowListener {
 		}
 		if (doCursor) {
 			// apply cursor to all windows
-			final Enumeration en = windows.keys();
+			final Enumeration<Window> en = windows.keys();
 			while (en.hasMoreElements()) {
-				final Window w = (Window) en.nextElement();
+				final Window w = en.nextElement();
 				SwingUtil.setWaitCursor(w, wait);
 			}
 		}
@@ -175,16 +177,16 @@ public class WindowManager extends LogicManager implements WindowListener {
 	 * placed in a cascading position.
 	 */
 	public void showWindow(final Window w) {
-		final WindowInfo winfo = (WindowInfo) windows.get(w);
+		final WindowInfo winfo = windows.get(w);
 		if (winfo == null) return;
 		winfo.showWindow();
 	}
 
 	/** Hides all windows. */
 	public void hideWindows() {
-		final Enumeration en = windows.keys();
+		final Enumeration<Window> en = windows.keys();
 		while (en.hasMoreElements()) {
-			final Window w = (Window) en.nextElement();
+			final Window w = en.nextElement();
 			if (w.isVisible() && w != bio) {
 				visible.add(w);
 				w.setVisible(false);
@@ -195,7 +197,7 @@ public class WindowManager extends LogicManager implements WindowListener {
 	/** Restores all previously hidden windows. */
 	public void restoreWindows() {
 		for (int i = 0; i < visible.size(); i++) {
-			final Window w = (Window) visible.elementAt(i);
+			final Window w = visible.elementAt(i);
 			w.setVisible(true);
 		}
 		visible.removeAllElements();
@@ -204,9 +206,9 @@ public class WindowManager extends LogicManager implements WindowListener {
 
 	/** Disposes all windows, prior to program exit. */
 	public void disposeWindows() {
-		final Enumeration en = windows.keys();
+		final Enumeration<Window> en = windows.keys();
 		while (en.hasMoreElements()) {
-			final Window w = (Window) en.nextElement();
+			final Window w = en.nextElement();
 			w.dispose();
 		}
 	}
@@ -290,9 +292,9 @@ public class WindowManager extends LogicManager implements WindowListener {
 	@Override
 	public void saveState(final Element el) throws SaveException {
 		final Element container = XMLUtil.createChild(el, "Windows");
-		final Enumeration en = windows.keys();
+		final Enumeration<Window> en = windows.keys();
 		while (en.hasMoreElements()) {
-			final Window w = (Window) en.nextElement();
+			final Window w = en.nextElement();
 			final String name = SwingUtil.getWindowTitle(w);
 			final Element e = XMLUtil.createChild(container, "Window");
 			e.setAttribute("name", name);
@@ -366,9 +368,9 @@ public class WindowManager extends LogicManager implements WindowListener {
 
 	/** Propagates the given menu bar across all registered frames. */
 	protected void doMenuBars(final JMenuBar master) {
-		final Enumeration en = windows.keys();
+		final Enumeration<Window> en = windows.keys();
 		while (en.hasMoreElements()) {
-			final Window w = (Window) en.nextElement();
+			final Window w = en.nextElement();
 			if (!(w instanceof JFrame)) continue;
 			final JFrame f = (JFrame) w;
 			if (f.getJMenuBar() != master) {
@@ -382,9 +384,9 @@ public class WindowManager extends LogicManager implements WindowListener {
 	 * window title.
 	 */
 	protected WindowInfo getWindowByTitle(final String name) {
-		final Enumeration en = windows.elements();
+		final Enumeration<WindowInfo> en = windows.elements();
 		while (en.hasMoreElements()) {
-			final WindowInfo winfo = (WindowInfo) en.nextElement();
+			final WindowInfo winfo = en.nextElement();
 			final Window w = winfo.getWindow();
 			if (name.equals(SwingUtil.getWindowTitle(w))) return winfo;
 		}

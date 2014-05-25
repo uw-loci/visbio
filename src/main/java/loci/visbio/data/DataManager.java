@@ -83,10 +83,10 @@ public class DataManager extends LogicManager {
 	// -- Other fields --
 
 	/** List of registered data transform type classes. */
-	protected Vector transformTypes;
+	protected Vector<Class<?>> transformTypes;
 
 	/** List of registered data transform type labels. */
-	protected Vector transformLabels;
+	protected Vector<String> transformLabels;
 
 	// -- Constructor --
 
@@ -138,14 +138,14 @@ public class DataManager extends LogicManager {
 	 * Registers the given subclass of DataTransform with the data manager, using
 	 * the given label as a description.
 	 */
-	public void registerDataType(final Class c, final String label) {
+	public void registerDataType(final Class<?> c, final String label) {
 		transformTypes.add(c);
 		transformLabels.add(label);
 	}
 
 	/** Gets list of registered data transform types. */
-	public Class[] getRegisteredDataTypes() {
-		final Class[] types = new Class[transformTypes.size()];
+	public Class<?>[] getRegisteredDataTypes() {
+		final Class<?>[] types = new Class[transformTypes.size()];
 		transformTypes.copyInto(types);
 		return types;
 	}
@@ -158,8 +158,8 @@ public class DataManager extends LogicManager {
 	}
 
 	/** Gets a list of data transforms present in the tree. */
-	public Vector getDataList() {
-		final Vector v = new Vector();
+	public Vector<DataTransform> getDataList() {
+		final Vector<DataTransform> v = new Vector<DataTransform>();
 		buildDataList(dataControls.getDataRoot(), v);
 		return v;
 	}
@@ -368,11 +368,11 @@ public class DataManager extends LogicManager {
 	/** Writes the current state to the given DOM element ("VisBio"). */
 	@Override
 	public void saveState(final Element el) throws SaveException {
-		final Vector v = getDataList();
+		final Vector<DataTransform> v = getDataList();
 		final int len = v.size();
 		final Element child = XMLUtil.createChild(el, "DataTransforms");
 		for (int i = 0; i < len; i++) {
-			final DataTransform data = (DataTransform) v.elementAt(i);
+			final DataTransform data = v.elementAt(i);
 			data.saveState(child);
 		}
 	}
@@ -382,7 +382,7 @@ public class DataManager extends LogicManager {
 	public void restoreState(final Element el) throws SaveException {
 		final Element child = XMLUtil.getFirstChild(el, "DataTransforms");
 		final Element[] els = XMLUtil.getChildren(child, null);
-		final Vector vn = new Vector();
+		final Vector<DataTransform> vn = new Vector<DataTransform>();
 		for (int i = 0; i < els.length; i++) {
 			// read transform class name
 			final String className = els[i].getAttribute("class");
@@ -392,7 +392,7 @@ public class DataManager extends LogicManager {
 			}
 
 			// locate transform class
-			Class c = null;
+			Class<?> c = null;
 			try {
 				c = Class.forName(className);
 			}
@@ -434,7 +434,7 @@ public class DataManager extends LogicManager {
 		// restore parent transform references
 		final int nlen = vn.size();
 		for (int i = 0; i < nlen; i++) {
-			final DataTransform data = (DataTransform) vn.elementAt(i);
+			final DataTransform data = vn.elementAt(i);
 			final String parentId = els[i].getAttribute("parent");
 			if (parentId == null || parentId.equals("")) data.parent = null;
 			else {
@@ -447,8 +447,7 @@ public class DataManager extends LogicManager {
 				}
 				// search for transform with matching ID
 				for (int j = 0; j < nlen; j++) {
-					final DataTransform dt = (DataTransform) vn.elementAt(j);
-					final int id = dt.getTransformId();
+					final DataTransform dt = vn.elementAt(j);
 					if (dt.getTransformId() == pid) data.parent = dt;
 				}
 				if (data.parent == null) {
@@ -459,19 +458,19 @@ public class DataManager extends LogicManager {
 		}
 
 		// merge old and new transform lists
-		final Vector vo = getDataList();
+		final Vector<DataTransform> vo = getDataList();
 		StateManager.mergeStates(vo, vn);
 
 		// add new transforms to tree structure
 		for (int i = 0; i < nlen; i++) {
-			final DataTransform data = (DataTransform) vn.elementAt(i);
+			final DataTransform data = vn.elementAt(i);
 			if (!vo.contains(data)) addData(data);
 		}
 
 		// purge old transforms from tree structure
 		final int olen = vo.size();
 		for (int i = 0; i < olen; i++) {
-			final DataTransform data = (DataTransform) vo.elementAt(i);
+			final DataTransform data = vo.elementAt(i);
 			if (!vn.contains(data)) removeData(data);
 		}
 	}
@@ -488,8 +487,8 @@ public class DataManager extends LogicManager {
 
 		// data transform registration
 		bio.setSplashStatus(null);
-		transformTypes = new Vector();
-		transformLabels = new Vector();
+		transformTypes = new Vector<Class<?>>();
+		transformLabels = new Vector<String>();
 		registerDataType(Dataset.class, "Dataset");
 		registerDataType(DataSampling.class, "Subsampling");
 		registerDataType(ProjectionTransform.class, "Maximum intensity projection");
@@ -546,10 +545,11 @@ public class DataManager extends LogicManager {
 	}
 
 	/** Recursively creates a list of data transforms below the given node. */
-	private void buildDataList(final DefaultMutableTreeNode node, final Vector v)
+	private void buildDataList(final DefaultMutableTreeNode node,
+		final Vector<DataTransform> v)
 	{
 		final Object o = node.getUserObject();
-		if (o instanceof DataTransform) v.add(o);
+		if (o instanceof DataTransform) v.add((DataTransform) o);
 
 		final int count = node.getChildCount();
 		for (int i = 0; i < count; i++) {

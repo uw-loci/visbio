@@ -101,15 +101,15 @@ public final class VisBio extends Thread {
 		// toggle window decoration mode via reflection
 		final boolean b =
 			"true".equals(System.getProperty("visbio.decorateWindows"));
-		final Class jf = Class.forName("javax.swing.JFrame");
+		final Class<?> jf = Class.forName("javax.swing.JFrame");
 		final Method m =
 			jf.getMethod("setDefaultLookAndFeelDecorated",
-				new Class[] { boolean.class });
+				new Class<?>[] { boolean.class });
 		m.invoke(null, new Object[] { new Boolean(b) });
 
 		// construct VisBio interface via reflection
-		final Class vb = Class.forName("loci.visbio.VisBioFrame");
-		final Constructor con =
+		final Class<?> vb = Class.forName("loci.visbio.VisBioFrame");
+		final Constructor<?> con =
 			vb.getConstructor(new Class[] { ss.getClass(), String[].class });
 		return con.newInstance(new Object[] { ss, args });
 	}

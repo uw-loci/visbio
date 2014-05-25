@@ -256,9 +256,9 @@ public class SystemControls extends ControlPanel implements ActionListener {
 			// Properties.list() truncates the property values, so we iterate
 			// properties.list(System.out);
 			System.out.println("-- listing properties --");
-			final Enumeration list = properties.propertyNames();
+			final Enumeration<?> list = properties.propertyNames();
 			while (list.hasMoreElements()) {
-				final String key = (String) list.nextElement();
+				final String key = list.nextElement().toString();
 				final String value = properties.getProperty(key);
 				System.out.println(key + "=" + value);
 			}
@@ -368,7 +368,7 @@ public class SystemControls extends ControlPanel implements ActionListener {
 
 	/** Gets version information for the specified class. */
 	private static String getVersionString(final String clas) {
-		Class c = null;
+		Class<?> c = null;
 		try {
 			c = Class.forName(clas);
 		}
@@ -379,7 +379,7 @@ public class SystemControls extends ControlPanel implements ActionListener {
 	}
 
 	/** Gets version information for the specified class. */
-	private static String getVersionString(final Class c) {
+	private static String getVersionString(final Class<?> c) {
 		if (c == null) return "Missing";
 		final Package p = c.getPackage();
 		if (p == null) return "No package";

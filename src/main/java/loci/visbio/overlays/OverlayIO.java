@@ -82,7 +82,7 @@ public final class OverlayIO {
 	// -- OverlayIO API methods --
 
 	/** Reads the overlays from the given reader. */
-	public static Vector[] loadOverlays(final BufferedReader in,
+	public static Vector<OverlayObject>[] loadOverlays(final BufferedReader in,
 		final OverlayTransform trans) throws IOException
 	{
 		final String[] dims = trans.getDimTypes();
@@ -90,11 +90,12 @@ public final class OverlayIO {
 		final JComponent owner = trans.getControls();
 
 		// stores all overlays
-		Vector[] loadedOverlays = null;
+		Vector<OverlayObject>[] loadedOverlays = null;
 		boolean foundOverlays = false;
 
 		// tracks addresses of stored freeforms
-		final Vector loadedNodedObjects = new Vector();
+		final Vector<OverlayNodedObject> loadedNodedObjects =
+			new Vector<OverlayNodedObject>();
 		boolean nodesChanged = false; // used in event INIT, state NODES
 		int numberOfNodedObjectsRead = 0;
 		int numNodedObjectsRestored = 0;
@@ -178,7 +179,7 @@ public final class OverlayIO {
 					// initialize replacement overlay lists
 					loadedOverlays = new Vector[FormatTools.getRasterLength(lengths)];
 					for (int i = 0; i < loadedOverlays.length; i++) {
-						loadedOverlays[i] = new Vector();
+						loadedOverlays[i] = new Vector<OverlayObject>();
 					}
 
 				}
@@ -194,8 +195,7 @@ public final class OverlayIO {
 					// store nodes of previously read freeform
 					if (nodesChanged) {
 						final OverlayNodedObject ono =
-							(OverlayNodedObject) loadedNodedObjects
-								.elementAt(numNodedObjectsRestored++);
+							loadedNodedObjects.elementAt(numNodedObjectsRestored++);
 						final float[][] temp = new float[2][numNodes];
 						for (int i = 0; i < 2; i++)
 							System.arraycopy(nodes[i], 0, temp[i], 0, numNodes);
@@ -299,7 +299,9 @@ public final class OverlayIO {
 					final OverlayObject obj = createOverlay(className, trans, lineNum);
 					if (obj == null) continue;
 
-					if (obj instanceof OverlayNodedObject) loadedNodedObjects.add(obj);
+					if (obj instanceof OverlayNodedObject) {
+						loadedNodedObjects.add((OverlayNodedObject) obj);
+					}
 
 					final int r = FormatTools.positionToRaster(lengths, pos);
 					// System.out.print("["); // TEMP
@@ -837,8 +839,8 @@ public final class OverlayIO {
 		classError += ": ";
 		OverlayObject obj = null;
 		try {
-			final Class c = Class.forName(className);
-			final Constructor con =
+			final Class<?> c = Class.forName(className);
+			final Constructor<?> con =
 				c.getConstructor(new Class[] { OverlayTransform.class });
 			obj = (OverlayObject) con.newInstance(new Object[] { trans });
 			if (obj == null) {
