@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
-		http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="https://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="https://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="https://maven.apache.org/POM/4.0.0
+		https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
@@ -18,7 +18,7 @@
 
 	<name>VisBio</name>
 	<description>A multi-purpose biological analysis tool.</description>
-	<url>http://loci.wisc.edu/software/visbio</url>
+	<url>https://loci.wisc.edu/software/visbio</url>
 	<inceptionYear>2002</inceptionYear>
 	<organization>
 		<name>LOCI</name>
@@ -27,7 +27,7 @@
 	<licenses>
 		<license>
 			<name>GNU General Public License v2+</name>
-			<url>http://www.gnu.org/licenses/gpl-2.0.txt</url>
+			<url>https://www.gnu.org/licenses/gpl-2.0.txt</url>
 			<distribution>repo</distribution>
 		</license>
 	</licenses>
@@ -88,7 +88,7 @@ Wisconsin-Madison.</license.copyrightOwners>
 		<!-- NB: for project parent -->
 		<repository>
 			<id>imagej.public</id>
-			<url>http://maven.imagej.net/content/groups/public</url>
+			<url>https://maven.imagej.net/content/groups/public</url>
 		</repository>
 	</repositories>
 
