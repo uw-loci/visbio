@@ -467,6 +467,7 @@ public class Dataset extends ImageTransform {
 			if (VisBioFrame.DEBUG) exc.printStackTrace();
 			return;
 		}
+
 		final int[] cLen = getChannelDimLengths(reader);
 		lengths = new int[2 + cLen.length];
 		lengths[0] = reader.getSizeT();
@@ -590,15 +591,15 @@ public class Dataset extends ImageTransform {
 		final Modulo moduloC = r.getModuloC();
 		if (moduloC != null && moduloC.length() > 1) {
 			return new int[] { //
-				reader.getSizeC() / moduloC.length(), //
+				r.getSizeC() / moduloC.length(), //
 				moduloC.length() //
 			};
 		}
-		return new int[] { reader.getSizeC() };
+		return new int[] { r.getSizeC() };
 	}
 
 	private String[] getChannelDimTypes(final IFormatReader r) {
-		final Modulo moduloC = reader.getModuloC();
+		final Modulo moduloC = r.getModuloC();
 		if (moduloC != null && moduloC.length() > 1) {
 			return new String[] { moduloC.parentType, moduloC.type };
 		}
