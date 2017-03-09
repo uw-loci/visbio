@@ -48,6 +48,7 @@ import loci.formats.FileStitcher;
 import loci.formats.FormatException;
 import loci.formats.FormatTools;
 import loci.formats.IFormatReader;
+import loci.formats.Modulo;
 import loci.formats.gui.BufferedImageReader;
 import loci.formats.gui.GUITools;
 import loci.formats.meta.MetadataStore;
@@ -466,12 +467,12 @@ public class Dataset extends ImageTransform {
 			if (VisBioFrame.DEBUG) exc.printStackTrace();
 			return;
 		}
-		final int[] cLen = reader.getChannelDimLengths();
+		final int[] cLen = getChannelDimLengths(reader);
 		lengths = new int[2 + cLen.length];
 		lengths[0] = reader.getSizeT();
 		lengths[1] = reader.getSizeZ();
 		System.arraycopy(cLen, 0, lengths, 2, cLen.length);
-		final String[] cTypes = reader.getChannelDimTypes();
+		final String[] cTypes = getChannelDimTypes(reader);
 		dims = new String[2 + cTypes.length];
 		dims[0] = "Time";
 		dims[1] = "Slice";
@@ -570,7 +571,7 @@ public class Dataset extends ImageTransform {
 		final int z = pos[1];
 
 		// rasterize C dimensions
-		final int[] cLen = reader.getChannelDimLengths();
+		final int[] cLen = getChannelDimLengths(reader);
 		final int[] cPos = new int[pos.length - 2];
 		System.arraycopy(pos, 2, cPos, 0, cPos.length);
 		final int c = FormatTools.positionToRaster(cLen, cPos);
@@ -585,4 +586,22 @@ public class Dataset extends ImageTransform {
 		listener.statusUpdated(new StatusEvent(current, max, message));
 	}
 
+	private int[] getChannelDimLengths(final IFormatReader r) {
+		final Modulo moduloC = r.getModuloC();
+		if (moduloC != null && moduloC.length() > 1) {
+			return new int[] { //
+				reader.getSizeC() / moduloC.length(), //
+				moduloC.length() //
+			};
+		}
+		return new int[] { reader.getSizeC() };
+	}
+
+	private String[] getChannelDimTypes(final IFormatReader r) {
+		final Modulo moduloC = reader.getModuloC();
+		if (moduloC != null && moduloC.length() > 1) {
+			return new String[] { moduloC.parentType, moduloC.type };
+		}
+		return new String[] { FormatTools.CHANNEL };
+	}
 }

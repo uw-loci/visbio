@@ -6,12 +6,13 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<groupId>loci</groupId>
-		<artifactId>pom-loci</artifactId>
-		<version>1.21</version>
+		<groupId>org.scijava</groupId>
+		<artifactId>pom-scijava</artifactId>
+		<version>14.0.0</version>
 		<relativePath />
 	</parent>
 
+	<groupId>loci</groupId>
 	<artifactId>visbio</artifactId>
 	<version>3.40-SNAPSHOT</version>
 
@@ -19,7 +20,10 @@
 	<description>A multi-purpose biological analysis tool.</description>
 	<url>http://loci.wisc.edu/software/visbio</url>
 	<inceptionYear>2002</inceptionYear>
-
+	<organization>
+		<name>LOCI</name>
+		<url>https://loci.wisc.edu/</url>
+	</organization>
 	<licenses>
 		<license>
 			<name>GNU General Public License v2+</name>
@@ -27,6 +31,66 @@
 			<distribution>repo</distribution>
 		</license>
 	</licenses>
+
+	<developers>
+		<developer>
+			<id>ctrueden</id>
+			<name>Curtis Rueden</name>
+			<url>https://imagej.net/User:Rueden</url>
+			<roles>
+				<role>founder</role>
+				<role>lead</role>
+				<role>reviewer</role>
+				<role>maintainer</role>
+			</roles>
+		</developer>
+	</developers>
+	<contributors>
+		<contributor>
+			<name>Abraham Sorber</name>
+		</contributor>
+	</contributors>
+
+	<mailingLists>
+		<mailingList>
+			<name>LOCI Software</name>
+			<subscribe>https://loci.wisc.edu/mailman/listinfo/loci-software</subscribe>
+			<unsubscribe>https://loci.wisc.edu/mailman/listinfo/loci-software</unsubscribe>
+			<post>loci-software@loci.wisc.edu</post>
+			<archive>https://loci.wisc.edu/pipermail/loci-software/</archive>
+		</mailingList>
+	</mailingLists>
+
+	<scm>
+		<connection>scm:git:git://github.com/uw-loci/visbio</connection>
+		<developerConnection>scm:git:git@github.com:uw-loci/visbio</developerConnection>
+		<tag>HEAD</tag>
+		<url>https://github.com/uw-loci/visbio</url>
+	</scm>
+	<issueManagement>
+		<system>GitHub Issues</system>
+		<url>https://github.com/uw-loci/visbio/issues</url>
+	</issueManagement>
+	<ciManagement>
+		<system>Travis CI</system>
+		<url>https://travis-ci.org/uw-loci/visbio</url>
+	</ciManagement>
+
+	<properties>
+		<package-name>loci.visbio</package-name>
+		<license.licenseName>gpl_v2</license.licenseName>
+		<license.copyrightOwners>Board of Regents of the University of
+Wisconsin-Madison.</license.copyrightOwners>
+		<license.projectName>VisBio application for visualization of multidimensional biological</license.projectName>
+	</properties>
+
+	<repositories>
+		<!-- NB: for project parent -->
+		<repository>
+			<id>imagej.public</id>
+			<url>http://maven.imagej.net/content/groups/public</url>
+		</repository>
+	</repositories>
 
 	<dependencies>
 		<dependency>
@@ -48,17 +112,17 @@
 			</exclusions>
 		</dependency>
 		<dependency>
-			<groupId>ome</groupId>
-			<artifactId>formats-common</artifactId>
+			<groupId>org.openmicroscopy</groupId>
+			<artifactId>ome-common</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>ome</groupId>
+			<groupId>org.openmicroscopy</groupId>
 			<artifactId>ome-xml</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>ome</groupId>
+			<groupId>org.openmicroscopy</groupId>
 			<artifactId>ome-poi</artifactId>
-			<version>${bio-formats.version}</version>
+			<version>5.3.1</version> <!-- TEMP until pom-scijava 14.1.0 -->
 		</dependency>
 
 		<dependency>
@@ -119,46 +183,4 @@ image data.</projectName>
 			</plugin>
 		</plugins>
 	</build>
-
-	<developers>
-		<developer>
-			<id>ctrueden</id>
-			<name>Curtis Rueden</name>
-			<email>ctrueden@wisc.edu</email>
-			<url>http://loci.wisc.edu/people/curtis-rueden</url>
-			<organization>UW-Madison LOCI</organization>
-			<organizationUrl>http://loci.wisc.edu/</organizationUrl>
-			<roles>
-				<role>architect</role>
-				<role>developer</role>
-			</roles>
-			<timezone>-6</timezone>
-		</developer>
-		<developer>
-			<name>Abraham Sorber</name>
-			<url>http://loci.wisc.edu/people/abraham-sorber</url>
-			<organization>UW-Madison LOCI</organization>
-			<organizationUrl>http://loci.wisc.edu/</organizationUrl>
-			<roles>
-				<role>developer</role>
-			</roles>
-			<timezone>-6</timezone>
-		</developer>
-	</developers>
-
-	<scm>
-		<connection>scm:git:git://github.com/uw-loci/visbio</connection>
-		<developerConnection>scm:git:git@github.com:uw-loci/visbio</developerConnection>
-		<tag>HEAD</tag>
-		<url>https://github.com/uw-loci/visbio</url>
-	</scm>
-
-	<repositories>
-		<!-- NB: for project parent -->
-		<repository>
-			<id>imagej.public</id>
-			<url>http://maven.imagej.net/content/groups/public</url>
-		</repository>
-	</repositories>
-
 </project>
