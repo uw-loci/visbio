@@ -49,6 +49,25 @@
 		<contributor>
 			<name>Abraham Sorber</name>
 		</contributor>
+		<contributor>
+			<name>Melissa Linkert</name>
+			<url>http://imagej.net/User:Linkert</url>
+			<properties><id>melissalinkert</id></properties>
+		</contributor>
+		<contributor>
+			<name>Gregory Jefferis</name>
+			<url>http://imagej.net/User:Jefferis</url>
+			<properties><id>jefferis</id></properties>
+		</contributor>
+		<contributor>
+			<name>Eric Kjellman</name>
+		</contributor>
+		<contributor>
+			<name>Christopher Peterson</name>
+		</contributor>
+		<contributor>
+			<name>Abhinav Tallavajhula</name>
+		</contributor>
 	</contributors>
 
 	<mailingLists>
