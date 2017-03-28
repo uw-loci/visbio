@@ -93,11 +93,13 @@
 	</ciManagement>
 
 	<properties>
+		<main-class>loci.visbio.VisBio</main-class>
 		<package-name>loci.visbio</package-name>
 		<license.licenseName>gpl_v2</license.licenseName>
 		<license.copyrightOwners>Board of Regents of the University of
 Wisconsin-Madison.</license.copyrightOwners>
-		<license.projectName>VisBio application for visualization of multidimensional biological</license.projectName>
+		<license.projectName>VisBio application for visualization of multidimensional biological
+image data.</license.projectName>
 	</properties>
 
 	<repositories>
@@ -173,29 +175,4 @@ Wisconsin-Madison.</license.copyrightOwners>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
-
-	<build>
-		<plugins>
-			<plugin>
-				<artifactId>maven-jar-plugin</artifactId>
-				<configuration>
-					<archive>
-						<manifest>
-							<mainClass>loci.visbio.VisBio</mainClass>
-							<packageName>loci.visbio</packageName>
-						</manifest>
-					</archive>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>license-maven-plugin</artifactId>
-				<configuration>
-					<licenseName>gpl_v2</licenseName>
-					<projectName>VisBio application for visualization of multidimensional biological
-image data.</projectName>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
 </project>
