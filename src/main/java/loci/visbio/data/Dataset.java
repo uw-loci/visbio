@@ -73,19 +73,25 @@ import visad.VisADException;
 
 /**
  * A Dataset object encompasses a multidimensional biological image series. Such
- * an object is typically between two and six dimensions as follows: <li>2D: a
- * single image <li>3D: an image stack, or a time series of images <li>4D: a
- * time series of image stacks, a multispectral image stack, or an image stack
- * with lifetime data at each pixel <li>5D: an image stack with spectral
- * lifetime data at each pixel <li>6D: a time series of image stacks with
- * spectral lifetime data at each pixel
+ * an object is typically between two and six dimensions as follows:
+ * <ul>
+ * <li>2D: a single image</li>
+ * <li>3D: an image stack, or a time series of images</li>
+ * <li>4D: a time series of image stacks, a multispectral image stack, or an
+ * image stack with lifetime data at each pixel</li>
+ * <li>5D: an image stack with spectral lifetime data at each pixel</li>
+ * <li>6D: a time series of image stacks with spectral lifetime data at each
+ * pixel</li>
+ * </ul>
  * <p>
  * Other configurations are certainly possible, and Dataset provides an
  * interface for multidimensional image data of any organization.
+ * </p>
  * <p>
  * Dataset keeps no data in memory itself, leaving that management to the
  * application, and just loads data as necessary to return whatever the
  * application requests, according to the DataTransform API.
+ * </p>
  */
 public class Dataset extends ImageTransform {
 

@@ -111,8 +111,9 @@ public final class LAFUtil {
 	 * Gets list of available look and feels, taking some OS-specific look and
 	 * feels into account.
 	 * 
-	 * @return An array dimensioned String[2][*], with String[0] being the L&F
-	 *         names, and String[1] being the fully qualified L&F class names.
+	 * @return An array dimensioned {@code String[2][*]}, with {@code String[0]}
+	 *         being the L+F names, and {@code String[1]} being the fully
+	 *         qualified L+F class names.
 	 */
 	public static String[][] getAvailableLookAndFeels() {
 		final UIManager.LookAndFeelInfo[] lafs =

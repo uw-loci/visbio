@@ -204,8 +204,8 @@ public final class DataUtil {
 	}
 
 	/**
-	 * Creates a field of the form (z -> type) from the given list of fields,
-	 * where type is the MathType of each component field.
+	 * Creates a field of the form {@code (z -> type)} from the given list of
+	 * fields, where type is the {@link MathType} of each component field.
 	 */
 	public static FieldImpl makeField(final FlatField[] fields,
 		final RealType zType) throws VisADException, RemoteException
@@ -215,8 +215,8 @@ public final class DataUtil {
 	}
 
 	/**
-	 * Creates a field of the form (z -> type) from the given list of fields,
-	 * where type is the MathType of each component field.
+	 * Creates a field of the form {@code (z -> type)} from the given list of
+	 * fields, where type is the {@link MathType} of each component field.
 	 */
 	public static FieldImpl makeField(final FlatField[] fields,
 		final RealType zType, final Unit setUnit) throws VisADException,
@@ -228,8 +228,8 @@ public final class DataUtil {
 	}
 
 	/**
-	 * Creates a field of the form (z -> type) from the given list of fields,
-	 * where type is the MathType of each component field.
+	 * Creates a field of the form {@code (z -> type)} from the given list of
+	 * fields, where type is the {@link MathType} of each component field.
 	 */
 	public static FieldImpl makeField(final FlatField[] fields,
 		final RealType zType, final double min, final double max)
@@ -241,8 +241,8 @@ public final class DataUtil {
 	}
 
 	/**
-	 * Creates a field of the form (z -> type) from the given list of fields,
-	 * where type is the MathType of each component field.
+	 * Creates a field of the form {@code (z -> type)} from the given list of
+	 * fields, where type is the {@link MathType} of each component field.
 	 */
 	public static FieldImpl
 		makeField(final FlatField[] fields, final RealType zType, final double min,
@@ -255,8 +255,8 @@ public final class DataUtil {
 	}
 
 	/**
-	 * Creates a field of the form (z -> type) from the given list of fields,
-	 * where type is the MathType of each component field.
+	 * Creates a field of the form {@code (z -> type)} from the given list of
+	 * fields, where type is the {@link MathType} of each component field.
 	 */
 	public static FieldImpl makeField(final FlatField[] fields,
 		final RealType zType, final SampledSet fieldSet) throws VisADException,
@@ -275,8 +275,8 @@ public final class DataUtil {
 	}
 
 	/**
-	 * Collapses a field from the form <tt>(z -> ((x, y) -> (v1, ..., vn)))</tt>
-	 * into the form <tt>((x, y, z) -> (v1, ..., vn))</tt>.
+	 * Collapses a field from the form {@code (z -> ((x, y) -> (v1, ..., vn)))}
+	 * into the form {@code ((x, y, z) -> (v1, ..., vn))}.
 	 */
 	public static FlatField collapse(final FieldImpl f) throws VisADException,
 		RemoteException
@@ -319,7 +319,7 @@ public final class DataUtil {
 	}
 
 	/**
-	 * Resamples a volume of the form <tt>((x, y, z) -> (v1, ..., vn))</tt> to the
+	 * Resamples a volume of the form {@code ((x, y, z) -> (v1, ..., vn))} to the
 	 * given resolution along each of its three spatial axes.
 	 */
 	public static FlatField makeCube(final FlatField volume, final int res)

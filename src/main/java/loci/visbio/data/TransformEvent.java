@@ -64,8 +64,11 @@ public class TransformEvent extends EventObject {
 	// -- TransformEvent API methods --
 
 	/**
-	 * Gets the type of transform event. Possibilities include: <li>
-	 * TransformEvent.DATA_CHANGED <li>TransformEvent.FONT_CHANGED
+	 * Gets the type of transform event. Possibilities include:
+	 * <ul>
+	 * <li>TransformEvent.DATA_CHANGED</li>
+	 * <li>TransformEvent.FONT_CHANGED</li>
+	 * </ul>
 	 */
 	public int getId() {
 		return id;

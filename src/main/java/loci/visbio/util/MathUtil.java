@@ -380,7 +380,6 @@ public final class MathUtil {
 	public static float[] add(final float[] v1, final float[] v2) {
 		// v1 and v2 should have same lengths
 		if (v1.length != v2.length) return null;
-		final int len = v1.length;
 		final float[] r = new float[v1.length];
 		for (int i = 0; i < v1.length; i++) {
 			r[i] = v1[i] + v2[i];
@@ -398,9 +397,7 @@ public final class MathUtil {
 		return r;
 	}
 
-	/**
-	 * Test whether two vectors are coordinate-wise opposite.
-	 */
+	/** Tests whether two vectors are coordinate-wise opposite. */
 	public static boolean areOpposite(final float[] v1, final float[] v2) {
 		/*    if (v1.length != v2.length) return false;
 		 boolean opposite = true;
@@ -460,9 +457,9 @@ public final class MathUtil {
 	}
 
 	/**
-	 * Obtains the z-coordinate of the cross product of the 2D vectors p2-p1 and
-	 * p3-p2, useful for determining whether the curve p1->p2->p3 is curving to
-	 * the right or left.
+	 * Obtains the z-coordinate of the cross product of the 2D vectors
+	 * {@code p2-p1} and {@code p3-p2}, useful for determining whether the curve
+	 * {@code p1->p2->p3} is curving to the right or left.
 	 */
 	public static float orient2D(final float[] p1, final float[] p2,
 		final float[] p3)
@@ -479,8 +476,8 @@ public final class MathUtil {
 	}
 
 	/**
-	 * Gets a vector perpendicular to the vector p2-p1, pointing to the right with
-	 * respect to the direction of p2-p1.
+	 * Gets a vector perpendicular to the vector {@code p2-p1}, pointing to the
+	 * right with respect to the direction of {@code p2-p1}.
 	 */
 	public static float[] getRightPerpendicularVector2D(final float[] p2,
 		final float[] p1)
@@ -491,8 +488,9 @@ public final class MathUtil {
 	}
 
 	/**
-	 * Gets a unit vector which bisects (p1 - p2) and (p3 - p2). This vector
-	 * points to the 'right' side of the line defined by p1->p2->p3.
+	 * Gets a unit vector which bisects {@code (p1 - p2)} and {@code (p3 - p2)}.
+	 * This vector points to the 'right' side of the line defined by
+	 * {@code p1->p2->p3}.
 	 */
 	public static float[] getRightBisectorVector2D(final float[] p1,
 		final float[] p2, final float[] p3)
